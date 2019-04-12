@@ -30,13 +30,11 @@ public interface GroubaOrderMapper {
 			+ "<if test=\"refGroubaTrace != null and refGroubaTrace != '' \">" + " and ref_grouba_trace = #{refGroubaTrace}"+ "</if>"
 			+ "<if test=\"orderStatus != null and orderStatus != '' \">" + " and order_status = #{orderStatus}" + "</if>"
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>"
-			+ "<if test=\"orderSucceedTime != null and orderSucceedTime != '' \">" + " and order_succeed_time = #{orderSucceedTime}" + "</if>"
 			+ "</where></script>")
 	public List<GroubaOrder> select(@Param(value = "refGroubTrace") String refGroubTrace,
 			@Param(value = "refGroubaTrace") String refGroubaTrace,
 			@Param(value = "orderStatus") String orderStatus,
-			@Param(value = "refUserWxUnionid") String refUserWxUnionid,
-			@Param(value = "orderSucceedTime") String orderSucceedTime);
+			@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
 	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,ref_user_img,order_succeed_time,order_share_count"
 			+ " from grouba_order" + " where order_trace = #{orderTrace}</script>")

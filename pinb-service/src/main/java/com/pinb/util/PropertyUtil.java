@@ -19,13 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 /**
- * ******************  类说明  *********************
- * class       :  PropertyUtil
- * @author     :  hejinyun@umpay.com
- * @version    :  1.0  
- * description :  Properties配置文件功能处理类
- * @see        :                        
- * ***********************************************
+ * 配置文件功能处理类
+ * @author chenzhao @date Apr 12, 2019
  */
 public class PropertyUtil {
 	
@@ -37,14 +32,9 @@ public class PropertyUtil {
 	private static final long DELAY_TIME = 5000; // 延迟加载时间(单位：ms)
 	
 	/**
-	 * ********************************************
-	 * method name   : getClassPath 
-	 * description   : 获取classpath路径
-	 * @return       : String
-	 * @param        : @return
-	 * modified      : hejinyun@umpay.com ,  2016-11-10  上午9:49:13
-	 * @see          : 
-	 * *******************************************
+	 * 获取文件绝对路径
+	 * @author chenzhao @date Apr 12, 2019
+	 * @return
 	 */
 	private static String getClassPath(){
 		return PropertyUtil.class.getResource("/").getPath();
@@ -70,15 +60,9 @@ public class PropertyUtil {
 	}
 	
 	/**
-	 * ********************************************
-	 * method name   : register 
-	 * description   : 配置文件注册
-	 * @return       : boolean
-	 * @param        : @param filename
-	 * @param        : @return
-	 * modified      : hejinyun@umpay.com ,  2016-11-9  下午6:08:46
-	 * @see          : 
-	 * *******************************************
+	 * 配置文件注册
+	 * @author chenzhao @date Apr 12, 2019
+	 * @param filenames
 	 */
 	public static void register(String... filenames){
 		for (String filename : filenames){
