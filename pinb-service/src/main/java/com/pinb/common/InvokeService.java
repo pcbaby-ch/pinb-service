@@ -38,10 +38,9 @@ public class InvokeService {
 	@Async("getThreadPoolTaskExecutor")
 	public Future<String> asynInvoke(String url, Object req) {
 		long startTime = System.currentTimeMillis();
-		log.info(">>>START asynInvoke:[{}]	#reqData:[{}]	[{}]", url, JSONObject.toJSONString(req),
-				Thread.currentThread());
-		Future<String> future = new AsyncResult<String>(restTemplate.postForObject(url, req, String.class));
-		log.info(">>>END asynInvoke:[{}]	# invoke interval time[{}]	", url, System.currentTimeMillis() - startTime);
+		log.info(">>>START asynInvoke:[{}],,#reqData:[{}],,[{}]", url, JSONObject.toJSON(req), Thread.currentThread());
+		Future<String> future = new AsyncResult<>(restTemplate.postForObject(url, req, String.class));
+		log.info(">>>END asynInvoke:[{}],,#invoke interval time[{}]	", url, System.currentTimeMillis() - startTime);
 		return future;
 	}
 
@@ -49,16 +48,16 @@ public class InvokeService {
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setConnectTimeout(3000);
 		factory.setReadTimeout(timeout);
-		RestTemplate restTemplate = new RestTemplate(factory);
+		RestTemplate restTemplate2 = new RestTemplate(factory);
 		long startTime = System.currentTimeMillis();
-		log.info(">>>START synInvoke:[{}]	#reqData:[{}]", url, JSONObject.toJSONString(req));
+		log.info(">>>START synInvoke:[{}],,#reqData:[{}]", url, JSONObject.toJSON(req));
 		String resp;
 		try {
-			resp = restTemplate.postForObject(url, req, String.class);
+			resp = restTemplate2.postForObject(url, req, String.class);
 		} catch (Exception e) {
 			throw new ServiceException(RespCode.RESTFUL_REQ_TIMEOUT);
 		}
-		log.info(">>>END synInvoke:[{}]	#invoke interval time[{}]", url, System.currentTimeMillis() - startTime);
+		log.info(">>>END synInvoke:[{}],,#invoke interval time[{}]", url, System.currentTimeMillis() - startTime);
 		return resp;
 	}
 
@@ -71,14 +70,14 @@ public class InvokeService {
 	 */
 	public String synInvoke(String url, Object req) {
 		long startTime = System.currentTimeMillis();
-		log.info(">>>START synInvoke:[{}]	#reqData:[{}]", url, JSONObject.toJSONString(req));
+		log.info(">>>START synInvoke:[{}],,#reqData:[{}]", url, JSONObject.toJSON(req));
 		String resp;
 		try {
 			resp = restTemplate.postForObject(url, req, String.class);
 		} catch (Exception e) {
 			throw new ServiceException(RespCode.RESTFUL_REQ_TIMEOUT);
 		}
-		log.info(">>>END synInvoke:[{}]	#invoke interval time[{}] #resp:[{}]", url,
+		log.info(">>>END synInvoke:[{}],,#invoke interval time[{}],,#resp:[{}]", url,
 				System.currentTimeMillis() - startTime, resp);
 		return resp;
 	}
@@ -181,11 +180,5 @@ public class InvokeService {
 		}
 	}
 
-	public static void main(String[] args) {
-		String result = "asdfljselatrjs\"vblei\"usr";
-		result = result.replaceAll("\"", "'");
-		System.out.println(result);
-		System.out.println(parse(result));
-	}
 
 }

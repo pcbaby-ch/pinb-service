@@ -29,7 +29,7 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
-		HashMap<String, Object> result = new HashMap<String, Object>();
+		HashMap<String, Object> result = new HashMap<>();
 		if (ex instanceof ServiceException) {
 			result.put("code", ((ServiceException) ex).getCode());
 			result.put("msg",
@@ -50,7 +50,7 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 					+ (StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
 							: ((ServiceException) ex).getMsg()));
 		} else if (ex instanceof SocketTimeoutException) {
-			LOGGER.error("#与客户端通讯异常：" + ex.getMessage());
+			LOGGER.error("#与客户端通讯异常：{}", ex.getMessage());
 		} else {
 			result.put("code", RespCode.END.getCode());
 			result.put("msg", RespCode.END.getMsg() + ex.getMessage());
