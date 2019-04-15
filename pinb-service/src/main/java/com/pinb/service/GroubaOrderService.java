@@ -3,7 +3,6 @@
  */
 package com.pinb.service;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,9 @@ import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.util.RespUtil;
 
 /**
- * @author chenzhao @date Apr 9, 2019
+ * 拼吧-订单
+ * 
+ * @author chenzhao @date Apr 15, 2019
  */
 @Service
 public class GroubaOrderService {
@@ -31,7 +32,7 @@ public class GroubaOrderService {
 	@Autowired
 	GroubaOrderMapper groubaOrderMapper;
 
-	public boolean orderAdd(GroubaOrder groubaOrder) throws Exception {
+	public boolean orderAdd(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefGroubaTrace");
@@ -48,8 +49,8 @@ public class GroubaOrderService {
 		if (StringUtils.isEmpty(groubaOrder.getRefUserImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserImg");
 		}
-
-		groubaOrder.setOrderTrace(BusinessesFlowNum.getNum("O", RedisConst.groubaOrderTrace));
+		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
+		groubaOrder.setOrderTrace(BusinessesFlowNum.getNum("GO", RedisConst.groubaOrderTrace));
 		int count = groubaOrderMapper.insert(groubaOrder);
 		if (count > 0) {
 			return true;
@@ -57,13 +58,13 @@ public class GroubaOrderService {
 			return false;
 		}
 	}
-	
-	public boolean orderUpdate(GroubaOrder groubaOrder) throws Exception {
+
+	public boolean orderUpdate(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getOrderTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderTrace");
 		}
-
+		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
 		int count = groubaOrderMapper.update(groubaOrder);
 		if (count > 0) {
 			return true;
@@ -72,9 +73,15 @@ public class GroubaOrderService {
 		}
 	}
 
-	public Object orderSelect(GroubaOrder groubaOrder) throws Exception {
+	public Object orderSelect(GroubaOrder groubaOrder) {
 		// #入参校验
-
+		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace()) && StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())
+				&& StringUtils.isEmpty(groubaOrder.getOrderStatus())
+				&& StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE,
+					"GroubaTrace、RefGroubaTrace、OrderStatus、RefUserWxUnionid，至少传一个");
+		}
+		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
 		Page<?> page = PageHelper.startPage(groubaOrder.getPage(), groubaOrder.getRows());
 		groubaOrderMapper.select(groubaOrder.getRefGroubTrace(), groubaOrder.getRefGroubaTrace(),
 				groubaOrder.getOrderStatus(), groubaOrder.getRefUserWxUnionid());

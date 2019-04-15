@@ -26,7 +26,7 @@ public class BusinessesFlowNum {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("deprecation")
-	public static String getNum(String prefix, String flowNumKey) throws Exception {
+	public static String getNum(String prefix, String flowNumKey)  {
 		Long flowNum = 1L;
 		Date dt = new Date();
 		dt.setHours(23);

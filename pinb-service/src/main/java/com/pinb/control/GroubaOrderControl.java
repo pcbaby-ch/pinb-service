@@ -3,8 +3,6 @@
  */
 package com.pinb.control;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,23 +18,21 @@ import com.pinb.service.GroubaOrderService;
 @RequestMapping("groubaOrder")
 public class GroubaOrderControl {
 
-	private static final Logger log = LoggerFactory.getLogger(GroubaOrderControl.class);
-
 	@Autowired
 	private GroubaOrderService groubaOrderService;
 
 	@RequestMapping("orderSelect")
-	public Object orderSelect() {
-		return "hello world";
+	public Object orderSelect(@RequestBody GroubaOrder groubaOrder)  {
+		return groubaOrderService.orderSelect(groubaOrder);
 	}
 
-	@RequestMapping("orderSelect")
-	public Object orderAdd(@RequestBody GroubaOrder groubaOrder) throws Exception {
-		
+	@RequestMapping("orderAdd")
+	public Object orderAdd(@RequestBody GroubaOrder groubaOrder)  {
+
 		return groubaOrderService.orderAdd(groubaOrder);
 	}
 
-	@RequestMapping("orderSelect")
+	@RequestMapping("orderUpdate")
 	public Object orderUpdate() {
 		return "hello world";
 	}

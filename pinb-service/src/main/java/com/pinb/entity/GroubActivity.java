@@ -6,11 +6,11 @@ package com.pinb.entity;
 /**
  * @author chenzhao @date Apr 10, 2019
  */
-public class GroubActivity {
+public class GroubActivity extends BaseEntity{
 
 	private String groubaTrace;
 	private String refGroubTrace;
-	private String groubaDependentUser;
+	private String refUserWxUnionid;
 	private String groubaSize;
 	private String groubaMaxCount;
 	private String goodsName;
@@ -36,12 +36,12 @@ public class GroubActivity {
 		this.refGroubTrace = refGroubTrace;
 	}
 
-	public String getGroubaDependentUser() {
-		return groubaDependentUser;
+	public String getRefUserWxUnionid() {
+		return refUserWxUnionid;
 	}
 
-	public void setGroubaDependentUser(String groubaDependentUser) {
-		this.groubaDependentUser = groubaDependentUser;
+	public void setRefUserWxUnionid(String refUserWxUnionid) {
+		this.refUserWxUnionid = refUserWxUnionid;
 	}
 
 	public String getGroubaSize() {
