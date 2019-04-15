@@ -32,7 +32,7 @@ public class GroubaOrderService {
 	@Autowired
 	GroubaOrderMapper groubaOrderMapper;
 
-	public boolean orderAdd(GroubaOrder groubaOrder) {
+	public boolean add(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefGroubaTrace");
@@ -59,7 +59,7 @@ public class GroubaOrderService {
 		}
 	}
 
-	public boolean orderUpdate(GroubaOrder groubaOrder) {
+	public boolean update(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getOrderTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderTrace");
@@ -73,7 +73,7 @@ public class GroubaOrderService {
 		}
 	}
 
-	public Object orderSelect(GroubaOrder groubaOrder) {
+	public Object select(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace()) && StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())
 				&& StringUtils.isEmpty(groubaOrder.getOrderStatus())

@@ -32,7 +32,7 @@ public class GroubActivityService {
 	@Autowired
 	GroubActivityMapper groubActivityMapper;
 
-	public boolean activityAdd(GroubActivity groubActivity) {
+	public boolean add(GroubActivity groubActivity) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubActivity.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");
@@ -68,7 +68,7 @@ public class GroubActivityService {
 		}
 	}
 
-	public boolean activityUpdate(GroubActivity groubActivity) {
+	public boolean update(GroubActivity groubActivity) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaTrace");
@@ -82,7 +82,7 @@ public class GroubActivityService {
 		}
 	}
 
-	public Object activitySelect(GroubActivity groubActivity) {
+	public Object select(GroubActivity groubActivity) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())
 				&& StringUtils.isEmpty(groubActivity.getRefUserWxUnionid())) {

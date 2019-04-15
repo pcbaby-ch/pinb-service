@@ -5,7 +5,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
+import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +22,7 @@ public class HttpUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpUtil.class);
 
-	public static String doPost(String url, String body, String[][] headers, int connectionTimeout, int readTimeout,
-			String charset) {
+	public static String doPost(String url, String body, String[][] headers, int connectionTimeout, int readTimeout, String charset) {
 		long reqstart = System.currentTimeMillis();
 		log.info(">>>reqURL:[{}],#reqBody:[{}]", url, body);
 		URL uri = null;
@@ -175,6 +178,29 @@ public class HttpUtil {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param url
+	 * @param reqMap 为空时，则无参get请求
+	 * @return
+	 */
+	public static String doGet(String url, HashMap<String, Object> reqMap) {
+		if (reqMap == null || reqMap.isEmpty()) {
+			return doGet(url, null, 3, 8, "utf-8");
+		}
+		return doGet(url + "?" + getUrlParams(reqMap), null, 3, 8, "utf-8");
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static String getUrlParams(HashMap<String, Object> reqMap) {
+		StringBuffer respbuf = new StringBuffer();
+		for (Iterator iterator = reqMap.entrySet().iterator(); iterator.hasNext();) {
+			Entry<String, Object> entry = (Entry<String, Object>) iterator.next();
+			respbuf.append("&").append(entry.getKey()).append("=").append(entry.getValue());
+		}
+		return respbuf.substring(1, respbuf.length());
 	}
 
 }

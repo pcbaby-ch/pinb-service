@@ -3,12 +3,15 @@
  */
 package com.pinb.service;
 
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinb.common.ServiceException;
@@ -33,7 +36,7 @@ public class UserService {
 	@Autowired
 	UserMapper userMapper;
 
-	public boolean userAdd(User user) {
+	public boolean add(User user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getUserWxOpenid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getUserWxOpenid");
@@ -59,13 +62,12 @@ public class UserService {
 		}
 	}
 
-	public boolean userUpdate(User user) {
+	public boolean update(User user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "UserWxUnionid");
 		}
-		if (!StringUtils.isEmpty(user.getCreditScoreGroub())
-				&& CheckUtil.isPositiveInteger(user.getCreditScoreGroub())) {
+		if (!StringUtils.isEmpty(user.getCreditScoreGroub()) && CheckUtil.isPositiveInteger(user.getCreditScoreGroub())) {
 			throw new ServiceException(RespCode.PARAM_ILLEGAL, "CreditScoreGroub");
 		}
 		if (!StringUtils.isEmpty(user.getCreditScoreUser()) && CheckUtil.isPositiveInteger(user.getCreditScoreUser())) {
@@ -80,7 +82,7 @@ public class UserService {
 		}
 	}
 
-	public Object userSelect(User user) {
+	public Object select(User user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getIsOpenGroub())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getIsOpenGroub");
@@ -91,7 +93,7 @@ public class UserService {
 		return RespUtil.listResp(page);
 	}
 
-	public Object userGetOpenid(UserVo user) {
+	public Object getOpenid(UserVo user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getAppid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "appid");
@@ -107,10 +109,16 @@ public class UserService {
 		}
 		log.info("#入参校验通过");
 		Page<?> page = PageHelper.startPage(user.getPage(), user.getRows());
-		String url="https://api.weixin.qq.com/sns/jscode2session";
-		
-		//HttpUtil.doGet(""+url, headers, connectionTimeout, readTimeout, charset)
-		return RespUtil.listResp(page);
+		String url = "https://api.weixin.qq.com/sns/jscode2session";
+		HashMap<String, Object> wxreq = new HashMap<>();
+		wxreq.put("appid", user.getAppid());
+		wxreq.put("secret", user.getSecret());
+		wxreq.put("js_code", user.getJsCode());
+		wxreq.put("grant_type", user.getGrantType());
+
+		String wxresp = HttpUtil.doGet(url, wxreq);
+
+		return RespUtil.dataResp(JSONObject.parseObject(wxresp));
 	}
 
 }

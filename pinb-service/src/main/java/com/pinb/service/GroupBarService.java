@@ -31,7 +31,7 @@ public class GroupBarService {
 	@Autowired
 	GroupBarMapper groupBarMapper;
 
-	public boolean barAdd(GroupBar groupBar) {
+	public boolean add(GroupBar groupBar) {
 		// #入参校验
 		if (StringUtils.isEmpty(groupBar.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");
@@ -58,7 +58,7 @@ public class GroupBarService {
 		}
 	}
 
-	public boolean barUpdate(GroupBar groupBar) {
+	public boolean update(GroupBar groupBar) {
 		// #入参校验
 		if (StringUtils.isEmpty(groupBar.getGroubTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubTrace");
@@ -72,7 +72,7 @@ public class GroupBarService {
 		}
 	}
 
-	public Object barSelect(GroupBar groupBar) {
+	public Object select(GroupBar groupBar) {
 		// #入参校验
 		if (StringUtils.isEmpty(groupBar.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getRefUserWxUnionid");

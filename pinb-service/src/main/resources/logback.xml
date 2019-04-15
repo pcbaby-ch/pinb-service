@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="true" scanPeriod="3 seconds">
-    <property name="appName" value="points-present"/>
+    <property name="appName" value="pinb-service"/>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%date [${appName},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] %-5level %logger{36} [%thread] [%file:%line] -%msg%n</pattern>

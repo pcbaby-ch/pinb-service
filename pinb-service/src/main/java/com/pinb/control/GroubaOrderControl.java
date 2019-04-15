@@ -21,20 +21,20 @@ public class GroubaOrderControl {
 	@Autowired
 	private GroubaOrderService groubaOrderService;
 
-	@RequestMapping("orderSelect")
-	public Object orderSelect(@RequestBody GroubaOrder groubaOrder)  {
-		return groubaOrderService.orderSelect(groubaOrder);
+	@RequestMapping("select")
+	public Object select(@RequestBody GroubaOrder groubaOrder)  {
+		return groubaOrderService.select(groubaOrder);
 	}
 
-	@RequestMapping("orderAdd")
-	public Object orderAdd(@RequestBody GroubaOrder groubaOrder)  {
+	@RequestMapping("add")
+	public Object add(@RequestBody GroubaOrder groubaOrder)  {
 
-		return groubaOrderService.orderAdd(groubaOrder);
+		return groubaOrderService.add(groubaOrder);
 	}
 
-	@RequestMapping("orderUpdate")
-	public Object orderUpdate() {
-		return "hello world";
+	@RequestMapping("update")
+	public Object update(@RequestBody GroubaOrder groubaOrder) {
+		return groubaOrderService.update(groubaOrder);
 	}
 
 }
