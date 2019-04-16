@@ -30,8 +30,8 @@ public interface GroupBarMapper {
 	public List<GroupBar> select(@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
 	@Select(value = "select  groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address"
-			+ " from group_bar" + " where groub_trace = #{groubTrace}")
-	public GroupBar selectOne(@Param(value = "groubTrace") String groubTrace);
+			+ " from group_bar" + " where ref_user_wx_unionid = #{refUserWxUnionid}")
+	public GroupBar selectOne(@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
 	@Insert(value = "INSERT INTO group_bar"
 			+ " ( groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address) "

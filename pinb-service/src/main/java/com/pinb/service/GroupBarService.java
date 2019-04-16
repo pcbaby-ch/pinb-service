@@ -21,6 +21,7 @@ import com.pinb.util.RespUtil;
 
 /**
  * 拼吧-店铺
+ * 
  * @author chenzhao @date Apr 15, 2019
  */
 @Service
@@ -75,12 +76,21 @@ public class GroupBarService {
 	public Object select(GroupBar groupBar) {
 		// #入参校验
 		if (StringUtils.isEmpty(groupBar.getRefUserWxUnionid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getRefUserWxUnionid");
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");
 		}
 		log.info("#入参校验通过,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		Page<?> page = PageHelper.startPage(groupBar.getPage(), groupBar.getRows());
 		groupBarMapper.select(groupBar.getRefUserWxUnionid());
 		return RespUtil.listResp(page);
+	}
+
+	public Object selectOne(GroupBar groupBar) {
+		// #入参校验
+		if (StringUtils.isEmpty(groupBar.getRefUserWxUnionid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
+		}
+		log.info("#入参校验通过,#GroubTrace:[{}]", groupBar.getGroubTrace());
+		return RespUtil.dataResp(groupBarMapper.selectOne(groupBar.getGroubTrace()));
 	}
 
 }

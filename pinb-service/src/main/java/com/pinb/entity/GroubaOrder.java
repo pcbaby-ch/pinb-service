@@ -15,8 +15,10 @@ public class GroubaOrder extends BaseEntity {
 	private String orderStatus;
 	private String refUserWxUnionid;
 	private String refUserImg;
-	private String orderSucceedTime;
 	private String orderShareCount;
+	private String joinSucceedTime;
+	private String consumeTime;
+	private String consumeSuccessTime;
 
 	public String getOrderTrace() {
 		return orderTrace;
@@ -74,20 +76,36 @@ public class GroubaOrder extends BaseEntity {
 		this.refUserImg = refUserImg;
 	}
 
-	public String getOrderSucceedTime() {
-		return orderSucceedTime;
-	}
-
-	public void setOrderSucceedTime(String orderSucceedTime) {
-		this.orderSucceedTime = orderSucceedTime;
-	}
-
 	public String getOrderShareCount() {
 		return orderShareCount;
 	}
 
 	public void setOrderShareCount(String orderShareCount) {
 		this.orderShareCount = orderShareCount;
+	}
+
+	public String getJoinSucceedTime() {
+		return joinSucceedTime;
+	}
+
+	public void setJoinSucceedTime(String joinSucceedTime) {
+		this.joinSucceedTime = joinSucceedTime;
+	}
+
+	public String getConsumeTime() {
+		return consumeTime;
+	}
+
+	public void setConsumeTime(String consumeTime) {
+		this.consumeTime = consumeTime;
+	}
+
+	public String getConsumeSuccessTime() {
+		return consumeSuccessTime;
+	}
+
+	public void setConsumeSuccessTime(String consumeSuccessTime) {
+		this.consumeSuccessTime = consumeSuccessTime;
 	}
 
 }

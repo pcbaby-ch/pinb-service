@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinb.common.ServiceException;
+import com.pinb.entity.GroupBar;
 import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.UserMapper;
@@ -65,7 +66,7 @@ public class UserService {
 	public boolean update(User user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getUserWxUnionid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "UserWxUnionid");
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "userWxUnionid");
 		}
 		if (!StringUtils.isEmpty(user.getCreditScoreGroub()) && CheckUtil.isPositiveInteger(user.getCreditScoreGroub())) {
 			throw new ServiceException(RespCode.PARAM_ILLEGAL, "CreditScoreGroub");
@@ -92,6 +93,15 @@ public class UserService {
 		userMapper.select(user.getIsOpenGroub());
 		return RespUtil.listResp(page);
 	}
+	
+	public Object selectOne(User user) {
+		// #入参校验
+		if (StringUtils.isEmpty(user.getUserWxUnionid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "UserWxUnionid");
+		}
+		log.info("#入参校验通过,#UserWxUnionid:[{}]", user.getUserWxUnionid());
+		return RespUtil.dataResp(userMapper.selectOne(user.getUserWxUnionid()));
+	}
 
 	public Object getOpenid(UserVo user) {
 		// #入参校验
@@ -108,7 +118,6 @@ public class UserService {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "grantType");
 		}
 		log.info("#入参校验通过");
-		Page<?> page = PageHelper.startPage(user.getPage(), user.getRows());
 		String url = "https://api.weixin.qq.com/sns/jscode2session";
 		HashMap<String, Object> wxreq = new HashMap<>();
 		wxreq.put("appid", user.getAppid());

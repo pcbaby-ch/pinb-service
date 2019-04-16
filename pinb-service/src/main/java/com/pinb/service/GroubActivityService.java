@@ -15,6 +15,7 @@ import com.pinb.common.BusinessesFlowNum;
 import com.pinb.common.ServiceException;
 import com.pinb.constant.RedisConst;
 import com.pinb.entity.GroubActivity;
+import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroubActivityMapper;
 import com.pinb.util.RespUtil;
@@ -34,6 +35,9 @@ public class GroubActivityService {
 
 	public boolean add(GroubActivity groubActivity) {
 		// #入参校验
+		if (StringUtils.isEmpty(groubActivity.getRefGroubTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefGroubTrace");
+		}
 		if (StringUtils.isEmpty(groubActivity.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");
 		}
@@ -58,7 +62,7 @@ public class GroubActivityService {
 		if (StringUtils.isEmpty(groubActivity.getGroubaIsnew())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaIsnew");
 		}
-		log.info("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
+		log.info("#入参校验通过");
 		groubActivity.setGroubaTrace(BusinessesFlowNum.getNum("GA", RedisConst.groubActivityTrace));
 		int count = groubActivityMapper.insert(groubActivity);
 		if (count > 0) {
@@ -84,14 +88,22 @@ public class GroubActivityService {
 
 	public Object select(GroubActivity groubActivity) {
 		// #入参校验
-		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())
-				&& StringUtils.isEmpty(groubActivity.getRefUserWxUnionid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaTrace、RefUserWxUnionid，至少传一个");
+		if (StringUtils.isEmpty(groubActivity.getRefGroubTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace");
 		}
 		log.info("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
 		Page<?> page = PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
-		groubActivityMapper.select(groubActivity.getRefGroubTrace(), groubActivity.getRefUserWxUnionid());
+		groubActivityMapper.select(groubActivity.getRefGroubTrace(), null);
 		return RespUtil.listResp(page);
+	}
+
+	public Object selectOne(GroubActivity groubActivity) {
+		// #入参校验
+		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getGroubaTrace");
+		}
+		log.info("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
+		return RespUtil.dataResp(groubActivityMapper.selectOne(groubActivity.getGroubaTrace()));
 	}
 
 }

@@ -22,6 +22,7 @@ public class User extends BaseEntity {
 	private String userNickname;
 	private String userCity;
 	private String userProvince;
+	private String userWxinfoMd5;
 
 	public String getUserPhone() {
 		return userPhone;
@@ -125,6 +126,14 @@ public class User extends BaseEntity {
 
 	public void setUserProvince(String userProvince) {
 		this.userProvince = userProvince;
+	}
+
+	public String getUserWxinfoMd5() {
+		return userWxinfoMd5;
+	}
+
+	public void setUserWxinfoMd5(String userWxinfoMd5) {
+		this.userWxinfoMd5 = userWxinfoMd5;
 	}
 
 }

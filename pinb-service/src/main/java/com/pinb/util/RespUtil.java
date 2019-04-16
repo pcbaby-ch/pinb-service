@@ -85,7 +85,7 @@ public class RespUtil {
 	 * @param data 不限定格式规约
 	 * @return
 	 */
-	public static Map<String, Object> dataCodeResp(RespCode respEnum,Object data) {
+	public static Map<String, Object> codeDateResp(RespCode respEnum,Object data) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("retCode", respEnum.getCode());
 		map.put("retMsg", respEnum.getMsg());
