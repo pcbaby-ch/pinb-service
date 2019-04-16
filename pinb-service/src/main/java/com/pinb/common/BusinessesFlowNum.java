@@ -46,7 +46,7 @@ public class BusinessesFlowNum {
 				RedisPool.pexpireAt(flowNumKey, dt.getTime());
 			}
 		} catch (Exception e) {
-			throw new ServiceException(RespCode.FAILURE);
+			throw new ServiceException("#redis服务异常，获取流水号失败");
 		} finally {
 			lock.unlock();
 		}

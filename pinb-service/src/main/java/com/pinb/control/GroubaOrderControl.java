@@ -30,9 +30,9 @@ public class GroubaOrderControl {
 
 	@ApiOperation("订单list数据集查询 {店铺所有成团订单、vip店长统计报表功能（TODO）}")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "refUserWxUnionid", value = "店铺所属用户", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refroubTrace、refGroubaTrace、orderStatus", value = "归属店铺，以下字段至少传一个或多个", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "refGroubaTrace、orderStatus", value = "归属活动", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "店铺所属用户", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "refroubTrace", value = "归属店铺，以下字段至少传一个或多个", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "refGroubaTrace", value = "归属活动", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "orderStatus", value = "订单状态", required = false, dataType = "string"), })
 	@PostMapping("select")
 	public Object select(@RequestBody GroubaOrder groubaOrder) {
@@ -41,11 +41,11 @@ public class GroubaOrderControl {
 
 	@ApiOperation("开团下单")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "refGroubTrace,", value = "归属店铺", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refGroubaTrace", value = "拼团订单到期时间", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "orderExpiredTime", value = "拼团订单到期时间", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refUserWxUnionid", value = "订单参团用户", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refUserImg", value = "用户头像fileid", required = true, dataType = "string"), })
+			@ApiImplicitParam(name = "YrefGroubTrace,", value = "归属店铺", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefGroubaTrace", value = "拼团订单到期时间", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YorderExpiredTime", value = "拼团订单到期时间", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "订单参团用户", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefUserImg", value = "用户头像fileid", required = false, dataType = "string"), })
 	@PostMapping("orderOpen")
 	public Object orderOpen(@RequestBody GroubaOrder groubaOrder) {
 
@@ -53,8 +53,8 @@ public class GroubaOrderControl {
 	}
 
 	@ApiOperation("已有团订单-分享 {前端分享成功后，累计分享计数}")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "orderTrace", value = "被分享团订单", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refUserWxUnionid", value = "分享发起用户", required = true, dataType = "string") })
+	@ApiImplicitParams({ @ApiImplicitParam(name = "YorderTrace", value = "被分享团订单", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "分享发起用户", required = false, dataType = "string") })
 	@PostMapping("orderShare")
 	public Object orderShare(@RequestBody GroubaOrder groubaOrder) {
 
@@ -63,9 +63,9 @@ public class GroubaOrderControl {
 
 	@ApiOperation("已有团订单-参团")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "orderTrace", value = "参团订单trace", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refUserWxUnionid", value = "订单参团用户", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refUserImg", value = "用户头像fileid", required = true, dataType = "string"), })
+			@ApiImplicitParam(name = "YorderTrace", value = "参团订单trace", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "订单参团用户", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefUserImg", value = "用户头像fileid", required = false, dataType = "string"), })
 	@PostMapping("orderJoin")
 	public Object orderJoin(@RequestBody GroubaOrder groubaOrder) {
 
@@ -74,9 +74,9 @@ public class GroubaOrderControl {
 
 	@ApiOperation("已有团订单-扫码消费 {二维码设计成包含订单trace+消费用户数据的QR，店长扫QR时，便可从二维码中同时获得消费订单+用户}")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "orderTrace", value = "消费订单trace", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refUserWxUnionid", value = "消费用户", required = true, dataType = "string"),
-			@ApiImplicitParam(name = "refGroubTrace", value = "扫码店长店铺trace", required = true, dataType = "string"), })
+			@ApiImplicitParam(name = "YorderTrace", value = "消费订单trace", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "消费用户", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YrefGroubTrace", value = "扫码店长店铺trace", required = false, dataType = "string"), })
 	@PostMapping("orderConsume")
 	public Object orderConsume(@RequestBody GroubaOrder groubaOrder) {
 

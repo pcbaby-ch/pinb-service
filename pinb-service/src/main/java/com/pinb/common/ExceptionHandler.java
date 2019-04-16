@@ -31,30 +31,30 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 			Exception ex) {
 		HashMap<String, Object> result = new HashMap<>();
 		if (ex instanceof ServiceException) {
-			result.put("code", ((ServiceException) ex).getCode());
-			result.put("msg",
+			result.put("retCode", ((ServiceException) ex).getCode());
+			result.put("retMsg",
 					(StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
 							: ((ServiceException) ex).getMsg()));
 			if (!StringUtils.isEmpty(((ServiceException) ex).getData())) {
 				result.put("data", JSONObject.parse(((ServiceException) ex).getData()));
 			}
-			if ("0000".equals(((ServiceException) ex).getCode())) {
-				LOGGER.debug("业务处理成功", ex);
+			if ("10000".equals(((ServiceException) ex).getCode())) {
 				LOGGER.info("业务处理成功");
+			} else {
+				LOGGER.debug("业务异常："
+						+ (StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
+								: ((ServiceException) ex).getMsg()),
+						ex);
+				LOGGER.info("业务异常："
+						+ (StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
+								: ((ServiceException) ex).getMsg()));
 			}
-			LOGGER.debug("业务异常："
-					+ (StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
-							: ((ServiceException) ex).getMsg()),
-					ex);
-			LOGGER.info("业务异常："
-					+ (StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
-							: ((ServiceException) ex).getMsg()));
 		} else if (ex instanceof SocketTimeoutException) {
 			LOGGER.error("#与客户端通讯异常：{}", ex.getMessage());
 		} else {
-			result.put("code", RespCode.END.getCode());
-			result.put("msg", RespCode.END.getMsg() + ex.getMessage());
-			LOGGER.error(RespCode.END.getMsg() + ex.getMessage(), ex);
+			result.put("retCode", RespCode.END.getCode());
+			result.put("retMsg", RespCode.END.getMsg());
+			LOGGER.error(RespCode.END.getMsg(), ex);
 		}
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");

@@ -1,10 +1,8 @@
 package com.pinb.config;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pinb.util.PropertyUtil;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.pinb.common.ExceptionHandler;
+import com.pinb.util.PropertiesUtils;
 
 import redis.clients.jedis.*;
 import redis.clients.util.Hashing;
@@ -12,13 +10,16 @@ import redis.clients.util.Sharded;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @author chenzhao @date Apr 9, 2019
  */
 public class RedisPool {
 
-	private static Log log = LogFactory.getLog(RedisPool.class);
+	private static Logger log = LoggerFactory.getLogger(ExceptionHandler.class);
 
 	static ShardedJedisPool pool;
 	static ShardedJedis jedis;
@@ -26,7 +27,8 @@ public class RedisPool {
 
 	static {
 		List<JedisShardInfo> list = new LinkedList<>();
-		String servers = PropertyUtil.getStrValue("redis_server", "");
+		String servers = PropertiesUtils.getProperty("redis_server", "");
+		log.debug("#################servers:[{}]#########################", servers);
 		for (String server : servers.split(",")) {
 			if (server.indexOf("@") > -1) {
 				JedisShardInfo jedisShardInfo = new JedisShardInfo(server);
@@ -394,7 +396,7 @@ public class RedisPool {
 				jds = pool.getResource();
 				// jds.setex(key, seconds, value)
 			} catch (Exception e) {
-				log.error(e);
+				log.error("#连接资源获取异常", e);
 			} finally {
 				pool.returnResource(jds);
 			}
@@ -412,13 +414,13 @@ public class RedisPool {
 			long count = 0;
 			while (iter.hasNext()) {
 				Jedis _jedis = iter.next();
-				Set<String> keys = _jedis.keys("*" + cacheType + "*");
+				Set<String> keys = _jedis.keys(cacheType + "*");
 				if (keys.size() > 0) {
 					count += _jedis.del(keys.toArray(new String[keys.size()]));
 				}
 			}
 		} catch (Exception e) {
-			log.error(e);
+			log.error("#键删除异常", e);
 		} finally {
 			pool.returnResource(jds);
 		}

@@ -65,7 +65,9 @@ public enum RespCode {
 	
 
 	
-	
+	/**
+	 * "66666", "服务繁忙"
+	 */
 	END("66666", "服务繁忙");
 
 	private String code;
