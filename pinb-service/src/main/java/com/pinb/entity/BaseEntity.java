@@ -4,22 +4,21 @@ package com.pinb.entity;
  * 
  * @author chenzhao @date Apr 9, 2019
  */
-public class BaseEntity{
+public class BaseEntity {
 
 	/** 时间区间 */
 	private String startTime;
 	private String endTime;
-	
+
 	/** 分页 */
 	private Integer page;
 	private Integer rows;
-	
-	
-	/** 登陆用户唯一标识  */
+
+	/** 登陆用户唯一标识 */
 	private String userWxUnionid;
-	
 	private String userWxOpenid;
-	
+	private String userIp;
+
 	private String intime;
 	private String uptime;
 
@@ -86,9 +85,13 @@ public class BaseEntity{
 	public void setUptime(String uptime) {
 		this.uptime = uptime;
 	}
-	
-	
-	
-	
-	
+
+	public String getUserIp() {
+		return userIp;
+	}
+
+	public void setUserIp(String userIp) {
+		this.userIp = userIp;
+	}
+
 }

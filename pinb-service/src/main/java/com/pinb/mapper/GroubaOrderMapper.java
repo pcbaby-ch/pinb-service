@@ -44,8 +44,8 @@ public interface GroubaOrderMapper {
 			@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
 	@Insert(value = "<script>INSERT INTO grouba_order"
-			+ " (order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,ref_user_wx_unionid,ref_user_img,joinTime) "
-			+ " VALUES (#{orderTrace},#{refGroubTrace},#{refGroubaTrace},#{orderExpiredTime},#{refUserWxUnionid},#{refUserImg},NOW())</script>")
+			+ " (order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,ref_user_wx_unionid,ref_user_img,user_ip) "
+			+ " VALUES (#{orderTrace},#{refGroubTrace},#{refGroubaTrace},#{orderExpiredTime},#{refUserWxUnionid},#{refUserImg},#{userIp})</script>")
 	public int insert(GroubaOrder groubaOrder);
 
 	@Update(value = "<script>UPDATE grouba_order SET  uptime=NOW()"

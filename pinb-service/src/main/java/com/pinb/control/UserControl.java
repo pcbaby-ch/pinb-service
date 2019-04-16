@@ -33,7 +33,7 @@ public class UserControl {
 	@Autowired
 	private UserService userService;
 
-	@ApiOperation("公共请求码&响应码-响应报文格式规约:{'retCode':10000,'retMsg':'操作成功','data':{'userName':'用户姓名','userPhone':'18516369668'}}")
+	@ApiOperation("公共请求参数,其中page,rows分页数据集才需要传，参数有Y前缀代表必传响应码-响应报文格式规约:{'retCode':10000,'retMsg':'操作成功','data':{'userName':'用户姓名','userPhone':'18516369668'}}")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "userWxUnionid,userWxOpenid,page,rows", value = "公共请求参数,其中page,rows分页数据集才需要传，参数有Y前缀代表必传", required = true, dataType = "string") })
 	@ApiResponses(value = { @ApiResponse(code = 10000, message = "操作成功"),

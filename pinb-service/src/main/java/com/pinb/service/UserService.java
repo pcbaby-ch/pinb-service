@@ -15,7 +15,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinb.common.ServiceException;
-import com.pinb.entity.GroupBar;
 import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.UserMapper;

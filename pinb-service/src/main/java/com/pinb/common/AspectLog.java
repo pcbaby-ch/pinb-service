@@ -30,7 +30,6 @@ public class AspectLog {
 	public Object around(ProceedingJoinPoint pjp) throws Throwable {
 		long startTime = System.currentTimeMillis();
 		String method = pjp.getSignature().getDeclaringTypeName() + "." + pjp.getSignature().getName();
-		log.debug(">>>method args:[{}],,[{}]", JSONObject.toJSON(pjp.getArgs()), method);
 		Object obj = pjp.proceed();
 		log.info(">>>method proceedInterval:[{}],,[{}]", System.currentTimeMillis() - startTime, method);
 		return obj;
@@ -38,6 +37,6 @@ public class AspectLog {
 
 	@AfterReturning(returning = "obj", pointcut = "cut()")
 	public void doAfterReturning(Object obj) {
-		log.debug(">>>method return:[{}]", obj);
+		log.debug(">>>method return:[{}]", JSONObject.toJSON(obj));
 	}
 }
