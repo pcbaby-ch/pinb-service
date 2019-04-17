@@ -17,6 +17,8 @@ public class BaseEntity {
 	/** 登陆用户唯一标识 */
 	private String userWxUnionid;
 	private String userWxOpenid;
+	
+	private String sign;
 	private String userIp;
 
 	private String intime;
@@ -92,6 +94,14 @@ public class BaseEntity {
 
 	public void setUserIp(String userIp) {
 		this.userIp = userIp;
+	}
+
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
 	}
 
 }
