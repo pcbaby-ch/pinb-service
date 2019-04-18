@@ -22,7 +22,7 @@ public class Swagger2 {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder().title("拼吧-在线api接口文档，支持直接调用测试").description(
-				"1、api基础地址：<br>(测试环境)https://47.102.199.182/pinb-gateway/pinbServiceTest<br>(产线环境)https://47.102.199.182/pinb-gateway/pinbService<br>"
+				"1、api基础地址：<br>(测试环境)https://apitest.pinb.vip/pinb-service<br>(产线环境)https://api.pinb.vip/pinb-service<br>"
 						+ "2、公共请求参数：sign,userWxUnionid,userWxOpenid,page,rows(page,rows,分页list数据公参)；请求示例：{'sign':'','userWxUnionid':'sx2345fd23cc4','userWxOpenid':'sx2345fd23cc4',}<br>"
 						+ "3、响应报文格式规约：{'retCode':10000,'retMsg':'操作成功','data':{'userName':'用户姓名','userPhone':'18516369668'}}<br>"
 						+ "4、公共响应code：(\"10000\", \"操作成功\")," + "(\"11111\", \"操作失败,%s\"),"

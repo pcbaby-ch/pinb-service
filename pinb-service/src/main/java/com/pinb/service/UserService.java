@@ -20,6 +20,7 @@ import com.pinb.enums.RespCode;
 import com.pinb.mapper.UserMapper;
 import com.pinb.util.CheckUtil;
 import com.pinb.util.HttpUtil;
+import com.pinb.util.PropertiesUtils;
 import com.pinb.util.RespUtil;
 import com.pinb.vo.UserVo;
 
@@ -67,7 +68,8 @@ public class UserService {
 		if (StringUtils.isEmpty(user.getUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "userWxUnionid");
 		}
-		if (!StringUtils.isEmpty(user.getCreditScoreGroub()) && CheckUtil.isPositiveInteger(user.getCreditScoreGroub())) {
+		if (!StringUtils.isEmpty(user.getCreditScoreGroub())
+				&& CheckUtil.isPositiveInteger(user.getCreditScoreGroub())) {
 			throw new ServiceException(RespCode.PARAM_ILLEGAL, "CreditScoreGroub");
 		}
 		if (!StringUtils.isEmpty(user.getCreditScoreUser()) && CheckUtil.isPositiveInteger(user.getCreditScoreUser())) {
@@ -92,7 +94,7 @@ public class UserService {
 		userMapper.select(user.getIsOpenGroub());
 		return RespUtil.listResp(page);
 	}
-	
+
 	public Object selectOne(User user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getUserWxUnionid())) {
@@ -117,7 +119,7 @@ public class UserService {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "grantType");
 		}
 		log.info("#入参校验通过");
-		String url = "https://api.weixin.qq.com/sns/jscode2session";
+		String url = PropertiesUtils.getProperty("wxGetOpenid","127.0.0.1:9668/pinb-mock") + "/sns/jscode2session";
 		HashMap<String, Object> wxreq = new HashMap<>();
 		wxreq.put("appid", user.getAppid());
 		wxreq.put("secret", user.getSecret());
