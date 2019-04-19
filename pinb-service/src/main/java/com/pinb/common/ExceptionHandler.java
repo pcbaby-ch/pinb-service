@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -25,6 +27,13 @@ import com.pinb.enums.RespCode;
 @Component
 public class ExceptionHandler implements HandlerExceptionResolver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
+
+	@Value("${businessError:false}")
+	private String businessError;
+	@Value("${systemError:false}")
+	private String systemError;
+	@Autowired
+	private EmailService mailService;
 
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
@@ -48,6 +57,12 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 				LOGGER.info("业务异常："
 						+ (StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
 								: ((ServiceException) ex).getMsg()));
+				if ("true".equals(businessError)) {
+					mailService.sendSimpleMail("979191434@qq.com", "业务异常告警",
+							(StringUtils.isEmpty(((ServiceException) ex).getMsg())
+									? ((ServiceException) ex).getMessage()
+									: ((ServiceException) ex).getMsg()));
+				}
 			}
 		} else if (ex instanceof SocketTimeoutException) {
 			LOGGER.error("#与客户端通讯异常：{}", ex.getMessage());
@@ -55,6 +70,11 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 			result.put("retCode", RespCode.END.getCode());
 			result.put("retMsg", RespCode.END.getMsg());
 			LOGGER.error(RespCode.END.getMsg(), ex);
+			if ("true".equals(systemError)) {
+				mailService.sendSimpleMail("979191434@qq.com", "系统异常告警",
+						(StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
+								: ((ServiceException) ex).getMsg()));
+			}
 		}
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
