@@ -14,6 +14,7 @@ public class GroupBar extends BaseEntity {
 	private String groubImg;
 	private String groubPhone;
 	private String groubAddress;
+	private String isOpen;
 	public String getGroubTrace() {
 		return groubTrace;
 	}
@@ -49,6 +50,12 @@ public class GroupBar extends BaseEntity {
 	}
 	public void setGroubAddress(String groubAddress) {
 		this.groubAddress = groubAddress;
+	}
+	public String getIsOpen() {
+		return isOpen;
+	}
+	public void setIsOpen(String isOpen) {
+		this.isOpen = isOpen;
 	}
 	
 	
