@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pinb.service.UserService;
+import com.pinb.util.PropertiesUtils;
 import com.pinb.util.RespUtil;
 import com.pinb.vo.UserVo;
 
@@ -32,7 +33,7 @@ public class UserControl {
 
 	@Autowired
 	private UserService userService;
-
+	
 	@ApiOperation("公共请求参数,其中page,rows分页数据集才需要传，参数有Y前缀代表必传响应码-响应报文格式规约:{'retCode':10000,'retMsg':'操作成功','data':{'userName':'用户姓名','userPhone':'18516369668'}}")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "userWxUnionid,userWxOpenid,page,rows", value = "公共请求参数,其中page,rows分页数据集才需要传，参数有Y前缀代表必传", required = true, dataType = "string") })
@@ -41,7 +42,7 @@ public class UserControl {
 			@ApiResponse(code = 10006, message = "外部服务请求异常,%s"), @ApiResponse(code = 44444, message = "服务繁忙") })
 	@RequestMapping("select")
 	public Object select() {
-		return RespUtil.dataResp(true);
+		return PropertiesUtils.getProperty("server.port", "server.port");
 	}
 
 	@ApiOperation("获取微信openid、unionid")

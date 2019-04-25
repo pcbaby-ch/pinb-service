@@ -6,7 +6,7 @@ package com.pinb.entity;
 /**
  * @author chenzhao @date Apr 10, 2019
  */
-public class GroubActivity extends BaseEntity{
+public class GroubActivity extends BaseEntity {
 
 	private String groubaTrace;
 	private String refGroubTrace;
@@ -19,6 +19,7 @@ public class GroubActivity extends BaseEntity{
 	private String groubaDiscountAmount;
 	private String groubaIsnew;
 	private String groubaExpiredTime;
+	private String groubaActiveMinute;
 
 	public String getGroubaTrace() {
 		return groubaTrace;
@@ -106,6 +107,14 @@ public class GroubActivity extends BaseEntity{
 
 	public void setGroubaExpiredTime(String groubaExpiredTime) {
 		this.groubaExpiredTime = groubaExpiredTime;
+	}
+
+	public String getGroubaActiveMinute() {
+		return groubaActiveMinute;
+	}
+
+	public void setGroubaActiveMinute(String groubaActiveMinute) {
+		this.groubaActiveMinute = groubaActiveMinute;
 	}
 
 }

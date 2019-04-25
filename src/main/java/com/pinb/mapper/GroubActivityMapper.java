@@ -23,7 +23,7 @@ import com.pinb.entity.GroubActivity;
 @Mapper
 public interface GroubActivityMapper {
 	
-	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time"
+	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute"
 			+ " from groub_activity" + "<where>"
 			+ "<if test=\"refGroubTrace != null and refGroubTrace != '' \">" + " and ref_groub_trace = #{refGroubTrace}"+ "</if>"
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}"+ "</if>"
@@ -31,13 +31,13 @@ public interface GroubActivityMapper {
 	public List<GroubActivity> select(@Param(value = "refGroubTrace") String refGroubTrace,
 			@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
-	@Select(value = "select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time"
+	@Select(value = "select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute"
 			+ " from groub_activity" + " where grouba_trace = #{groubaTrace}")
 	public GroubActivity selectOne(@Param(value = "groubaTrace") String groubaTrace);
 
 	@Insert(value = "INSERT INTO groub_activity"
-			+ " (grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time) "
-			+ " VALUES (#{groubaTrace},#{refGroubTrace},#{refUserWxUnionid},#{groubaSize},#{groubaMaxCount},#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew},#{groubaExpiredTime})")
+			+ " (grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute) "
+			+ " VALUES (#{groubaTrace},#{refGroubTrace},#{refUserWxUnionid},#{groubaSize},#{groubaMaxCount},#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew},#{groubaExpiredTime},#{groubaActiveMinute})")
 	public int insert(GroubActivity groubActivity);
 	
 	@Update(value = "<script>UPDATE groub_activity SET  uptime=NOW()"
@@ -47,6 +47,7 @@ public interface GroubActivityMapper {
 			+ "<if test=\"groubaDiscountAmount != null and groubaDiscountAmount != '' \">" + " and grouba_discount_amount = #{groubaDiscountAmount}"+ "</if>"
 			+ "<if test=\"groubaIsnew != null and groubaIsnew != '' \">" + ",grouba_isnew = #{groubaIsnew}"+ "</if>"
 			+ "<if test=\"groubaExpiredTime != null and groubaExpiredTime != '' \">" + ",grouba_expired_time = #{groubaExpiredTime}"+ "</if>"
+			+ "<if test=\"groubaActiveMinute != null and groubaActiveMinute != '' \">" + ",grouba_active_minute = #{groubaActiveMinute}"+ "</if>"
 			+ " where grouba_trace=#{groubaTrace}</script>")
 	public int update(GroubActivity groubActivity);
 
