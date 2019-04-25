@@ -36,7 +36,7 @@ public class GroupBarControl {
 			@ApiImplicitParam(name = "refUserWxUnionid", value = "店铺所属用户（店长）", required = false, dataType = "string") })
 	@PostMapping("select")
 	public Object select(@RequestBody GroupBar groupBar) {
-		return RespUtil.dataResp(groupBarService.select(groupBar));
+		return RespUtil.listResp(groupBarService.select(groupBar));
 	}
 
 	@ApiOperation("店铺信息-查询")

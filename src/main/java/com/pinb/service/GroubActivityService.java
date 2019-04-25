@@ -15,7 +15,6 @@ import com.pinb.common.BusinessesFlowNum;
 import com.pinb.common.ServiceException;
 import com.pinb.constant.RedisConst;
 import com.pinb.entity.GroubActivity;
-import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroubActivityMapper;
 import com.pinb.util.RespUtil;
@@ -86,7 +85,7 @@ public class GroubActivityService {
 		}
 	}
 
-	public Object select(GroubActivity groubActivity) {
+	public Page<?> select(GroubActivity groubActivity) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubActivity.getRefGroubTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace");
@@ -94,7 +93,7 @@ public class GroubActivityService {
 		log.info("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
 		Page<?> page = PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
 		groubActivityMapper.select(groubActivity.getRefGroubTrace(), null);
-		return RespUtil.listResp(page);
+		return page;
 	}
 
 	public Object selectOne(GroubActivity groubActivity) {

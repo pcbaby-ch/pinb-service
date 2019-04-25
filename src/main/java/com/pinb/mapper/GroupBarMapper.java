@@ -35,7 +35,7 @@ public interface GroupBarMapper {
 
 	@Insert(value = "INSERT INTO group_bar"
 			+ " ( groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address,is_open) "
-			+ " VALUES (#{groubTrace},#{refUserWxUnionid},#{groubName},#{groubImg},#{groubPhone},#{groubAddress},#{,isOpen})")
+			+ " VALUES (#{groubTrace},#{refUserWxUnionid},#{groubName},#{groubImg},#{groubPhone},#{groubAddress},#{isOpen})")
 	public int insert(GroupBar groupBar);
 	
 	@Update(value = "<script>UPDATE group_bar SET  uptime=NOW()"

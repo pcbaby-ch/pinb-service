@@ -21,7 +21,8 @@ public class HttpUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpUtil.class);
 
-	public static String doPost(String url, String body, String[][] headers, int connectionTimeout, int readTimeout, String charset) {
+	public static String doPost(String url, String body, String[][] headers, int connectionTimeout, int readTimeout,
+			String charset) {
 		long reqstart = System.currentTimeMillis();
 		log.info(">>>reqURL:[{}],#reqBody:[{}]", url, body);
 		URL uri = null;
@@ -147,8 +148,10 @@ public class HttpUtil {
 			urlConnection.setDoInput(true);
 			urlConnection.setDoOutput(true);
 			urlConnection.setUseCaches(false);
-			for (String[] header : headers) {
-				urlConnection.addRequestProperty(header[0], header[1]);
+			if (headers != null) {
+				for (String[] header : headers) {
+					urlConnection.addRequestProperty(header[0], header[1]);
+				}
 			}
 			urlConnection.connect();
 			// 读取响应参数

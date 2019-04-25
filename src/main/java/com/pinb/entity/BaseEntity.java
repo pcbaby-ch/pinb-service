@@ -20,6 +20,14 @@ public class BaseEntity {
 	
 	private String sign;
 	private String userIp;
+	/**
+	 * 客户端类型
+	 */
+	private String clientType;
+	/**
+	 * 客户端版本
+	 */
+	private String clientVersion;
 
 	private String intime;
 	private String uptime;
@@ -102,6 +110,22 @@ public class BaseEntity {
 
 	public void setSign(String sign) {
 		this.sign = sign;
+	}
+
+	public String getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(String clientType) {
+		this.clientType = clientType;
+	}
+
+	public String getClientVersion() {
+		return clientVersion;
+	}
+
+	public void setClientVersion(String clientVersion) {
+		this.clientVersion = clientVersion;
 	}
 
 }

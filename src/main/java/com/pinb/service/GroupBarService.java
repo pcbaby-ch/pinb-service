@@ -17,7 +17,6 @@ import com.pinb.constant.RedisConst;
 import com.pinb.entity.GroupBar;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroupBarMapper;
-import com.pinb.util.RespUtil;
 
 /**
  * 拼吧-店铺
@@ -73,7 +72,7 @@ public class GroupBarService {
 		}
 	}
 
-	public Object select(GroupBar groupBar) {
+	public Page<?> select(GroupBar groupBar) {
 		// #入参校验
 		if (StringUtils.isEmpty(groupBar.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");
@@ -81,7 +80,7 @@ public class GroupBarService {
 		log.info("#入参校验通过,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		Page<?> page = PageHelper.startPage(groupBar.getPage(), groupBar.getRows());
 		groupBarMapper.select(groupBar.getRefUserWxUnionid());
-		return RespUtil.listResp(page);
+		return page;
 	}
 
 	public Object selectOne(GroupBar groupBar) {
@@ -90,7 +89,7 @@ public class GroupBarService {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
 		}
 		log.info("#入参校验通过,#GroubTrace:[{}]", groupBar.getGroubTrace());
-		return RespUtil.dataResp(groupBarMapper.selectOne(groupBar.getGroubTrace()));
+		return groupBarMapper.selectOne(groupBar.getGroubTrace());
 	}
 
 }

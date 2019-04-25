@@ -16,7 +16,7 @@ import java.util.Properties;
 public final class PropertiesUtils {
 	private static final Logger logger = LoggerFactory.getLogger(PropertiesUtils.class);
 	// 文件路径
-	private static final String[] CFG_PATHS = new String[] { "application.properties", "/config.properties" };
+	private static final String[] CFG_PATHS = new String[] { "/application.properties", "/config.properties" };
 	// 实例
 	private static volatile PropertiesUtils instance;
 

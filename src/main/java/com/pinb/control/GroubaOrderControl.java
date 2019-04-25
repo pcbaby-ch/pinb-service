@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pinb.entity.GroubaOrder;
 import com.pinb.service.GroubaOrderService;
+import com.pinb.util.RespUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -36,7 +37,7 @@ public class GroubaOrderControl {
 			@ApiImplicitParam(name = "orderStatus", value = "订单状态", required = false, dataType = "string"), })
 	@PostMapping("select")
 	public Object select(@RequestBody GroubaOrder groubaOrder) {
-		return groubaOrderService.select(groubaOrder);
+		return RespUtil.listResp(groubaOrderService.select(groubaOrder));
 	}
 
 	@ApiOperation("开团下单")
@@ -49,16 +50,17 @@ public class GroubaOrderControl {
 	@PostMapping("orderOpen")
 	public Object orderOpen(@RequestBody GroubaOrder groubaOrder) {
 
-		return groubaOrderService.orderOpen(groubaOrder);
+		return RespUtil.baseResp(groubaOrderService.orderOpen(groubaOrder));
 	}
 
 	@ApiOperation("已有团订单-分享 {前端分享成功后，累计分享计数}")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "YorderTrace", value = "被分享团订单", required = false, dataType = "string"),
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "YorderTrace", value = "被分享团订单", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "分享发起用户", required = false, dataType = "string") })
 	@PostMapping("orderShare")
 	public Object orderShare(@RequestBody GroubaOrder groubaOrder) {
 
-		return groubaOrderService.orderShare(groubaOrder);
+		return RespUtil.baseResp(groubaOrderService.orderShare(groubaOrder));
 	}
 
 	@ApiOperation("已有团订单-参团")
@@ -69,7 +71,7 @@ public class GroubaOrderControl {
 	@PostMapping("orderJoin")
 	public Object orderJoin(@RequestBody GroubaOrder groubaOrder) {
 
-		return groubaOrderService.orderJoin(groubaOrder);
+		return RespUtil.baseResp(groubaOrderService.orderJoin(groubaOrder));
 	}
 
 	@ApiOperation("已有团订单-扫码消费 {二维码设计成包含订单trace+消费用户数据的QR，店长扫QR时，便可从二维码中同时获得消费订单+用户}")
@@ -80,7 +82,7 @@ public class GroubaOrderControl {
 	@PostMapping("orderConsume")
 	public Object orderConsume(@RequestBody GroubaOrder groubaOrder) {
 
-		return groubaOrderService.orderConsume(groubaOrder);
+		return RespUtil.baseResp(groubaOrderService.orderConsume(groubaOrder));
 	}
 
 }

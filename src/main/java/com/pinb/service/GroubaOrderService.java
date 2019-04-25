@@ -20,7 +20,6 @@ import com.pinb.entity.GroubaOrder;
 import com.pinb.enums.OrderStatus;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroubaOrderMapper;
-import com.pinb.util.RespUtil;
 
 /**
  * 拼吧-订单
@@ -158,7 +157,7 @@ public class GroubaOrderService {
 		}
 	}
 
-	public Object select(GroubaOrder groubaOrder) {
+	public Page<?> select(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace()) && StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())
 				&& StringUtils.isEmpty(groubaOrder.getOrderStatus())
@@ -169,7 +168,7 @@ public class GroubaOrderService {
 		Page<?> page = PageHelper.startPage(groubaOrder.getPage(), groubaOrder.getRows());
 		groubaOrderMapper.select(null, groubaOrder.getRefGroubTrace(), groubaOrder.getRefGroubaTrace(),
 				groubaOrder.getOrderStatus(), null);
-		return RespUtil.listResp(page);
+		return page;
 	}
 
 }

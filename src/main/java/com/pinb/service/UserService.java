@@ -128,7 +128,7 @@ public class UserService {
 
 		String wxresp = HttpUtil.doGet(url, wxreq);
 
-		return RespUtil.dataResp(JSONObject.parseObject(wxresp));
+		return JSONObject.parseObject(wxresp);
 	}
 
 }
