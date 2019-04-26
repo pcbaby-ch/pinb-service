@@ -14,20 +14,14 @@ public class BaseEntity {
 	private Integer page;
 	private Integer rows;
 
-	/** 登陆用户唯一标识 */
-	private String userWxUnionid;
-	private String userWxOpenid;
-	
+	// # 公参<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	private String wxUnionid;
+	private String wxOpenid;
 	private String sign;
-	private String userIp;
-	/**
-	 * 客户端类型
-	 */
-	private String clientType;
-	/**
-	 * 客户端版本
-	 */
-	private String clientVersion;
+	private String registerIp;
+	// 客户端信息
+	
+	// # 公参>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	private String intime;
 	private String uptime;
@@ -64,20 +58,20 @@ public class BaseEntity {
 		this.rows = rows;
 	}
 
-	public String getUserWxUnionid() {
-		return userWxUnionid;
+	public String getWxUnionid() {
+		return wxUnionid;
 	}
 
-	public void setUserWxUnionid(String userWxUnionid) {
-		this.userWxUnionid = userWxUnionid;
+	public void setWxUnionid(String wxUnionid) {
+		this.wxUnionid = wxUnionid;
 	}
 
-	public String getUserWxOpenid() {
-		return userWxOpenid;
+	public String getWxOpenid() {
+		return wxOpenid;
 	}
 
-	public void setUserWxOpenid(String userWxOpenid) {
-		this.userWxOpenid = userWxOpenid;
+	public void setWxOpenid(String wxOpenid) {
+		this.wxOpenid = wxOpenid;
 	}
 
 	public String getIntime() {
@@ -96,14 +90,6 @@ public class BaseEntity {
 		this.uptime = uptime;
 	}
 
-	public String getUserIp() {
-		return userIp;
-	}
-
-	public void setUserIp(String userIp) {
-		this.userIp = userIp;
-	}
-
 	public String getSign() {
 		return sign;
 	}
@@ -112,20 +98,12 @@ public class BaseEntity {
 		this.sign = sign;
 	}
 
-	public String getClientType() {
-		return clientType;
+	public String getRegisterIp() {
+		return registerIp;
 	}
 
-	public void setClientType(String clientType) {
-		this.clientType = clientType;
-	}
-
-	public String getClientVersion() {
-		return clientVersion;
-	}
-
-	public void setClientVersion(String clientVersion) {
-		this.clientVersion = clientVersion;
+	public void setRegisterIp(String registerIp) {
+		this.registerIp = registerIp;
 	}
 
 }

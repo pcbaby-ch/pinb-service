@@ -8,36 +8,38 @@ package com.pinb.entity;
  */
 public class User extends BaseEntity {
 
-	private String userPhone;
-	private String userImg;
+	private String phone;
+	private String headImg;
 	private String creditScoreUser;
 	private String isOpenGroub;
 	private String creditScoreGroub;
 
-	private String userBrand;
-	private String userModel;
-	private String usersystem;
-	private String userPlatform;
-	private String userBenchmark;
-	private String userNickname;
-	private String userCity;
-	private String userProvince;
-	private String userWxinfoMd5;
+	private String brand;
+	private String model;
+	private String system;
+	private String platform;
+	private String benchmark;
+	private String nickname;
+	private String city;
+	private String province;
+	private String latitude;
+	private String longitude;
 
-	public String getUserPhone() {
-		return userPhone;
+
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
-	public String getUserImg() {
-		return userImg;
+	public String getHeadImg() {
+		return headImg;
 	}
 
-	public void setUserImg(String userImg) {
-		this.userImg = userImg;
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
 	}
 
 	public String getCreditScoreUser() {
@@ -64,76 +66,86 @@ public class User extends BaseEntity {
 		this.creditScoreGroub = creditScoreGroub;
 	}
 
-	public String getUserBrand() {
-		return userBrand;
+	public String getBrand() {
+		return brand;
 	}
 
-	public void setUserBrand(String userBrand) {
-		this.userBrand = userBrand;
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 
-	public String getUserModel() {
-		return userModel;
+	public String getModel() {
+		return model;
 	}
 
-	public void setUserModel(String userModel) {
-		this.userModel = userModel;
+	public void setModel(String model) {
+		this.model = model;
 	}
 
-	public String getUsersystem() {
-		return usersystem;
+	public String getSystem() {
+		return system;
 	}
 
-	public void setUsersystem(String usersystem) {
-		this.usersystem = usersystem;
+	public void setSystem(String system) {
+		this.system = system;
 	}
 
-	public String getUserPlatform() {
-		return userPlatform;
+	public String getPlatform() {
+		return platform;
 	}
 
-	public void setUserPlatform(String userPlatform) {
-		this.userPlatform = userPlatform;
+	public void setPlatform(String platform) {
+		this.platform = platform;
 	}
 
-	public String getUserBenchmark() {
-		return userBenchmark;
+	public String getBenchmark() {
+		return benchmark;
 	}
 
-	public void setUserBenchmark(String userBenchmark) {
-		this.userBenchmark = userBenchmark;
+	public void setBenchmark(String benchmark) {
+		this.benchmark = benchmark;
 	}
 
-	public String getUserNickname() {
-		return userNickname;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setUserNickname(String userNickname) {
-		this.userNickname = userNickname;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
-	public String getUserCity() {
-		return userCity;
+	public String getCity() {
+		return city;
 	}
 
-	public void setUserCity(String userCity) {
-		this.userCity = userCity;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
-	public String getUserProvince() {
-		return userProvince;
+	public String getProvince() {
+		return province;
 	}
 
-	public void setUserProvince(String userProvince) {
-		this.userProvince = userProvince;
+	public void setProvince(String province) {
+		this.province = province;
 	}
 
-	public String getUserWxinfoMd5() {
-		return userWxinfoMd5;
+	public String getLatitude() {
+		return latitude;
 	}
 
-	public void setUserWxinfoMd5(String userWxinfoMd5) {
-		this.userWxinfoMd5 = userWxinfoMd5;
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
 	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	
 
 }

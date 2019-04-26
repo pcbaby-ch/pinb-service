@@ -23,39 +23,49 @@ import com.pinb.entity.User;
 @Mapper
 public interface UserMapper {
 	
-	@Select(value = "<script>select user_wx_unionid,user_wx_openid,user_phone,user_img,credit_score_user,is_open_groub,credit_score_groub,user_wxinfo_md5"
+	@Select(value = "<script>select wx_unionid,wx_openid,phone,head_img,credit_score_user,is_open_groub,credit_score_groub"
 			+ " from user" + "<where>"
 			+ "<if test=\"isOpenGroub != null and isOpenGroub != '' \">" + " and is_open_groub = #{isOpenGroub}"+ "</if>"
 			+ "</where></script>")
 	public List<User> select(@Param(value = "isOpenGroub") String isOpenGroub);
 
-	@Select(value = "select  user_wx_unionid,user_wx_openid,user_phone,user_img,credit_score_user,is_open_groub,credit_score_groub,user_wxinfo_md5"
-			+ " from user" + " where user_wx_unionid = #{userWxUnionid}")
-	public User selectOne(@Param(value = "userWxUnionid") String userWxUnionid);
+	@Select(value = "<script>select  wx_unionid,wx_openid,phone,head_img,credit_score_user,is_open_groub,credit_score_groub"
+			+ " from user" + "<where>"
+			+ "<if test=\"wxUnionid != null and wxUnionid != '' \">" + " and wx_unionid = #{wxUnionid}"+ "</if>"
+			+ "<if test=\"phone != null and phone != '' \">" + " and phone = #{phone}"+ "</if>"
+			+ "</where></script>")
+	public User selectOne(@Param(value = "wxUnionid") String wxUnionid,@Param(value = "phone") String phone);
 
 	@Insert(value = "INSERT INTO user"
-			+ " (user_wx_unionid,user_wx_openid,user_phone,user_img,credit_score_user,is_open_groub,credit_score_groub,user_ip"
-			+ ",user_brand,user_model,user_system,user_platform,user_benchmark,user_nickname,user_city,user_province,user_wxinfo_md5) "
-			+ " VALUES (#{userWxUnionid},#{userWxOpenid},#{userPhone},#{userImg},#{creditScoreUser},#{isOpenGroub},#{creditScoreGroub},#{userIp}"
-			+ ",#{userBrand}#{userModel}#{usersystem}#{userPlatform}#{userBenchmark}#{userNickname}#{userCity}#{userProvince}#{userWxinfoMd5})")
+			+ " (wx_unionid,wx_openid,phone,head_img,credit_score_user,credit_score_groub,register_ip"
+			+ ",brand,model,system,platform,benchmark,nickname,city,province,latitude,longitude) "
+			+ " VALUES (#{wxUnionid},#{wxOpenid},#{phone},#{headImg},#{creditScoreUser},#{creditScoreGroub},#{registerIp}"
+			+ ",#{brand},#{model},#{system},#{platform},#{benchmark},#{nickname},#{city},#{province},#{latitude},#{longitude})")
 	public int insert(User user);
 	
 	@Update(value = "<script>UPDATE user SET  uptime=NOW()"
-			+ "<if test=\"userPhone != null and userPhone != '' \">" + ",user_phone = #{userPhone}" + "</if>"
-			+ "<if test=\"userImg != null and userImg != '' \">" + ",user_img = #{userImg}" + "</if>"
+			+ "<if test=\"phone != null and phone != '' \">" + ",phone = #{phone}" + "</if>"
+			+ "<if test=\"headImg != null and headImg != '' \">" + ",head_img = #{headImg}" + "</if>"
 			+ "<if test=\"creditScoreUser != null and creditScoreUser != '' \">" + ",credit_score_user = #{creditScoreUser}" + "</if>"
 			+ "<if test=\"isOpenGroub != null and isOpenGroub != '' \">" + ",is_open_groub = #{isOpenGroub}" + "</if>"
 			+ "<if test=\"creditScoreGroub != null and creditScoreGroub != '' \">" + " and credit_score_groub = #{creditScoreGroub}"+ "</if>"
-			+ "<if test=\"userBrand != null and userBrand != '' \">" + ",user_brand = #{userBrand}" + "</if>"
-			+ "<if test=\"userModel != null and userModel != '' \">" + ",user_model = #{userModel}" + "</if>"
-			+ "<if test=\"usersystem != null and usersystem != '' \">" + ",user_system = #{usersystem}" + "</if>"
-			+ "<if test=\"userPlatform != null and userPlatform != '' \">" + ",user_platform = #{userPlatform}" + "</if>"
-			+ "<if test=\"userBenchmark != null and userBenchmark != '' \">" + " and user_benchmark = #{userBenchmark}"+ "</if>"
-			+ "<if test=\"userNickname != null and userNickname != '' \">" + ",user_nickname = #{userNickname}" + "</if>"
-			+ "<if test=\"userCity != null and userCity != '' \">" + ",user_city = #{userCity}" + "</if>"
-			+ "<if test=\"userProvince != null and userProvince != '' \">" + ",user_province = #{userProvince}" + "</if>"
-			+ "<if test=\"userWxinfoMd5 != null and userWxinfoMd5 != '' \">" + ",user_wxinfo_md5 = #{userWxinfoMd5}" + "</if>"
-			+ " where groub_trace=#{groubTrace}</script>")
+			+ "<if test=\"brand != null and brand != '' \">" + ",brand = #{brand}" + "</if>"
+			+ "<if test=\"model != null and model != '' \">" + ",model = #{model}" + "</if>"
+			+ "<if test=\"system != null and system != '' \">" + ",system = #{system}" + "</if>"
+			+ "<if test=\"platform != null and platform != '' \">" + ",platform = #{platform}" + "</if>"
+			+ "<if test=\"benchmark != null and benchmark != '' \">" + " and benchmark = #{benchmark}"+ "</if>"
+			+ "<if test=\"nickname != null and nickname != '' \">" + ",nickname = #{nickname}" + "</if>"
+			+ "<if test=\"city != null and city != '' \">" + ",city = #{city}" + "</if>"
+			+ "<if test=\"province != null and province != '' \">" + ",province = #{province}" + "</if>"
+			+ "<where>"
+			+ "<if test=\"wxUnionid != null and wxUnionid != '' \">" + " and wx_unionid = #{wxUnionid}"+ "</if>"
+			+ "<if test=\"phone != null and phone != '' \">" + " and phone = #{phone}"+ "</if>"
+			+ "</where></script>")
 	public int update(User user);
+	
+	@Update(value = "<script>UPDATE user SET  uptime=NOW()"
+			+ "<if test=\"wxUnionid != null and wxUnionid != '' \">" + ",wx_unionid = #{wxUnionid}" + "</if>"
+			+ " where phone = #{phone} and wxUnionid <![CDATA[<>]]> wxOpenid</script>")
+	public int updateUnionid(User user);
 
 }

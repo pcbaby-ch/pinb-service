@@ -132,7 +132,7 @@ public class GroubaOrderService {
 		}
 		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
 		// #根据消费二维码信息，查询消费订单
-		GroubaOrder oldOrder = groubaOrderMapper.selectOne(groubaOrder.getOrderTrace(), groubaOrder.getUserWxUnionid());
+		GroubaOrder oldOrder = groubaOrderMapper.selectOne(groubaOrder.getOrderTrace(), groubaOrder.getWxUnionid());
 		if (oldOrder == null || Integer.parseInt(oldOrder.getOrderStatus()) < OrderStatus.join_success.getCode()) {
 			throw new ServiceException(RespCode.order_unJoinSuccess);
 		}

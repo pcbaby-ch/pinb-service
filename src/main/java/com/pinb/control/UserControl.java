@@ -3,6 +3,8 @@
  */
 package com.pinb.control;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pinb.service.UserService;
+import com.pinb.util.IpUtils;
 import com.pinb.util.PropertiesUtils;
 import com.pinb.util.RespUtil;
 import com.pinb.vo.UserVo;
@@ -54,6 +57,18 @@ public class UserControl {
 	@PostMapping("getOpenid")
 	public Object getOpenid(@RequestBody UserVo userVo) {
 		return RespUtil.dataResp(userService.getOpenid(userVo));
+	}
+	
+	@ApiOperation("微信登陆")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "Yappid", value = "详情查看微信开发平台api：https://developers.weixin.qq.com/miniprogram/dev/api/getPhoneNumber.html >开放接口>登陆", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "Ysecret", value = "", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YjsCode", value = "", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YgrantType", value = "", required = false, dataType = "string") })
+	@PostMapping("wxLogin")
+	public Object wxLogin(@RequestBody UserVo userVo,HttpServletRequest req) {
+		userVo.setRegisterIp(IpUtils.getIpFromRequest(req));
+		return RespUtil.dataResp(userService.wxLogin(userVo));
 	}
 
 	@ApiOperation("新用户首次授权后-注册用户")

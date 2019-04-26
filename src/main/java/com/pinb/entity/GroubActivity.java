@@ -20,6 +20,8 @@ public class GroubActivity extends BaseEntity {
 	private String groubaIsnew;
 	private String groubaExpiredTime;
 	private String groubaActiveMinute;
+	private String latitude;
+	private String longitude;
 
 	public String getGroubaTrace() {
 		return groubaTrace;
@@ -115,6 +117,22 @@ public class GroubActivity extends BaseEntity {
 
 	public void setGroubaActiveMinute(String groubaActiveMinute) {
 		this.groubaActiveMinute = groubaActiveMinute;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 }
