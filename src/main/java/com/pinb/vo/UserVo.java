@@ -16,6 +16,7 @@ public class UserVo extends User {
 	private String jsCode;
 	private String grantType;
 	
+	private String sessionKey;
 	private String encryptedData;
 	private String iv;
 
@@ -65,6 +66,14 @@ public class UserVo extends User {
 
 	public void setIv(String iv) {
 		this.iv = iv;
+	}
+
+	public String getSessionKey() {
+		return sessionKey;
+	}
+
+	public void setSessionKey(String sessionKey) {
+		this.sessionKey = sessionKey;
 	}
 	
 	

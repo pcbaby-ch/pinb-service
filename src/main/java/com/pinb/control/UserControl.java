@@ -65,10 +65,15 @@ public class UserControl {
 			@ApiImplicitParam(name = "Ysecret", value = "", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YjsCode", value = "", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YgrantType", value = "", required = false, dataType = "string") })
-	@PostMapping("wxLogin")
-	public Object wxLogin(@RequestBody UserVo userVo,HttpServletRequest req) {
+	@PostMapping("wxLogin4Shop")
+	public Object wxLogin4Shop(@RequestBody UserVo userVo,HttpServletRequest req) {
 		userVo.setRegisterIp(IpUtils.getIpFromRequest(req));
-		return RespUtil.dataResp(userService.wxLogin(userVo));
+		return RespUtil.dataResp(userService.wxLogin4Shop(userVo));
+	}
+	
+	@PostMapping("decoderWxData")
+	public Object decoderWxData(@RequestBody UserVo userVo) {
+		return RespUtil.dataResp(userService.decoderWxData(userVo));
 	}
 
 	@ApiOperation("新用户首次授权后-注册用户")

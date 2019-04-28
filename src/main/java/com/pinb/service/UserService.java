@@ -18,6 +18,7 @@ import com.pinb.common.ServiceException;
 import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.UserMapper;
+import com.pinb.util.BeanUtil;
 import com.pinb.util.CheckUtil;
 import com.pinb.util.HttpUtil;
 import com.pinb.util.PropertiesUtils;
@@ -132,28 +133,17 @@ public class UserService {
 
 	public JSONObject decoderWxData(UserVo user) {
 		// #入参校验
-		if (StringUtils.isEmpty(user.getAppid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "appid");
-		}
-		if (StringUtils.isEmpty(user.getSecret())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "secret");
-		}
-		if (StringUtils.isEmpty(user.getJsCode())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "jsCode");
-		}
-		if (StringUtils.isEmpty(user.getGrantType())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "grantType");
-		}
-
 		if (StringUtils.isEmpty(user.getEncryptedData())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "encryptedData");
 		}
 		if (StringUtils.isEmpty(user.getIv())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "iv");
 		}
+		if (StringUtils.isEmpty(user.getSessionKey())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "SessionKey");
+		}
 		logParams(user);
-		JSONObject openid = getOpenid(user);
-		return WxUtil.getUserInfo(user.getEncryptedData(), openid.getString("session_key"), user.getIv());
+		return WxUtil.getUserInfo(user.getEncryptedData(), user.getSessionKey(), user.getIv());
 	}
 
 	/**
@@ -163,41 +153,37 @@ public class UserService {
 	 * @param user 必传{WxUnionid、WxOpenid}
 	 * @return
 	 */
-	public Object wxLogin(UserVo user) {
-		/** 入参校验 ***************************/
-		if (StringUtils.isEmpty(user.getWxOpenid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "WxOpenid");
-		}
-
+	public Object wxLogin4Shop(UserVo user) {
+		JSONObject openidJson = getOpenid(user);
+		user.setSessionKey(openidJson.getString("session_key"));
+		user.setWxOpenid(openidJson.getString("openid"));
 		/** unionid获取是否成功{unionid不为空&unionid不等于openid} ***************************/
-		if (!StringUtils.isEmpty(user.getWxUnionid()) && !user.getWxOpenid().equals(user.getWxUnionid())) {
-		} else {
-			user.setWxUnionid(user.getWxOpenid());
-		}
-		logParams(user);
+		user.setWxUnionid(StringUtils.isEmpty(openidJson.getString("unionid")) ? openidJson.getString("openid")
+				: openidJson.getString("unionid"));
+
 		log.info("#根据unionid查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
 		User unionUser = userMapper.selectOne(user.getWxUnionid(), null);
-		if ((unionUser == null || StringUtils.isEmpty(unionUser))) {
+		if (BeanUtil.checkFieldValueNull(unionUser)) {
 			// 不存在uinion用户
-			if (StringUtils.isEmpty(user.getPhone())) {
-				throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Phone");
-			}
-			log.info("#根据phone查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
-			User phoneUser = userMapper.selectOne(null, user.getPhone());
-			if (phoneUser == null || StringUtils.isEmpty(phoneUser)) {
-				// TODO check用户基本信息+设备信息
-				// 入库新增 用户信息 (静默注册) {基本信息+设备信息+位置经纬度信息}
-				log.info("#入库新增 用户信息start #WxUnionid[{}]", user.getWxUnionid());
-				userMapper.insert(user);
-			} else {
-				// 入库更新用户unionid （此后:此用户unionid不等于openid） ***************************
-				log.error("#入库更新用户unionid start #WxUnionid[{}]", user.getWxUnionid());
-				userMapper.updateUnionid(user);
-			}
-			user.setIsOpenGroub("0");
-			return user;
+//			if (StringUtils.isEmpty(user.getPhone())) {
+//				throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Phone");
+//			}
+//			log.info("#根据phone查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
+//			User phoneUser = userMapper.selectOne(null, user.getPhone());
+//			if (phoneUser == null || StringUtils.isEmpty(phoneUser)) {
+//				// TODO check用户基本信息+设备信息
+//				// 入库新增 用户信息 (静默注册) {基本信息+设备信息+位置经纬度信息}
+//				log.info("#入库新增 用户信息start #WxUnionid[{}]", user.getWxUnionid());
+//				userMapper.insert(user);
+//			} else {
+//				// 入库更新用户unionid （此后:此用户unionid不等于openid） ***************************
+//				log.error("#入库更新用户unionid start #WxUnionid[{}]", user.getWxUnionid());
+//				userMapper.updateUnionid(user);
+//			}
+			log.info("#入库新增用户unionid start #WxUnionid[{}]", user.getWxUnionid());
+			throw new ServiceException(RespCode.user_unExist);
 		} else {
-			// 存在unionUser用户，直接返回用户信息、是否入驻
+			log.info("#存在unionUser用户，直接返回用户信息、是否入驻 #WxUnionid[{}]", user.getWxUnionid());
 			return unionUser;
 		}
 	}
@@ -210,9 +196,11 @@ public class UserService {
 	private void logParams(User user) {
 		log.info("#入参校验通过,#UserWxUnionid:[{}]", user.getWxUnionid());
 	}
-
-	private void logBusiness(User user) {
-		log.info("#业务校验通过,#UserWxUnionid:[{}]", user.getWxUnionid());
+	
+	public static void main(String[] args) {
+		User user=new User();
+		user.setCity("");
+		System.out.println(BeanUtil.checkFieldValueNull(null));
 	}
 
 }
