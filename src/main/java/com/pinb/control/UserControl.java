@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.pinb.service.UserService;
 import com.pinb.util.IpUtils;
 import com.pinb.util.PropertiesUtils;
+import com.pinb.util.RSAUtil;
 import com.pinb.util.RespUtil;
 import com.pinb.vo.UserVo;
 
@@ -66,8 +68,11 @@ public class UserControl {
 			@ApiImplicitParam(name = "YjsCode", value = "", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YgrantType", value = "", required = false, dataType = "string") })
 	@PostMapping("wxLogin4Shop")
-	public Object wxLogin4Shop(@RequestBody UserVo userVo,HttpServletRequest req) {
+	public Object wxLogin4Shop(@RequestBody String reqStr,HttpServletRequest req) {
+		
+		UserVo userVo=JSONObject.parseObject(reqStr, UserVo.class);
 		userVo.setRegisterIp(IpUtils.getIpFromRequest(req));
+		
 		return RespUtil.dataResp(userService.wxLogin4Shop(userVo));
 	}
 	

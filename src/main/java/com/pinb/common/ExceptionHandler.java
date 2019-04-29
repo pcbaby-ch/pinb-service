@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -57,12 +58,7 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 				LOGGER.info("业务异常："
 						+ (StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
 								: ((ServiceException) ex).getMsg()));
-				if ("true".equals(businessError)) {
-					mailService.sendSimpleMail("979191434@qq.com", "业务异常告警",
-							(StringUtils.isEmpty(((ServiceException) ex).getMsg())
-									? ((ServiceException) ex).getMessage()
-									: ((ServiceException) ex).getMsg()));
-				}
+				errorNotifications(ex);
 			}
 		} else if (ex instanceof SocketTimeoutException) {
 			LOGGER.error("#与客户端通讯异常：{}", ex.getMessage());
@@ -70,11 +66,7 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 			result.put("retCode", RespCode.END.getCode());
 			result.put("retMsg", RespCode.END.getMsg());
 			LOGGER.error(RespCode.END.getMsg(), ex);
-			if ("true".equals(systemError)) {
-				mailService.sendSimpleMail("979191434@qq.com", "系统异常告警",
-						(StringUtils.isEmpty(((ServiceException) ex).getMsg()) ? ((ServiceException) ex).getMessage()
-								: ((ServiceException) ex).getMsg()));
-			}
+			errorNotifications(ex);
 		}
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
@@ -88,4 +80,17 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 		return new ModelAndView();
 	}
 
+	public void errorNotifications(Exception e) {
+		if (e instanceof ServiceException) {
+			if ("true".equals(businessError)) {
+				mailService.sendSimpleMail("979191434@qq.com", "业务异常告警",
+						(StringUtils.isEmpty(((ServiceException) e).getMsg()) ? ((ServiceException) e).getMessage()
+								: ((ServiceException) e).getMsg()));
+			}
+		} else {
+			if ("true".equals(systemError)) {
+				mailService.sendSimpleMail("979191434@qq.com", "系统异常告警", e.getMessage());
+			}
+		}
+	}
 }

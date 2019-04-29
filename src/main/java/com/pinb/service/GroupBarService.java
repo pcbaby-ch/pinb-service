@@ -30,6 +30,9 @@ public class GroupBarService {
 
 	@Autowired
 	GroupBarMapper groupBarMapper;
+	@Autowired
+	GroubActivityService groubActivityService;
+	
 
 	public boolean add(GroupBar groupBar) {
 		// #入参校验
@@ -49,13 +52,15 @@ public class GroupBarService {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubAddress");
 		}
 		log.info("#入参校验通过,#GroubTrace:[{}]", groupBar.getGroubTrace());
+
+		log.info("#保存店铺信息start,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		groupBar.setGroubTrace(BusinessesFlowNum.getNum("G", RedisConst.groupBarTrace));
 		int count = groupBarMapper.insert(groupBar);
-		if (count > 0) {
-			return true;
-		} else {
-			return false;
-		}
+
+		log.info("#保存店铺信息end-保存商品信息start,#GroubTrace:[{}]", groupBar.getGroubTrace());
+		groubActivityService.add(null);
+
+		return true;
 	}
 
 	public boolean update(GroupBar groupBar) {

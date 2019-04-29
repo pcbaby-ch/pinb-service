@@ -13,6 +13,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,6 +33,7 @@ public class EmailService {
 	 * @param subject
 	 * @param content
 	 */
+	@Async("getThreadPoolTaskExecutor")
 	public void sendSimpleMail(String to, String subject, String content) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(from);
@@ -54,6 +56,7 @@ public class EmailService {
 	 * @param subject
 	 * @param content
 	 */
+	@Async("getThreadPoolTaskExecutor")
 	public void sendHtmlMail(String to, String subject, String content) {
 		MimeMessage message = sender.createMimeMessage();
 
@@ -80,6 +83,7 @@ public class EmailService {
 	 * @param content
 	 * @param filePath
 	 */
+	@Async("getThreadPoolTaskExecutor")
 	public void sendAttachmentsMail(String to, String subject, String content, String filePath) {
 		MimeMessage message = sender.createMimeMessage();
 
@@ -107,13 +111,11 @@ public class EmailService {
 	 * 
 	 * @param to
 	 * @param subject
-	 * @param content
-	 *            邮件内容，需要包括一个静态资源的id，比如：<img src=\"cid:rscId01\" >
-	 * @param rscPath
-	 *            静态资源路径和文件名
-	 * @param rscId
-	 *            静态资源id
+	 * @param content 邮件内容，需要包括一个静态资源的id，比如：<img src=\"cid:rscId01\" >
+	 * @param rscPath 静态资源路径和文件名
+	 * @param rscId   静态资源id
 	 */
+	@Async("getThreadPoolTaskExecutor")
 	public void sendInlineResourceMail(String to, String subject, String content, String rscPath, String rscId) {
 		MimeMessage message = sender.createMimeMessage();
 

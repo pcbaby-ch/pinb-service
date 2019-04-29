@@ -1,6 +1,5 @@
 package com.pinb.util;
 
-
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -25,6 +24,7 @@ import com.pinb.config.RedisPool;
 
 /**
  * RSA 非对称加密
+ * 
  * @author chen.zhao @DATE: Jul 15, 2018
  */
 public class RSAUtil {
@@ -82,12 +82,15 @@ public class RSAUtil {
 	 * @throws Exception
 	 */
 	public static PrivateKey getPrivateKey() throws Exception {
+		if (!RedisPool.exists(PRIVATEKEY)) {
+			init();
+		}
 		byte[] keyBytes = RedisPool.getByte(PRIVATEKEY.getBytes());
 		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
 		KeyFactory kf = KeyFactory.getInstance("RSA");
 		return kf.generatePrivate(spec);
 	}
-	
+
 	public static String decrypt(String pwd) {
 		Cipher cipher;
 		byte[] plainText;
@@ -98,12 +101,12 @@ public class RSAUtil {
 			cipher.init(Cipher.DECRYPT_MODE, privKey);
 			plainText = cipher.doFinal(Base64.decodeBase64(pwd.getBytes()));
 		} catch (Exception e) {
-			log.warn("解密异常！",e);
-			throw new ServiceException("#解密异常",e);
+			log.warn("解密异常！", e);
+			throw new ServiceException("#解密异常", e);
 		}
 		return new String(plainText);
 	}
-	
+
 	public static String encrypt(String pwd) {
 		RSAPublicKey pubKey;
 		byte[] cipherText;
@@ -118,10 +121,18 @@ public class RSAUtil {
 			cipher.init(Cipher.DECRYPT_MODE, privKey);
 			plainText = cipher.doFinal(cipherText);
 		} catch (Exception e) {
-			log.warn("加密异常！",e);
-			throw new ServiceException("加密异常",e);
+			log.warn("加密异常！", e);
+			throw new ServiceException("加密异常", e);
 		}
-		return  Base64.encodeBase64String(cipherText);
+		return Base64.encodeBase64String(cipherText);
+	}
+
+	public static void main(String[] args) {
+		String 原文 = "sldfjlsdjlf";
+		String 密文 = encrypt(原文);
+		String 解密后 = decrypt(密文);
+		System.out.println("#原文:" + 原文 + "#密文:" + 密文 + "#解密后:" + 解密后);
+
 	}
 
 }
