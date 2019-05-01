@@ -18,7 +18,7 @@ public class BaseEntity {
 	private String wxUnionid;
 	private String wxOpenid;
 	private String sign;
-	private String registerIp;
+	private String clientIp;
 	// 客户端信息
 	
 	// # 公参>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -98,12 +98,13 @@ public class BaseEntity {
 		this.sign = sign;
 	}
 
-	public String getRegisterIp() {
-		return registerIp;
+	public String getClientIp() {
+		return clientIp;
 	}
 
-	public void setRegisterIp(String registerIp) {
-		this.registerIp = registerIp;
+	public void setClientIp(String clientIp) {
+		this.clientIp = clientIp;
 	}
+
 
 }

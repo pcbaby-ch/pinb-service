@@ -39,7 +39,7 @@ public interface UserMapper {
 	@Insert(value = "INSERT INTO user"
 			+ " (wx_unionid,wx_openid,phone,head_img,credit_score_user,credit_score_groub,register_ip"
 			+ ",brand,model,system,platform,benchmark,nickname,city,province,latitude,longitude) "
-			+ " VALUES (#{wxUnionid},#{wxOpenid},#{phone},#{headImg},#{creditScoreUser},#{creditScoreGroub},#{registerIp}"
+			+ " VALUES (#{wxUnionid},#{wxOpenid},#{phone},#{headImg},#{creditScoreUser},#{creditScoreGroub},#{clientIp}"
 			+ ",#{brand},#{model},#{system},#{platform},#{benchmark},#{nickname},#{city},#{province},#{latitude},#{longitude})")
 	public int insert(User user);
 	

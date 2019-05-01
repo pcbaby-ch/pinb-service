@@ -15,7 +15,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.pinb.service.UserService;
 import com.pinb.util.IpUtils;
 import com.pinb.util.PropertiesUtils;
-import com.pinb.util.RSAUtil;
 import com.pinb.util.RespUtil;
 import com.pinb.vo.UserVo;
 
@@ -71,7 +70,7 @@ public class UserControl {
 	public Object wxLogin4Shop(@RequestBody String reqStr,HttpServletRequest req) {
 		
 		UserVo userVo=JSONObject.parseObject(reqStr, UserVo.class);
-		userVo.setRegisterIp(IpUtils.getIpFromRequest(req));
+		userVo.setClientIp(IpUtils.getIpFromRequest(req));
 		
 		return RespUtil.dataResp(userService.wxLogin4Shop(userVo));
 	}
