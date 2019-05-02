@@ -13,7 +13,7 @@ public class ServiceException extends RuntimeException {
 	private String code;
 
 	private String msg;
-	
+
 	private String data;
 
 	public String getCode() {
@@ -31,7 +31,6 @@ public class ServiceException extends RuntimeException {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	
 
 	/**
 	 * @return the data
@@ -66,16 +65,16 @@ public class ServiceException extends RuntimeException {
 		this.code = respCode.getCode();
 		this.msg = respCode.getMsg();
 	}
-	
-	public ServiceException(String data,RespCode respCode) {
+
+	public ServiceException(String data, RespCode respCode) {
 		super(respCode.getCode() + respCode.getMsg());
 		this.code = respCode.getCode();
 		this.msg = respCode.getMsg();
-		this.data=data;
+		this.data = data;
 	}
 
 	public ServiceException(RespCode respCode, Object... moreMsg) {
-		super(respCode.getCode() + String.format(respCode.getMsg(), moreMsg));
+		super(respCode.getCode() + respCode.getMsg());
 		this.code = respCode.getCode();
 		try {
 			msg = String.format(respCode.getMsg(), moreMsg);
@@ -83,15 +82,16 @@ public class ServiceException extends RuntimeException {
 			msg = respCode.getMsg();
 		}
 	}
+
 	/**
 	 * 
 	 * @param externalServiceCode 外部系统响应异常码
-	 * @param respCode 全局异常枚举
-	 * @param moreMsg 占位符替换数据
+	 * @param respCode            全局异常枚举
+	 * @param moreMsg             占位符替换数据
 	 */
-	public ServiceException(String externalServiceCode,RespCode respCode, Object... moreMsg) {
-		super(respCode.getCode()+externalServiceCode + String.format(respCode.getMsg(), moreMsg));
-		this.code = respCode.getCode()+externalServiceCode;
+	public ServiceException(String externalServiceCode, RespCode respCode, Object... moreMsg) {
+		super(respCode.getCode() + respCode.getMsg());
+		this.code = respCode.getCode() + externalServiceCode;
 		try {
 			msg = String.format(respCode.getMsg(), moreMsg);
 		} catch (Exception e) {

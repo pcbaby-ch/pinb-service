@@ -41,13 +41,13 @@ public class UserService {
 	public boolean add(User user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getWxOpenid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getUserWxOpenid");
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "UserWxOpenid");
 		}
 		if (StringUtils.isEmpty(user.getPhone())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getUserPhone");
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "UserPhone");
 		}
 		if (StringUtils.isEmpty(user.getHeadImg())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getUserImg");
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "UserImg");
 		}
 		if (!("0".equals(user.getIsOpenGroub()) || "1".equals(user.getIsOpenGroub()))) {
 			throw new ServiceException(RespCode.PARAM_ILLEGAL, "IsOpenGroub");
@@ -56,14 +56,13 @@ public class UserService {
 		if (StringUtils.isEmpty(user.getWxUnionid())) {
 			user.setWxUnionid(user.getWxOpenid());
 		}
-		int count = userMapper.insert(user);
-		return count > 0;
+		return userMapper.insert(user) > 0;
 	}
 
 	public boolean update(User user) {
 		// #入参校验
-		if (StringUtils.isEmpty(user.getWxUnionid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "userWxUnionid");
+		if (StringUtils.isEmpty(user.getWxUnionid()) || StringUtils.isEmpty(user.getPhone())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "userWxUnionid|phone");
 		}
 		if (!StringUtils.isEmpty(user.getCreditScoreGroub())
 				&& CheckUtil.isPositiveInteger(user.getCreditScoreGroub())) {
@@ -73,8 +72,7 @@ public class UserService {
 			throw new ServiceException(RespCode.PARAM_ILLEGAL, "CreditScoreUser");
 		}
 		logParams(user);
-		int count = userMapper.update(user);
-		return count > 0;
+		return userMapper.update(user) > 0;
 	}
 
 	public Page<?> select(User user) {
@@ -88,7 +86,7 @@ public class UserService {
 		return page;
 	}
 
-	public Object selectOne(User user) {
+	public User selectOne(User user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "UserWxUnionid");
@@ -181,7 +179,7 @@ public class UserService {
 //				userMapper.updateUnionid(user);
 //			}
 			log.info("#入库新增用户unionid start #WxUnionid[{}]", user.getWxUnionid());
-			throw new ServiceException(RespCode.user_unExist);
+			throw new ServiceException(JSONObject.toJSONString(user), RespCode.user_unExist);
 		} else {
 			log.info("#存在unionUser用户，直接返回用户信息、是否入驻 #WxUnionid[{}]", user.getWxUnionid());
 			return unionUser;
@@ -194,11 +192,11 @@ public class UserService {
 	 * @param user
 	 */
 	private void logParams(User user) {
-		log.info("#入参校验通过,#UserWxUnionid:[{}]", user.getWxUnionid());
+		log.debug("#入参校验通过,#UserWxUnionid:[{}]", user.getWxUnionid());
 	}
-	
+
 	public static void main(String[] args) {
-		User user=new User();
+		User user = new User();
 		user.setCity("");
 		System.out.println(BeanUtil.checkFieldValueNull(null));
 	}

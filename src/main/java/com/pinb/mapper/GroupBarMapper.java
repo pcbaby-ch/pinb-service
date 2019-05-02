@@ -42,8 +42,8 @@ public interface GroupBarMapper {
 			+ "<if test=\"groubName != null and groubName != '' \">" + ",groub_name = #{groubName}" + "</if>"
 			+ "<if test=\"groubImg != null and groubImg != '' \">" + ",groub_img = #{groubImg}" + "</if>"
 			+ "<if test=\"groubPhone != null and groubPhone != '' \">" + ",groub_phone = #{groubPhone}" + "</if>"
-			+ "<if test=\"groubAddress != null and groubAddress != '' \">" + " and groub_address = #{groubAddress}"+ "</if>"
-			+ "<if test=\"isOpen != null and isOpen != '' \">" + " and is_open = #{isOpen}"+ "</if>"
+			+ "<if test=\"groubAddress != null and groubAddress != '' \">" + ",groub_address = #{groubAddress}"+ "</if>"
+			+ "<if test=\"isOpen != null and isOpen != '' \">" + ",is_open = #{isOpen}"+ "</if>"
 			+ " where groub_trace=#{groubTrace}</script>")
 	public int update(GroupBar groupBar);
 

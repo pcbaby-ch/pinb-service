@@ -3,6 +3,8 @@
  */
 package com.pinb.control;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pinb.entity.GroupBar;
-import com.pinb.service.GroubActivityService;
 import com.pinb.service.GroupBarService;
-import com.pinb.service.UserService;
 import com.pinb.util.RespUtil;
 
 import io.swagger.annotations.Api;
@@ -59,9 +59,9 @@ public class GroupBarControl {
 			@ApiImplicitParam(name = "YgroubPhone", value = "店铺客服电话", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YgroubAddress", value = "店铺地址", required = false, dataType = "string") })
 	@PostMapping("add")
-	public Object add(@RequestBody String reqStr) {
+	public Object add(@RequestBody String reqStr,HttpServletRequest request) {
 		
-		return RespUtil.baseResp(groupBarService.add(reqStr));
+		return RespUtil.baseResp(groupBarService.add(reqStr,request));
 	}
 
 	@ApiOperation("店铺信息-更新")

@@ -11,13 +11,13 @@ public class GroubActivity extends BaseEntity {
 	private String groubaTrace;
 	private String refGroubTrace;
 	private String refUserWxUnionid;
-	private String groubaSize;
-	private String groubaMaxCount;
+	private int groubaSize;
+	private int groubaMaxCount;
 	private String goodsName;
 	private String goodsImg;
 	private String goodsPrice;
 	private String groubaDiscountAmount;
-	private String groubaIsnew;
+	private int groubaIsnew;
 	private String groubaExpiredTime;
 	private String groubaActiveMinute;
 	private String latitude;
@@ -47,19 +47,19 @@ public class GroubActivity extends BaseEntity {
 		this.refUserWxUnionid = refUserWxUnionid;
 	}
 
-	public String getGroubaSize() {
+	public int getGroubaSize() {
 		return groubaSize;
 	}
 
-	public void setGroubaSize(String groubaSize) {
+	public void setGroubaSize(int groubaSize) {
 		this.groubaSize = groubaSize;
 	}
 
-	public String getGroubaMaxCount() {
+	public int getGroubaMaxCount() {
 		return groubaMaxCount;
 	}
 
-	public void setGroubaMaxCount(String groubaMaxCount) {
+	public void setGroubaMaxCount(int groubaMaxCount) {
 		this.groubaMaxCount = groubaMaxCount;
 	}
 
@@ -95,11 +95,11 @@ public class GroubActivity extends BaseEntity {
 		this.groubaDiscountAmount = groubaDiscountAmount;
 	}
 
-	public String getGroubaIsnew() {
+	public int getGroubaIsnew() {
 		return groubaIsnew;
 	}
 
-	public void setGroubaIsnew(String groubaIsnew) {
+	public void setGroubaIsnew(int groubaIsnew) {
 		this.groubaIsnew = groubaIsnew;
 	}
 

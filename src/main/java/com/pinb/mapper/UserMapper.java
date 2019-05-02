@@ -37,9 +37,9 @@ public interface UserMapper {
 	public User selectOne(@Param(value = "wxUnionid") String wxUnionid,@Param(value = "phone") String phone);
 
 	@Insert(value = "INSERT INTO user"
-			+ " (wx_unionid,wx_openid,phone,head_img,credit_score_user,credit_score_groub,register_ip"
-			+ ",brand,model,system,platform,benchmark,nickname,city,province,latitude,longitude) "
-			+ " VALUES (#{wxUnionid},#{wxOpenid},#{phone},#{headImg},#{creditScoreUser},#{creditScoreGroub},#{clientIp}"
+			+ " (`wx_unionid`,`wx_openid`,`phone`,`head_img`,`is_open_groub`,`register_ip`"
+			+ ",`brand`,`model`,`system`,`platform`,`benchmark`,`nickname`,`city`,`province`,`latitude`,`longitude`) "
+			+ " VALUES (#{wxUnionid},#{wxOpenid},#{phone},#{headImg},#{isOpenGroub},#{clientIp}"
 			+ ",#{brand},#{model},#{system},#{platform},#{benchmark},#{nickname},#{city},#{province},#{latitude},#{longitude})")
 	public int insert(User user);
 	

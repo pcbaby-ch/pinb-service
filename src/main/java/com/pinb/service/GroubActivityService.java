@@ -3,14 +3,14 @@
  */
 package com.pinb.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.pinb.common.BusinessesFlowNum;
 import com.pinb.common.ServiceException;
 import com.pinb.constant.RedisConst;
@@ -63,12 +63,7 @@ public class GroubActivityService {
 		}
 		log.info("#入参校验通过");
 		groubActivity.setGroubaTrace(BusinessesFlowNum.getNum("GA", RedisConst.groubActivityTrace));
-		int count = groubActivityMapper.insert(groubActivity);
-		if (count > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return groubActivityMapper.insert(groubActivity) > 0;
 	}
 
 	public boolean update(GroubActivity groubActivity) {
@@ -76,24 +71,29 @@ public class GroubActivityService {
 		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaTrace");
 		}
-		log.info("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
-		int count = groubActivityMapper.update(groubActivity);
-		if (count > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		logParams(groubActivity);
+		return groubActivityMapper.update(groubActivity) > 0;
 	}
 
-	public Page<?> select(GroubActivity groubActivity) {
+	private void logParams(GroubActivity groubActivity) {
+		log.debug("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
+	}
+
+	public List<GroubActivity> select(String refGroubTrace, String refUserWxUnionid) {
 		// #入参校验
-		if (StringUtils.isEmpty(groubActivity.getRefGroubTrace())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace");
+		if (StringUtils.isEmpty(refGroubTrace) && StringUtils.isEmpty(refUserWxUnionid)) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace|refUserWxUnionid");
 		}
-		log.info("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
-		Page<?> page = PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
-		groubActivityMapper.select(groubActivity.getRefGroubTrace(), null);
-		return page;
+
+		return groubActivityMapper.select(refGroubTrace, refUserWxUnionid);
+	}
+
+	public boolean delete(String refGroubTrace, String refUserWxUnionid) {
+		// #入参校验
+		if (StringUtils.isEmpty(refGroubTrace) && StringUtils.isEmpty(refUserWxUnionid)) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace|refUserWxUnionid");
+		}
+		return groubActivityMapper.delete(refGroubTrace, refUserWxUnionid) > 0;
 	}
 
 	public Object selectOne(GroubActivity groubActivity) {
@@ -101,7 +101,7 @@ public class GroubActivityService {
 		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getGroubaTrace");
 		}
-		log.info("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
+		logParams(groubActivity);
 		return RespUtil.dataResp(groubActivityMapper.selectOne(groubActivity.getGroubaTrace()));
 	}
 

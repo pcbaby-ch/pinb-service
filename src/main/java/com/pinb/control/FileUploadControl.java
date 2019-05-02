@@ -54,7 +54,7 @@ public class FileUploadControl {
 		}
 
 		if (!newFile.getParentFile().exists()) { // 判断文件父目录是否存在
-			newFile.getParentFile().mkdir();
+			newFile.getParentFile().mkdirs();
 		}
 		// #计算文件流md5
 		String newFileMd5 = DigestUtils.md5DigestAsHex(file.getBytes());
