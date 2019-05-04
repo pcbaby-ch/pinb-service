@@ -69,9 +69,9 @@ public class GroupBarService {
 		List<JSONObject> groubActivityList = reqJson.getObject("goodsList", List.class);
 
 		// #入参校验
-		if (StringUtils.isEmpty(groupBar.getGroubName())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubName");
-		}
+//		if (StringUtils.isEmpty(groupBar.getGroubName())) {
+//			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubName");
+//		}
 		if (StringUtils.isEmpty(groupBar.getGroubImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubImg");
 		}
