@@ -171,4 +171,23 @@ public class GroubaOrderService {
 		return page;
 	}
 
+	/**
+	 * 查询分享订单
+	 * 
+	 * @author chenzhao @date May 8, 2019
+	 * @param groubaOrder
+	 * @return
+	 */
+	public List<GroubaOrder> selectShareOrder(GroubaOrder groubaOrder) {
+		// #入参校验
+		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace()) && StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())
+				&& StringUtils.isEmpty(groubaOrder.getOrderStatus())
+				&& StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refroubTrace、refGroubaTrace、orderStatus，至少传一个");
+		}
+		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
+		return groubaOrderMapper.select(null, groubaOrder.getRefGroubTrace(), groubaOrder.getRefGroubaTrace(),
+				groubaOrder.getOrderStatus(), null);
+	}
+
 }

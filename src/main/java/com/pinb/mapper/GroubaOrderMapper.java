@@ -58,5 +58,11 @@ public interface GroubaOrderMapper {
 			+ "<if test=\"consumeSuccessTime != null and consumeSuccessTime != '' \">" + ",consume_success_time = NOW()"
 			+ "</if>" + " where order_trace=#{orderTrace}</script>")
 	public int update(GroubaOrder groubaOrder);
+	
+	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,ref_user_img,order_succeed_time,order_share_count"
+			+ " from grouba_order" + "<where>" + "<if test=\"orderTrace != null and orderTrace != '' \">"
+			+ " and order_trace = #{orderTrace}" + "</if>"
+			+ "</where></script>")
+	public List<GroubaOrder> selectShareOrder(@Param(value = "orderTrace") String orderTrace);
 
 }

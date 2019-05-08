@@ -19,6 +19,8 @@ public class GroubaOrder extends BaseEntity {
 	private String joinSucceedTime;
 	private String consumeTime;
 	private String consumeSuccessTime;
+	// #vo冗余字段
+	private String userImgs;
 
 	public String getOrderTrace() {
 		return orderTrace;
@@ -106,6 +108,14 @@ public class GroubaOrder extends BaseEntity {
 
 	public void setConsumeSuccessTime(String consumeSuccessTime) {
 		this.consumeSuccessTime = consumeSuccessTime;
+	}
+
+	public String getUserImgs() {
+		return userImgs;
+	}
+
+	public void setUserImgs(String userImgs) {
+		this.userImgs = userImgs;
 	}
 
 }

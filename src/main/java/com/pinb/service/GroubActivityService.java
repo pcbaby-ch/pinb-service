@@ -105,4 +105,31 @@ public class GroubActivityService {
 		return RespUtil.dataResp(groubActivityMapper.selectOne(groubActivity.getGroubaTrace()));
 	}
 
+	/**
+	 * 查询附近的活动商品
+	 * 
+	 * @author chenzhao @date May 8, 2019
+	 * @param groubActivity
+	 * @return
+	 */
+	public Object selectNearGrouba(GroubActivity groubActivity) {
+		// #入参校验
+		if (StringUtils.isEmpty(groubActivity.getLatitude())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Latitude");
+		}
+		if (StringUtils.isEmpty(groubActivity.getLongitude())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Longitude");
+		}
+		logParams(groubActivity);
+		double myLat = Double.parseDouble(groubActivity.getLatitude());
+		double myLng = Double.parseDouble(groubActivity.getLongitude());
+		double range = 180 / Math.PI * 1 / 6372.797; // 里面的 1 就代表搜索 1km 之内，单位km
+		double lngR = range / Math.cos(myLat * Math.PI / 180.0);
+		double maxLat = myLat + range;
+		double minLat = myLat - range;
+		double maxLng = myLng + lngR;
+		double minLng = myLng - lngR;
+		return groubActivityMapper.selectNearGrouba(maxLat, minLat, maxLng, minLng);
+	}
+
 }

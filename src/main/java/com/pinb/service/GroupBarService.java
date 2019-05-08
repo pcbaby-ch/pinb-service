@@ -3,6 +3,7 @@
  */
 package com.pinb.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,9 +23,11 @@ import com.pinb.common.BusinessesFlowNum;
 import com.pinb.common.ServiceException;
 import com.pinb.constant.RedisConst;
 import com.pinb.entity.GroubActivity;
+import com.pinb.entity.GroubaOrder;
 import com.pinb.entity.GroupBar;
 import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
+import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.mapper.GroupBarMapper;
 import com.pinb.util.BeanUtil;
 import com.pinb.util.IpUtils;
@@ -41,6 +44,8 @@ public class GroupBarService {
 
 	@Autowired
 	GroupBarMapper groupBarMapper;
+	@Autowired
+	GroubaOrderMapper groubaOrderMapper;
 	@Autowired
 	GroubActivityService groubActivityService;
 	@Autowired
@@ -163,26 +168,50 @@ public class GroupBarService {
 	}
 
 	/**
-	 * 店铺信息展示
+	 * 加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
 	 * 
 	 * @param groupBar
 	 * @return
 	 */
 	public Object selectOne(GroupBar groupBar) {
 		// #入参校验
-		if (StringUtils.isEmpty(groupBar.getRefUserWxUnionid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
+		if (StringUtils.isEmpty(groupBar.getRefUserWxUnionid()) && StringUtils.isEmpty(groupBar.getGroubTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid | GroubTrace");
 		}
 		logParams(groupBar);
 		groupBar = groupBarMapper.selectOne(groupBar.getRefUserWxUnionid());
 		if (BeanUtil.checkFieldValueNull(groupBar)) {
 			throw new ServiceException("#店铺基础信息查询失败");
 		}
+		GroubActivity shareGroubActivity = null;
 		// #查询商品信息
-		List<?> goodsList = groubActivityService.select(groupBar.getGroubTrace(), groupBar.getRefUserWxUnionid());
+		List<GroubActivity> goodsList = groubActivityService.select(groupBar.getGroubTrace(),
+				groupBar.getRefUserWxUnionid());
+		if (!StringUtils.isEmpty(groupBar.getOrderTrace())) {
+			// 去除分享订单对应的商品
+			GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBar.getOrderTrace(),
+					groupBar.getRefUserWxUnionid());
+			List<GroubActivity> goodsListTemp = new ArrayList<>();
+			goodsListTemp.addAll(goodsList);
+			for (int i = 0; i < goodsListTemp.size(); i++) {
+				GroubActivity groubActivity = goodsListTemp.get(i);
+				if (groubActivity.getGroubaTrace().equals(shareOrder.getRefGroubaTrace())) {
+					shareGroubActivity = goodsList.get(i);
+					goodsList.remove(i);
+					break;
+				}
+			}
+			// #整合分享订单信息到分享订单对应活动商品下
+			if (!(shareGroubActivity == null || BeanUtil.checkFieldValueNull(shareGroubActivity))) {
+				shareGroubActivity.setUserImgs(shareOrder.getUserImgs());
+				shareGroubActivity.setRelationOrderTrace(shareOrder.getOrderTrace());
+				shareGroubActivity.setOrderRelationUser(shareOrder.getRefUserWxUnionid());
+			}
+		}
 		JSONObject resp = new JSONObject();
 		resp.put("groubInfo", groupBar);
 		resp.put("goodsList", goodsList);
+		resp.put("shareGoods", shareGroubActivity);
 
 		return resp;
 	}

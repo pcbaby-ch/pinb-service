@@ -36,7 +36,8 @@ public class GroubActivityControl {
 			@ApiImplicitParam(name = "refGroubTrace", value = "归属店铺", required = true, dataType = "string") })
 	@PostMapping("select")
 	public Object select(@RequestBody GroubActivity groubActivity) {
-		return RespUtil.listResp(groubActivityService.select(groubActivity.getRefGroubTrace(),groubActivity.getRefUserWxUnionid()));
+		return RespUtil.listResp(
+				groubActivityService.select(groubActivity.getRefGroubTrace(), groubActivity.getRefUserWxUnionid()));
 	}
 
 	@ApiOperation("活动拼团商品-新增")
@@ -70,6 +71,11 @@ public class GroubActivityControl {
 	@PostMapping("update")
 	public Object update(@RequestBody GroubActivity groubActivity) {
 		return RespUtil.baseResp(groubActivityService.update(groubActivity));
+	}
+
+	@PostMapping("selectNearGrouba")
+	public Object selectNearGrouba(@RequestBody GroubActivity groubActivity) {
+		return RespUtil.dataResp(groubActivityService.selectNearGrouba(groubActivity));
 	}
 
 }

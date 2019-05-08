@@ -60,7 +60,7 @@ public class UserControl {
 		return RespUtil.dataResp(userService.getOpenid(userVo));
 	}
 	
-	@ApiOperation("微信登陆")
+	@ApiOperation("微信登陆-店长")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "Yappid", value = "详情查看微信开发平台api：https://developers.weixin.qq.com/miniprogram/dev/api/getPhoneNumber.html >开放接口>登陆", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "Ysecret", value = "", required = false, dataType = "string"),
@@ -73,6 +73,20 @@ public class UserControl {
 		userVo.setClientIp(IpUtils.getIpFromRequest(req));
 		
 		return RespUtil.dataResp(userService.wxLogin4Shop(userVo));
+	}
+	
+	@ApiOperation("微信登陆")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "Yappid", value = "详情查看微信开发平台api：https://developers.weixin.qq.com/miniprogram/dev/api/getPhoneNumber.html >开放接口>登陆", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "Ysecret", value = "", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YjsCode", value = "", required = false, dataType = "string"),
+			@ApiImplicitParam(name = "YgrantType", value = "", required = false, dataType = "string") })
+	@PostMapping("wxLogin")
+	public Object wxLogin(@RequestBody String reqStr,HttpServletRequest req) {
+		UserVo userVo=JSONObject.parseObject(reqStr, UserVo.class);
+		userVo.setClientIp(IpUtils.getIpFromRequest(req));
+		
+		return RespUtil.dataResp(userService.wxLogin(userVo));
 	}
 	
 	@PostMapping("decoderWxData")

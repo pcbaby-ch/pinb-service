@@ -13,7 +13,7 @@ public class BeanUtil {
 	 * 
 	 * @author chenzhao @date Apr 28, 2019
 	 * @param bean
-	 * @return
+	 * @return 为空返回true
 	 */
 	public static boolean checkFieldValueNull(Object bean) {
 		boolean result = true;

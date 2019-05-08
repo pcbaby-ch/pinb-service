@@ -61,7 +61,7 @@ public class UserService {
 
 	public boolean update(User user) {
 		// #入参校验
-		if (StringUtils.isEmpty(user.getWxUnionid()) || StringUtils.isEmpty(user.getPhone())) {
+		if (StringUtils.isEmpty(user.getWxUnionid()) && StringUtils.isEmpty(user.getPhone())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "userWxUnionid|phone");
 		}
 		if (!StringUtils.isEmpty(user.getCreditScoreGroub())
@@ -180,6 +180,27 @@ public class UserService {
 //			}
 			log.info("#入库新增用户unionid start #WxUnionid[{}]", user.getWxUnionid());
 			throw new ServiceException(JSONObject.toJSONString(user), RespCode.user_unExist);
+		} else {
+			log.info("#存在unionUser用户，直接返回用户信息、是否入驻 #WxUnionid[{}]", user.getWxUnionid());
+			return unionUser;
+		}
+	}
+	
+	public Object wxLogin(UserVo user) {
+		JSONObject openidJson = getOpenid(user);
+		user.setSessionKey(openidJson.getString("session_key"));
+		user.setWxOpenid(openidJson.getString("openid"));
+		/** unionid获取是否成功{unionid不为空&unionid不等于openid} ***************************/
+		user.setWxUnionid(StringUtils.isEmpty(openidJson.getString("unionid")) ? openidJson.getString("openid")
+				: openidJson.getString("unionid"));
+
+		log.info("#根据unionid查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
+		User unionUser = userMapper.selectOne(user.getWxUnionid(), null);
+		if (BeanUtil.checkFieldValueNull(unionUser)) {
+			// 不存在uinion用户
+			log.info("#入库新增用户unionid start #WxUnionid[{}]", user.getWxUnionid());
+			userMapper.insert(user);
+			return user;
 		} else {
 			log.info("#存在unionUser用户，直接返回用户信息、是否入驻 #WxUnionid[{}]", user.getWxUnionid());
 			return unionUser;
