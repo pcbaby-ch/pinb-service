@@ -20,9 +20,11 @@ public class GroubActivity extends BaseEntity {
 	private int groubaIsnew;
 	private String groubaExpiredTime;
 	private String groubaActiveMinute;
+	private String province;
+	private String city;
 	private String latitude;
 	private String longitude;
-	//#vo冗余字段
+	// #vo冗余字段
 	private String userImgs;
 	private String relationOrderTrace;
 	private String orderRelationUser;
@@ -123,6 +125,22 @@ public class GroubActivity extends BaseEntity {
 		this.groubaActiveMinute = groubaActiveMinute;
 	}
 
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
 	public String getLatitude() {
 		return latitude;
 	}
@@ -138,55 +156,65 @@ public class GroubActivity extends BaseEntity {
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
+
 	/**
 	 * 活动商品关联订单下参团的用户
+	 * 
 	 * @author chenzhao @date May 8, 2019
 	 * @return
 	 */
 	public String getUserImgs() {
 		return userImgs;
 	}
+
 	/**
 	 * 活动商品关联订单下参团的用户
+	 * 
 	 * @author chenzhao @date May 8, 2019
 	 * @param userImgs
 	 */
 	public void setUserImgs(String userImgs) {
 		this.userImgs = userImgs;
 	}
+
 	/**
 	 * 活动商品关联订单trace
+	 * 
 	 * @author chenzhao @date May 8, 2019
 	 * @return
 	 */
 	public String getRelationOrderTrace() {
 		return relationOrderTrace;
 	}
+
 	/**
 	 * 活动商品关联订单trace
+	 * 
 	 * @author chenzhao @date May 8, 2019
 	 * @param refOrderTrace
 	 */
 	public void setRelationOrderTrace(String relationOrderTrace) {
 		this.relationOrderTrace = relationOrderTrace;
 	}
+
 	/**
 	 * 订单所属用户（wx_unionid）
+	 * 
 	 * @author chenzhao @date May 8, 2019
 	 * @return
 	 */
 	public String getOrderRelationUser() {
 		return orderRelationUser;
 	}
+
 	/**
 	 * 订单所属用户（wx_unionid）
+	 * 
 	 * @author chenzhao @date May 8, 2019
 	 * @param orderRefUser
 	 */
 	public void setOrderRelationUser(String orderRelationUser) {
 		this.orderRelationUser = orderRelationUser;
 	}
-	
-	
 
 }

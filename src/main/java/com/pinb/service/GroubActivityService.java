@@ -3,6 +3,7 @@
  */
 package com.pinb.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import com.pinb.constant.RedisConst;
 import com.pinb.entity.GroubActivity;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroubActivityMapper;
+import com.pinb.util.MapDistance;
 import com.pinb.util.RespUtil;
 
 /**
@@ -60,6 +62,12 @@ public class GroubActivityService {
 		}
 		if (StringUtils.isEmpty(groubActivity.getGroubaIsnew())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaIsnew");
+		}
+		if (StringUtils.isEmpty(groubActivity.getProvince())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Province");
+		}
+		if (StringUtils.isEmpty(groubActivity.getCity())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "City");
 		}
 		log.info("#入参校验通过");
 		groubActivity.setGroubaTrace(BusinessesFlowNum.getNum("GA", RedisConst.groubActivityTrace));
@@ -114,6 +122,12 @@ public class GroubActivityService {
 	 */
 	public Object selectNearGrouba(GroubActivity groubActivity) {
 		// #入参校验
+		if (StringUtils.isEmpty(groubActivity.getProvince())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Province");
+		}
+		if (StringUtils.isEmpty(groubActivity.getCity())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "City");
+		}
 		if (StringUtils.isEmpty(groubActivity.getLatitude())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Latitude");
 		}
@@ -129,7 +143,14 @@ public class GroubActivityService {
 		double minLat = myLat - range;
 		double maxLng = myLng + lngR;
 		double minLng = myLng - lngR;
-		return groubActivityMapper.selectNearGrouba(maxLat, minLat, maxLng, minLng);
+		HashMap<String, Object> map = MapDistance.getAround(groubActivity.getLatitude(), groubActivity.getLongitude(),
+				"1000");
+		log.debug(
+				"#计算附近的商品，#minLat:[{}],#maxLat[{}],#minLng[{}],#maxLng[{}]，util计算结果,#minLat:[{}],#maxLat[{}],#minLng[{}],#maxLng[{}]",
+				minLat, maxLat, minLng, maxLng, map.get("minLat"), map.get("maxLat"), map.get("minLng"),
+				map.get("maxLng"));
+		return groubActivityMapper.selectNearGrouba(groubActivity.getProvince(), groubActivity.getCity(), minLat,
+				maxLat, minLng, maxLng);
 	}
 
 }

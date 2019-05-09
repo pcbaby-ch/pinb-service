@@ -37,8 +37,8 @@ public interface GroubActivityMapper {
 	public GroubActivity selectOne(@Param(value = "groubaTrace") String groubaTrace);
 
 	@Insert(value = "INSERT INTO groub_activity"
-			+ " (grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_active_minute,latitude,longitude) "
-			+ " VALUES (#{groubaTrace},#{refGroubTrace},#{refUserWxUnionid},#{groubaSize},#{groubaMaxCount},#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew},#{groubaActiveMinute},#{latitude},#{longitude})")
+			+ " (grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_active_minute,province,city,latitude,longitude,address) "
+			+ " VALUES (#{groubaTrace},#{refGroubTrace},#{refUserWxUnionid},#{groubaSize},#{groubaMaxCount},#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew},#{groubaActiveMinute},#{province},#{city},#{latitude},#{longitude},#{address})")
 	public int insert(GroubActivity groubActivity);
 
 	@Update(value = "<script>UPDATE groub_activity SET  uptime=NOW()"
@@ -63,10 +63,13 @@ public interface GroubActivityMapper {
 
 	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute"
 			+ " from groub_activity" + "<where>" 
+			+ "<if test=\"province != null and province != '' \">" + " and province = #{province}" + "</if>"
+			+ "<if test=\"city != null and city != '' \">" + " and city = #{city}" + "</if>"
 			+ "<if test=\"maxLat != null and maxLat != '' \">" + " and latitude between #{minLat} and #{maxLat}" + "</if>" 
 			+ "<if test=\"maxLng != null and maxLng != '' \">" + " and longitude between #{minLng} and #{maxLng}" + "</if>" + "</where></script>")
-	public GroubActivity selectNearGrouba(@Param(value = "maxLat") double maxLat,
-			@Param(value = "minLat") double minLat, @Param(value = "maxLng") double maxLng,
-			@Param(value = "minLng") double minLng);
+	public List<GroubActivity> selectNearGrouba(@Param(value = "province") String province,
+			@Param(value = "city") String city,@Param(value = "minLat") double minLat,
+			@Param(value = "maxLat") double maxLat, @Param(value = "minLng") double minLng,
+			@Param(value = "maxLng") double maxLng);
 
 }
