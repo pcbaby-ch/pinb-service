@@ -75,7 +75,7 @@ public class GroubActivityControl {
 
 	@PostMapping("selectNearGrouba")
 	public Object selectNearGrouba(@RequestBody GroubActivity groubActivity) {
-		return RespUtil.dataResp(groubActivityService.selectNearGrouba(groubActivity));
+		return RespUtil.listResp(groubActivityService.selectNearGrouba(groubActivity));
 	}
 
 }

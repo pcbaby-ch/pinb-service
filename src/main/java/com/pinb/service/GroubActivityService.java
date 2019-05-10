@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.pinb.common.BusinessesFlowNum;
 import com.pinb.common.ServiceException;
 import com.pinb.constant.RedisConst;
@@ -120,7 +122,7 @@ public class GroubActivityService {
 	 * @param groubActivity
 	 * @return
 	 */
-	public Object selectNearGrouba(GroubActivity groubActivity) {
+	public Page<?> selectNearGrouba(GroubActivity groubActivity) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubActivity.getProvince())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Province");
@@ -149,8 +151,10 @@ public class GroubActivityService {
 				"#计算附近的商品，#minLat:[{}],#maxLat[{}],#minLng[{}],#maxLng[{}]，util计算结果,#minLat:[{}],#maxLat[{}],#minLng[{}],#maxLng[{}]",
 				minLat, maxLat, minLng, maxLng, map.get("minLat"), map.get("maxLat"), map.get("minLng"),
 				map.get("maxLng"));
-		return groubActivityMapper.selectNearGrouba(groubActivity.getProvince(), groubActivity.getCity(), minLat,
+		Page<?>page=PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
+		groubActivityMapper.selectNearGrouba(groubActivity.getProvince(), groubActivity.getCity(), minLat,
 				maxLat, minLng, maxLng);
+		return page;
 	}
 
 }
