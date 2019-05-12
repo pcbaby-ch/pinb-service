@@ -85,7 +85,7 @@ public class GroubaOrderService {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserImg");
 		}
 		logParams(groubaOrder);
-		// #判断是否开团+成团
+		// #判断是否开团+成团数上限 TODO?????????????
 		GroubaOrder oldOrder = groubaOrderMapper.selectOne(groubaOrder.getOrderTrace(),
 				groubaOrder.getRefUserWxUnionid());
 		if (BeanUtil.checkFieldValueNull(oldOrder)) {
