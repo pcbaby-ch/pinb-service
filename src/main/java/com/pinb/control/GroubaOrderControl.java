@@ -3,6 +3,8 @@
  */
 package com.pinb.control;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pinb.entity.GroubaOrder;
 import com.pinb.service.GroubaOrderService;
+import com.pinb.util.IpUtils;
 import com.pinb.util.RespUtil;
 
 import io.swagger.annotations.Api;
@@ -48,19 +51,9 @@ public class GroubaOrderControl {
 			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "订单参团用户", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YrefUserImg", value = "用户头像fileid", required = false, dataType = "string"), })
 	@PostMapping("orderOpen")
-	public Object orderOpen(@RequestBody GroubaOrder groubaOrder) {
-
+	public Object orderOpen(@RequestBody GroubaOrder groubaOrder,HttpServletRequest req) throws Exception {
+		groubaOrder.setClientIp(IpUtils.getIpFromRequest(req));
 		return RespUtil.baseResp(groubaOrderService.orderOpen(groubaOrder));
-	}
-
-	@ApiOperation("已有团订单-分享 {前端分享成功后，累计分享计数}")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "YorderTrace", value = "被分享团订单", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "分享发起用户", required = false, dataType = "string") })
-	@PostMapping("orderShare")
-	public Object orderShare(@RequestBody GroubaOrder groubaOrder) {
-
-		return RespUtil.baseResp(groubaOrderService.orderShare(groubaOrder));
 	}
 
 	@ApiOperation("已有团订单-参团")

@@ -24,10 +24,12 @@ public class GroubActivity extends BaseEntity {
 	private String city;
 	private String latitude;
 	private String longitude;
+	private String address;
 	// #vo冗余字段
 	private String userImgs;
 	private String relationOrderTrace;
 	private String orderRelationUser;
+	private String distance;
 
 	public String getGroubaTrace() {
 		return groubaTrace;
@@ -157,6 +159,14 @@ public class GroubActivity extends BaseEntity {
 		this.longitude = longitude;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 	/**
 	 * 活动商品关联订单下参团的用户
 	 * 
@@ -215,6 +225,14 @@ public class GroubActivity extends BaseEntity {
 	 */
 	public void setOrderRelationUser(String orderRelationUser) {
 		this.orderRelationUser = orderRelationUser;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
 	}
 
 }

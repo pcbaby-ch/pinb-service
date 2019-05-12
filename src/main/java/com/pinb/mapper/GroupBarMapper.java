@@ -34,7 +34,7 @@ public interface GroupBarMapper {
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}"+ "</if>"
 			+ "<if test=\"groubTrace != null and groubTrace != '' \">" + " and groub_trace = #{groubTrace}"+ "</if>"
 			+ "</where></script>")
-	public GroupBar selectOne(@Param(value = "refUserWxUnionid") String refUserWxUnionid);
+	public GroupBar selectOne(@Param(value = "refUserWxUnionid") String refUserWxUnionid,@Param(value = "groubTrace") String groubTrace);
 
 	@Insert(value = "INSERT INTO group_bar"
 			+ " ( groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address,is_open) "

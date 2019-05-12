@@ -24,7 +24,7 @@ import com.pinb.entity.GroubActivity;
 @Mapper
 public interface GroubActivityMapper {
 
-	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute"
+	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude"
 			+ " from groub_activity" + "<where>" + "<if test=\"refGroubTrace != null and refGroubTrace != '' \">"
 			+ " and ref_groub_trace = #{refGroubTrace}" + "</if>"
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">"
@@ -32,7 +32,7 @@ public interface GroubActivityMapper {
 	public List<GroubActivity> select(@Param(value = "refGroubTrace") String refGroubTrace,
 			@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
-	@Select(value = "select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute"
+	@Select(value = "select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude"
 			+ " from groub_activity" + " where grouba_trace = #{groubaTrace}")
 	public GroubActivity selectOne(@Param(value = "groubaTrace") String groubaTrace);
 
@@ -53,6 +53,9 @@ public interface GroubActivityMapper {
 			+ "<if test=\"groubaActiveMinute != null and groubaActiveMinute != '' \">"
 			+ ",grouba_active_minute = #{groubaActiveMinute}" + "</if>" + " where grouba_trace=#{groubaTrace}</script>")
 	public int update(GroubActivity groubActivity);
+	
+	@Update(value = "<script>UPDATE groub_activity SET  uptime=NOW(),grouba_share_count=grouba_share_count+1" + " where grouba_trace=#{groubaTrace}</script>")
+	public int share(@Param(value = "groubaTrace") String groubaTrace);
 
 	@Delete(value = "<script>delete from groub_activity" + "<where>"
 			+ "<if test=\"refGroubTrace != null and refGroubTrace != '' \">" + " and ref_groub_trace = #{refGroubTrace}"
@@ -61,7 +64,7 @@ public interface GroubActivityMapper {
 	public int delete(@Param(value = "refGroubTrace") String refGroubTrace,
 			@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
-	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute"
+	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude"
 			+ " from groub_activity" + "<where>" 
 			+ "<if test=\"province != null and province != '' \">" + " and province = #{province}" + "</if>"
 			+ "<if test=\"city != null and city != '' \">" + " and city = #{city}" + "</if>"
@@ -71,5 +74,13 @@ public interface GroubActivityMapper {
 			@Param(value = "city") String city,@Param(value = "minLat") double minLat,
 			@Param(value = "maxLat") double maxLat, @Param(value = "minLng") double minLng,
 			@Param(value = "maxLng") double maxLng);
+	
+	@Select(value = "<script>select tb1.* from (select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude"
+			+ " from groub_activity" + "<where>" 
+			+ "<if test=\"province != null and province != '' \">" + " and province = #{province}" + "</if>"
+			+ "<if test=\"city != null and city != '' \">" + " and city = #{city}" + "</if>"
+		    + "</where> order by grouba_share_count desc limit 100) tb1</script>")
+	public List<GroubActivity> selectNearGroubaTop100(@Param(value = "province") String province,
+			@Param(value = "city") String city);
 
 }

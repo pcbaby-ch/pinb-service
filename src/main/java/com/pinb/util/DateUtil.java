@@ -3,10 +3,10 @@ package com.pinb.util;
  *
  */
 
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,8 +55,7 @@ public class DateUtil {
 		return tl.get();
 	}
 
-
-	public final static DateFormat dfyyyy_MM_dd =getSdf("yyyy-MM-dd");
+	public final static DateFormat dfyyyy_MM_dd = getSdf("yyyy-MM-dd");
 	public final static DateFormat dfyyyyMMdd = getSdf("yyyyMMdd");
 	public final static DateFormat dfyyyy_MM_ddhhmmss = getSdf("yyyy-MM-dd HH:mm:ss");
 	public final static DateFormat dfyyyyMMddhhmmss = getSdf("yyyyMMddHHmmss");
@@ -119,11 +118,6 @@ public class DateUtil {
 		return 0;
 	}
 
-
-
-
-
-
 	/**
 	 * 使用ThreadLocal<SimpleDateFormat>来获取SimpleDateFormat,这样每个线程只会有一个SimpleDateFormat
 	 *
@@ -141,51 +135,77 @@ public class DateUtil {
 
 	/**
 	 * 判断当前时间是否在【beginTime】和【endTime】之间
+	 * 
 	 * @param beginTime
 	 * @param endTime
 	 * @return
 	 * @throws Exception
 	 */
-	public static Boolean validateValidDate(Object beginTime, Object endTime) throws Exception{
+	public static Boolean validateValidDate(Object beginTime, Object endTime) throws Exception {
 		Date date = new Date();
-		//date1大于date2:1 # 等于:0 # 小于:-1
-		if(compareDate(beginTime, date)== -1 && compareDate(endTime, date)== 1){
+		// date1大于date2:1 # 等于:0 # 小于:-1
+		if (compareDate(beginTime, date) == -1 && compareDate(endTime, date) == 1) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
+
 	/**
 	 * 计算2个日期的毫秒差值，支持string和date类型混参
+	 * 
 	 * @param beginTime
 	 * @param endTime
 	 * @return
 	 * @throws Exception
 	 */
 	public static long calcInterval(Object beginTime, Object endTime) throws Exception {
-		Date dt1=null,dt2=null;
+		Date dt1 = null, dt2 = null;
 		if (beginTime instanceof String) {
 			dt1 = parseDate(beginTime + "");
-		}else{
-			dt1=(Date) beginTime;
+		} else {
+			dt1 = (Date) beginTime;
 		}
 		if (endTime instanceof String) {
 			dt2 = parseDate(endTime + "");
-		}else{
-			dt2=(Date) endTime;
+		} else {
+			dt2 = (Date) endTime;
 		}
-		return dt2.getTime()-dt1.getTime();
+		return dt2.getTime() - dt1.getTime();
 	}
-	
+
+	/**
+	 * 对日期[time]做[cal.add(field,amount)]
+	 * 
+	 * @param time
+	 * @param field
+	 * @param amount
+	 * @return
+	 * @throws Exception
+	 */
+	public static Date add(Object time, int field, int amount) throws Exception {
+		Date dt1 = null;
+		if (time instanceof String) {
+			dt1 = parseDate(time + "");
+		} else if (time instanceof Date) {
+			dt1 = (Date) time;
+		} else {
+			throw new Exception("#arg1必须是字符串类型或日期类型");
+		}
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(dt1);
+		cal1.add(field, amount);
+		return cal1.getTime();
+	}
+
 	public static void main(String[] args) throws Exception {
-		Date dt=new Date();
+		Date dt = new Date();
 		dt.setHours(23);
 		dt.setMinutes(59);
 		dt.setSeconds(59);
-		System.out.println(calcInterval("2018-04-23 05:08:59",dt));
-		System.out.println(calcInterval("2018-04-23 05:08:59","2018-04-23 23:59:59"));
-		
-		
+		System.out.println(calcInterval("2018-04-23 05:08:59", dt));
+		System.out.println(calcInterval("2018-04-23 05:08:59", "2018-04-23 23:59:59"));
+
 	}
 
 }

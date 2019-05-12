@@ -3,6 +3,8 @@
  */
 package com.pinb.service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,6 +22,8 @@ import com.pinb.entity.GroubaOrder;
 import com.pinb.enums.OrderStatus;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroubaOrderMapper;
+import com.pinb.util.BeanUtil;
+import com.pinb.util.DateUtil;
 
 /**
  * 拼吧-订单
@@ -33,14 +37,16 @@ public class GroubaOrderService {
 
 	@Autowired
 	GroubaOrderMapper groubaOrderMapper;
+	@Autowired
+	GroubActivityService groubActivityService;
 
-	public boolean orderOpen(GroubaOrder groubaOrder) {
+	public boolean orderOpen(GroubaOrder groubaOrder) throws Exception {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefGroubaTrace");
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubaTrace");
 		}
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefGroubTrace");
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace");
 		}
 		if (StringUtils.isEmpty(groubaOrder.getOrderExpiredTime())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "orderExpiredTime");
@@ -51,31 +57,12 @@ public class GroubaOrderService {
 		if (StringUtils.isEmpty(groubaOrder.getRefUserImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserImg");
 		}
-		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
+		logParams(groubaOrder);
 		groubaOrder.setOrderTrace(BusinessesFlowNum.getNum("GO", RedisConst.groubaOrderTrace));
+		groubaOrder.setOrderExpiredTime(DateUtil.dfyyyy_MM_ddhhmmss.format(
+				DateUtil.add(new Date(), Calendar.MINUTE, Integer.parseInt(groubaOrder.getOrderExpiredTime()))));
 		int count = groubaOrderMapper.insert(groubaOrder);
-		if (count > 0) {
-			return true;
-		} else {
-			throw new ServiceException(RespCode.FAILURE);
-		}
-	}
-
-	public boolean orderShare(GroubaOrder groubaOrder) {
-		// #入参校验
-		if (StringUtils.isEmpty(groubaOrder.getOrderTrace())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderTrace");
-		}
-		if (StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
-		}
-		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
-		GroubaOrder groubaOrderParams = new GroubaOrder();
-		groubaOrderParams.setOrderTrace(groubaOrder.getOrderTrace());
-		groubaOrderParams.setRefUserWxUnionid(groubaOrder.getRefUserWxUnionid());
-		groubaOrderParams.setOrderShareCount("update");
-
-		int count = groubaOrderMapper.update(groubaOrderParams);
+		groubActivityService.share(groubaOrder.getRefGroubaTrace());
 		if (count > 0) {
 			return true;
 		} else {
@@ -91,16 +78,17 @@ public class GroubaOrderService {
 		if (StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
 		}
+		if (StringUtils.isEmpty(groubaOrder.getShareUser())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "ShareUser");
+		}
 		if (StringUtils.isEmpty(groubaOrder.getRefUserImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserImg");
 		}
-		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
+		logParams(groubaOrder);
 		// #判断是否开团+成团
-		List<GroubaOrder> oldOrderList = groubaOrderMapper.select(groubaOrder.getOrderTrace(), null, null, null, null);
-		GroubaOrder oldOrder = null;
-		if (!oldOrderList.isEmpty()) {
-			oldOrder = oldOrderList.get(0);
-		} else {
+		GroubaOrder oldOrder = groubaOrderMapper.selectOne(groubaOrder.getOrderTrace(),
+				groubaOrder.getRefUserWxUnionid());
+		if (BeanUtil.checkFieldValueNull(oldOrder)) {
 			throw new ServiceException(RespCode.order_unOpenOrder);
 		}
 
@@ -109,14 +97,19 @@ public class GroubaOrderService {
 		groubaOrderParams.setRefGroubaTrace(oldOrder.getRefGroubaTrace());
 		groubaOrderParams.setRefGroubTrace(oldOrder.getRefGroubTrace());
 		groubaOrderParams.setOrderExpiredTime(oldOrder.getOrderExpiredTime());
-		groubaOrderParams.setRefUserWxUnionid(groubaOrder.getRefUserWxUnionid());
+		groubaOrderParams.setRefUserWxUnionid(groubaOrder.getShareUser());
 		groubaOrderParams.setRefUserImg(groubaOrder.getRefUserImg());
 		int count = groubaOrderMapper.insert(groubaOrderParams);
+		groubActivityService.share(groubaOrder.getRefGroubaTrace());
 		if (count > 0) {
 			return true;
 		} else {
 			throw new ServiceException(RespCode.FAILURE);
 		}
+	}
+
+	private void logParams(GroubaOrder groubaOrder) {
+		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
 	}
 
 	public boolean orderConsume(GroubaOrder groubaOrder) {
@@ -130,7 +123,7 @@ public class GroubaOrderService {
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace");
 		}
-		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
+		logParams(groubaOrder);
 		// #根据消费二维码信息，查询消费订单
 		GroubaOrder oldOrder = groubaOrderMapper.selectOne(groubaOrder.getOrderTrace(), groubaOrder.getWxUnionid());
 		if (oldOrder == null || Integer.parseInt(oldOrder.getOrderStatus()) < OrderStatus.join_success.getCode()) {
@@ -164,7 +157,7 @@ public class GroubaOrderService {
 				&& StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refroubTrace、refGroubaTrace、orderStatus，至少传一个");
 		}
-		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
+		logParams(groubaOrder);
 		Page<?> page = PageHelper.startPage(groubaOrder.getPage(), groubaOrder.getRows());
 		groubaOrderMapper.select(null, groubaOrder.getRefGroubTrace(), groubaOrder.getRefGroubaTrace(),
 				groubaOrder.getOrderStatus(), null);
@@ -185,7 +178,7 @@ public class GroubaOrderService {
 				&& StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refroubTrace、refGroubaTrace、orderStatus，至少传一个");
 		}
-		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
+		logParams(groubaOrder);
 		return groubaOrderMapper.select(null, groubaOrder.getRefGroubTrace(), groubaOrder.getRefGroubaTrace(),
 				groubaOrder.getOrderStatus(), null);
 	}

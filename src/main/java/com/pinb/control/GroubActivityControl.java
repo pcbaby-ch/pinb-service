@@ -58,21 +58,6 @@ public class GroubActivityControl {
 		return RespUtil.baseResp(groubActivityService.add(groubActivity));
 	}
 
-	@ApiOperation("活动拼团商品-更新")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "YrefGroubTrace", value = "归属店铺", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "groubaSize", value = "以下参数中，用户没改的，不要传或者传null对象，EX:{'groubAddress':NULL}", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "groubaMaxCount,", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "goodsName", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "goodsImg", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "goodsPrice", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "groubaDiscountAmount", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "groubaIsnew", value = "", required = false, dataType = "string"), })
-	@PostMapping("update")
-	public Object update(@RequestBody GroubActivity groubActivity) {
-		return RespUtil.baseResp(groubActivityService.update(groubActivity));
-	}
-
 	@PostMapping("selectNearGrouba")
 	public Object selectNearGrouba(@RequestBody GroubActivity groubActivity) {
 		return RespUtil.listResp(groubActivityService.selectNearGrouba(groubActivity));

@@ -72,7 +72,7 @@ public class GroupBarService {
 		user.setIsOpenGroub("1");
 		user.setClientIp(IpUtils.getIpFromRequest(request));
 		List<JSONObject> groubActivityList = reqJson.getObject("goodsList", List.class);
-
+		log.debug("#user:[{}],#groubActivityList:[{}]", JSONObject.toJSON(user), JSONObject.toJSON(groubActivityList));
 		// #入参校验
 //		if (StringUtils.isEmpty(groupBar.getGroubName())) {
 //			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubName");
@@ -181,7 +181,7 @@ public class GroupBarService {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid | GroubTrace");
 		}
 		logParams(groupBar);
-		groupBar = groupBarMapper.selectOne(groupBar.getRefUserWxUnionid());
+		groupBar = groupBarMapper.selectOne(groupBar.getRefUserWxUnionid(), null);
 		if (BeanUtil.checkFieldValueNull(groupBar)) {
 			throw new ServiceException("#店铺基础信息查询失败");
 		}

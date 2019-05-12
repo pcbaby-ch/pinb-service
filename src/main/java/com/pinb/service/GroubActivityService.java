@@ -76,13 +76,17 @@ public class GroubActivityService {
 		return groubActivityMapper.insert(groubActivity) > 0;
 	}
 
-	public boolean update(GroubActivity groubActivity) {
+	/**
+	 * 活动商品分享计数
+	 * @param groubActivity
+	 * @return
+	 */
+	public boolean share(String  groubaTrace) {
 		// #入参校验
-		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())) {
+		if (StringUtils.isEmpty(groubaTrace)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaTrace");
 		}
-		logParams(groubActivity);
-		return groubActivityMapper.update(groubActivity) > 0;
+		return groubActivityMapper.share(groubaTrace) > 0;
 	}
 
 	private void logParams(GroubActivity groubActivity) {
@@ -130,13 +134,20 @@ public class GroubActivityService {
 		if (StringUtils.isEmpty(groubActivity.getCity())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "City");
 		}
-		if (StringUtils.isEmpty(groubActivity.getLatitude())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Latitude");
-		}
-		if (StringUtils.isEmpty(groubActivity.getLongitude())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Longitude");
-		}
+//		if (StringUtils.isEmpty(groubActivity.getLatitude())) {
+//			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Latitude");
+//		}
+//		if (StringUtils.isEmpty(groubActivity.getLongitude())) {
+//			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Longitude");
+//		}
 		logParams(groubActivity);
+		Page<?> page = PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
+		// #用户未指定位置时，显示所在城市分享数最高的前100个商品
+		if (StringUtils.isEmpty(groubActivity.getLatitude())) {
+			groubActivityMapper.selectNearGroubaTop100(groubActivity.getProvince(), groubActivity.getCity());
+			return page;
+		}
+
 		double myLat = Double.parseDouble(groubActivity.getLatitude());
 		double myLng = Double.parseDouble(groubActivity.getLongitude());
 		double range = 180 / Math.PI * 1 / 6372.797; // 里面的 1 就代表搜索 1km 之内，单位km
@@ -151,9 +162,8 @@ public class GroubActivityService {
 				"#计算附近的商品，#minLat:[{}],#maxLat[{}],#minLng[{}],#maxLng[{}]，util计算结果,#minLat:[{}],#maxLat[{}],#minLng[{}],#maxLng[{}]",
 				minLat, maxLat, minLng, maxLng, map.get("minLat"), map.get("maxLat"), map.get("minLng"),
 				map.get("maxLng"));
-		Page<?>page=PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
-		groubActivityMapper.selectNearGrouba(groubActivity.getProvince(), groubActivity.getCity(), minLat,
-				maxLat, minLng, maxLng);
+		groubActivityMapper.selectNearGrouba(groubActivity.getProvince(), groubActivity.getCity(), minLat, maxLat,
+				minLng, maxLng);
 		return page;
 	}
 

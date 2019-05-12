@@ -23,13 +23,13 @@ import com.pinb.entity.User;
 @Mapper
 public interface UserMapper {
 	
-	@Select(value = "<script>select wx_unionid,wx_openid,phone,head_img,credit_score_user,is_open_groub,credit_score_groub"
+	@Select(value = "<script>select wx_unionid,wx_openid,phone,head_img,credit_score_user,is_open_groub,credit_score_groub,`city`,`province`,`latitude`,`longitude`"
 			+ " from user" + "<where>"
 			+ "<if test=\"isOpenGroub != null and isOpenGroub != '' \">" + " and is_open_groub = #{isOpenGroub}"+ "</if>"
 			+ "</where></script>")
 	public List<User> select(@Param(value = "isOpenGroub") String isOpenGroub);
 
-	@Select(value = "<script>select  wx_unionid,wx_openid,phone,head_img,credit_score_user,is_open_groub,credit_score_groub"
+	@Select(value = "<script>select  wx_unionid,wx_openid,phone,head_img,credit_score_user,is_open_groub,credit_score_groub,`city`,`province`,`latitude`,`longitude`"
 			+ " from user" + "<where>"
 			+ "<if test=\"wxUnionid != null and wxUnionid != '' \">" + " and wx_unionid = #{wxUnionid}"+ "</if>"
 			+ "<if test=\"phone != null and phone != '' \">" + " and phone = #{phone}"+ "</if>"
