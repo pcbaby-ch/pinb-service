@@ -5,7 +5,9 @@ package com.pinb.service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.JSONScanner;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinb.common.BusinessesFlowNum;
@@ -24,6 +28,7 @@ import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.util.BeanUtil;
 import com.pinb.util.DateUtil;
+import com.pinb.util.MapBeanUtil;
 
 /**
  * 拼吧-订单
@@ -162,6 +167,49 @@ public class GroubaOrderService {
 		groubaOrderMapper.select(null, groubaOrder.getRefGroubTrace(), groubaOrder.getRefGroubaTrace(),
 				groubaOrder.getOrderStatus(), null);
 		return page;
+	}
+
+	/**
+	 * 我的订单查询4普通用户
+	 * 
+	 * @param groubaOrder
+	 * @return
+	 */
+	public HashMap selectMyOrder4user(GroubaOrder groubaOrder) {
+		// #入参校验
+		if (StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");
+		}
+		logParams(groubaOrder);
+		Page<?> page = PageHelper.startPage(groubaOrder.getPage(), groubaOrder.getRows());
+		groubaOrderMapper.selectMyOrder4user(groubaOrder.getRefUserWxUnionid());
+		List<GroubaOrder> groubaOrderList = (List<GroubaOrder>) page.getResult();
+		StringBuffer orderTraces = new StringBuffer();
+		List<GroubaOrder> userImgs = null;
+		for (int i = 0; i < groubaOrderList.size(); i++) {
+			orderTraces.append("'").append(groubaOrderList.get(i).getOrderTrace()).append("',");
+		}
+		if (orderTraces.length() > 0) {
+			userImgs = groubaOrderMapper.selectMyOrder4userImgs(orderTraces.substring(0, orderTraces.lastIndexOf(",")));
+		}
+		log.info("#用户所有订单查询end-查询订单同团订单头像、状态start,#RefUserWxUnionid:[{}]", groubaOrder.getRefUserWxUnionid());
+		Map<String, Object> goMap = MapBeanUtil.objListToMap(userImgs, "orderTrace");
+		for (int i = 0; i < groubaOrderList.size(); i++) {
+			String orderTrace = groubaOrderList.get(i).getOrderTrace();
+			if (goMap.containsKey(orderTrace)) {
+				groubaOrderList.get(i).setUserImgs(((GroubaOrder) goMap.get(orderTrace)).getUserImgs());
+				groubaOrderList.get(i).setOrdersStatus(((GroubaOrder) goMap.get(orderTrace)).getOrdersStatus());
+			}
+		}
+		log.info("#用户所有订单查询end-查询订单同团订单头像、状态end,#RefUserWxUnionid:[{}]，#groubaOrderList:[{}]",
+				groubaOrder.getRefUserWxUnionid(), JSONObject.toJSON(groubaOrderList));
+		// 组装相应报文
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("total", page.getTotal());
+		map.put("rows", groubaOrderList);
+		map.put("retCode", RespCode.SUCCESS.getCode());
+		map.put("retMsg", RespCode.SUCCESS.getMsg());
+		return map;
 	}
 
 	/**

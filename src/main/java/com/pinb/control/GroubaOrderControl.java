@@ -42,6 +42,11 @@ public class GroubaOrderControl {
 	public Object select(@RequestBody GroubaOrder groubaOrder) {
 		return RespUtil.listResp(groubaOrderService.select(groubaOrder));
 	}
+	
+	@PostMapping("selectMyOrder4user")
+	public Object selectMyOrder4user(@RequestBody GroubaOrder groubaOrder) {
+		return RespUtil.listResp(groubaOrderService.selectMyOrder4user(groubaOrder));
+	}
 
 	@ApiOperation("开团下单")
 	@ApiImplicitParams({

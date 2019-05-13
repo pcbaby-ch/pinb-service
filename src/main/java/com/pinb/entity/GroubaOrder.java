@@ -21,6 +21,7 @@ public class GroubaOrder extends BaseEntity {
 	private String consumeSuccessTime;
 	// #vo冗余字段
 	private String userImgs;
+	private String ordersStatus;
 	private String shareUser;
 
 	public String getOrderTrace() {
@@ -118,6 +119,21 @@ public class GroubaOrder extends BaseEntity {
 	public void setUserImgs(String userImgs) {
 		this.userImgs = userImgs;
 	}
+	/**
+	 * 同团所有订单的状态
+	 * @return
+	 */
+	public String getOrdersStatus() {
+		return ordersStatus;
+	}
+	/**
+	 * 同团所有订单的状态
+	 * @param ordersStatus
+	 */
+	public void setOrdersStatus(String ordersStatus) {
+		this.ordersStatus = ordersStatus;
+	}
+
 	/**
 	 * 团订单分享发起者
 	 * @return

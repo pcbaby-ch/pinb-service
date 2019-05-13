@@ -80,6 +80,42 @@ public class MapBeanUtil {
 	    }  
 	    return list;  
 	}  
+	
+	/**
+	 * 将对象list转为对象某个字段为的Map，转为map方便索引对象，--将因keyfield而去重(**小心使用，可能丢失数据**)
+	 * @param objList
+	 * @param key 对象中的字段，
+	 * @return
+	 */
+	public static <T> Map<String, Object> objListToMap(List<T> objList,String keyfield) {  
+	    Map<String, Object> map = new HashMap();
+	    if (objList != null && objList.size() > 0) {  
+	        Map<String, Object> mapTemp = null;  
+	        T bean = null;  
+	        for (int i = 0,size = objList.size(); i < size; i++) {  
+	            bean = objList.get(i);  
+	            mapTemp = beanToMap(bean);  
+	            map.put(mapTemp.get(keyfield)+"", bean);
+	        }  
+	    }  
+	    return map;  
+	}  
+	/**
+	 * 将对象map转为对象list，方便输出
+	 * @param map
+	 * @return
+	 */
+	public static <T>List<Object> map2ObjList(Map<String, T>  map) {  
+		List<Object> list = Lists.newArrayList();  
+	    if (map != null && map.size() > 0) {  
+	        T bean = null;  
+	        for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
+	        	Entry<String, T> entry = (Entry<String, T>) iterator.next();
+	        	list.add(entry.getValue());
+			}
+	    }  
+	    return list;  
+	}  
 	  
 	/** 
 	 * 将List<Map<String,Object>>转换为List<T> 

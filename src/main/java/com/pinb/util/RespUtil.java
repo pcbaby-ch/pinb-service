@@ -26,13 +26,8 @@ public class RespUtil {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("total", page.getTotal());
 		map.put("rows", page.getResult());
-		if (page.getTotal() > 0) {
-			map.put("retCode", RespCode.SUCCESS.getCode());
-			map.put("retMsg", RespCode.SUCCESS.getMsg());
-		} else {
-			map.put("retCode", RespCode.FAILURE.getCode());
-			map.put("retMsg", RespCode.FAILURE.getMsg());
-		}
+		map.put("retCode", RespCode.SUCCESS.getCode());
+		map.put("retMsg", RespCode.SUCCESS.getMsg());
 		return map;
 	}
 
