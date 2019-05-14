@@ -27,6 +27,7 @@ public class GroubActivity extends BaseEntity {
 	private String address;
 	// #vo冗余字段
 	private String userImgs;
+	private String ordersStatus;
 	private String relationOrderTrace;
 	private String orderRelationUser;
 	private String distance;
@@ -168,7 +169,7 @@ public class GroubActivity extends BaseEntity {
 	}
 
 	/**
-	 * 活动商品关联订单下参团的用户
+	 * 活动商品分享订单下的同团用户
 	 * 
 	 * @author chenzhao @date May 8, 2019
 	 * @return
@@ -178,13 +179,33 @@ public class GroubActivity extends BaseEntity {
 	}
 
 	/**
-	 * 活动商品关联订单下参团的用户
+	 * 活动商品分享订单下的同团用户
 	 * 
 	 * @author chenzhao @date May 8, 2019
 	 * @param userImgs
 	 */
 	public void setUserImgs(String userImgs) {
 		this.userImgs = userImgs;
+	}
+
+	/**
+	 * 活动商品分享订单下的同团订单状态
+	 * 
+	 * @author chenzhao @date May 14, 2019
+	 * @return
+	 */
+	public String getOrdersStatus() {
+		return ordersStatus;
+	}
+
+	/**
+	 * 活动商品分享订单下的同团订单状态
+	 * 
+	 * @author chenzhao @date May 14, 2019
+	 * @param ordersStatus
+	 */
+	public void setOrdersStatus(String ordersStatus) {
+		this.ordersStatus = ordersStatus;
 	}
 
 	/**

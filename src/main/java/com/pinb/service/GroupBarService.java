@@ -170,7 +170,7 @@ public class GroupBarService {
 	}
 
 	/**
-	 * 加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
+	 * 加载当前用户的商铺的基本信息+商品信息
 	 * 
 	 * @param groupBar
 	 * @return
@@ -185,14 +185,45 @@ public class GroupBarService {
 		if (BeanUtil.checkFieldValueNull(groupBar)) {
 			throw new ServiceException("#店铺基础信息查询失败");
 		}
-		GroubActivity shareGroubActivity = null;
 		// #查询商品信息
 		List<GroubActivity> goodsList = groubActivityService.select(groupBar.getGroubTrace(),
 				groupBar.getRefUserWxUnionid());
+		JSONObject resp = new JSONObject();
+		resp.put("groubInfo", groupBar);
+		resp.put("goodsList", goodsList);
+
+		return resp;
+	}
+
+	/**
+	 * 加载被分享订单的店铺的基本信息+商品信息+商品关联同团订单信息（头像、状态）
+	 * 
+	 * @author chenzhao @date May 14, 2019
+	 * @param groupBar
+	 * @return
+	 */
+	public Object selectOneShare(GroupBar groupBar) {
+		// #入参校验
+		if (StringUtils.isEmpty(groupBar.getGroubTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubTrace");
+		}
+		if (StringUtils.isEmpty(groupBar.getOrderRelationUser())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderRelationUser");
+		}
+		logParams(groupBar);
+		groupBar = groupBarMapper.selectOne(null, groupBar.getGroubTrace());
+		if (BeanUtil.checkFieldValueNull(groupBar)) {
+			throw new ServiceException("#店铺基础信息查询失败");
+		}
+		GroubActivity shareGroubActivity = null;
+		// #查询分享商品店铺下所有活动商品
+		List<GroubActivity> goodsList = groubActivityService.select(groupBar.getGroubTrace(),
+				groupBar.getOrderRelationUser());
 		if (!StringUtils.isEmpty(groupBar.getOrderTrace())) {
 			// 去除分享订单对应的商品
 			GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBar.getOrderTrace(),
-					groupBar.getRefUserWxUnionid());
+					groupBar.getOrderRelationUser());
+			List<GroubaOrder> shareOrderImgs = groubaOrderMapper.selectMyOrder4userImgs(groupBar.getOrderTrace());
 			List<GroubActivity> goodsListTemp = new ArrayList<>();
 			goodsListTemp.addAll(goodsList);
 			for (int i = 0; i < goodsListTemp.size(); i++) {
@@ -205,9 +236,10 @@ public class GroupBarService {
 			}
 			// #整合分享订单信息到分享订单对应活动商品下
 			if (!(shareGroubActivity == null || BeanUtil.checkFieldValueNull(shareGroubActivity))) {
-				shareGroubActivity.setUserImgs(shareOrder.getUserImgs());
-				shareGroubActivity.setRelationOrderTrace(shareOrder.getOrderTrace());
-				shareGroubActivity.setOrderRelationUser(shareOrder.getRefUserWxUnionid());
+				shareGroubActivity.setUserImgs(shareOrderImgs.get(0).getUserImgs());
+				shareGroubActivity.setOrdersStatus(shareOrderImgs.get(0).getOrdersStatus());
+				shareGroubActivity.setRelationOrderTrace(groupBar.getOrderTrace());
+				shareGroubActivity.setOrderRelationUser(groupBar.getOrderRelationUser());
 			}
 		}
 		JSONObject resp = new JSONObject();

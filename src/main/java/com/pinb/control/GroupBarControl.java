@@ -50,6 +50,11 @@ public class GroupBarControl {
 	public Object selectOne(@RequestBody GroupBar groupBar) {
 		return RespUtil.dataResp(groupBarService.selectOne(groupBar));
 	}
+	
+	@PostMapping("selectOneShare")
+	public Object selectOneShare(@RequestBody GroupBar groupBar) {
+		return RespUtil.dataResp(groupBarService.selectOneShare(groupBar));
+	}
 
 	@ApiOperation("店铺入驻-新增")
 	@ApiImplicitParams({
