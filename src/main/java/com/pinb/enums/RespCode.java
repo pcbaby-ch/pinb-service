@@ -62,9 +62,13 @@ public enum RespCode {
 	 */
 	order_unOpenOrder("30007", "参团失败，还未开团"),
 	/**
-	 * "30009", "消费失败，未找到团订单"
+	 * "30009", "参团失败，你已参团"
 	 */
-	order_unExistOrderTrace("30009", "消费失败，未找到团订单"),
+	order_joinedGrouba("30009", "参团失败，你已参团"),
+	/**
+	 * "30009", "未找到团订单"
+	 */
+	order_unExistOrderTrace("30009", "未找到团订单"),
 	/**
 	 * "30011", "消费失败，消费订单不属于该拼吧"
 	 */

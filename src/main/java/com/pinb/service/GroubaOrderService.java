@@ -12,6 +12,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -44,6 +45,13 @@ public class GroubaOrderService {
 	@Autowired
 	GroubActivityService groubActivityService;
 
+	/**
+	 * 开团服务
+	 * 
+	 * @param groubaOrder
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean orderOpen(GroubaOrder groubaOrder) throws Exception {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())) {
@@ -89,6 +97,12 @@ public class GroubaOrderService {
 		}
 	}
 
+	/**
+	 * 参团服务
+	 * 
+	 * @param groubaOrder
+	 * @return
+	 */
 	public boolean orderJoin(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getOrderTrace())) {
@@ -123,13 +137,14 @@ public class GroubaOrderService {
 		groubaOrderParams.setGoodsPrice(oldOrder.getGoodsPrice());
 		groubaOrderParams.setGroubaDiscountAmount(oldOrder.getGroubaDiscountAmount());
 		groubaOrderParams.setGroubaIsnew(oldOrder.getGroubaIsnew());
-		int count = groubaOrderMapper.insert(groubaOrderParams);
-		groubActivityService.share(groubaOrder.getRefGroubaTrace());
-		if (count > 0) {
-			return true;
-		} else {
-			throw new ServiceException(RespCode.FAILURE);
+		int count;
+		try {
+			count = groubaOrderMapper.insert(groubaOrderParams);
+		} catch (DuplicateKeyException e) {
+			throw new ServiceException(RespCode.order_joinedGrouba);
 		}
+		groubActivityService.share(groubaOrder.getRefGroubaTrace());
+		return count > 0;
 	}
 
 	private void logParams(GroubaOrder groubaOrder) {

@@ -50,7 +50,7 @@ public interface GroubaOrderMapper {
 	 * @param orderTraces
 	 * @return
 	 */
-	@Select(value = "<script>select order_trace,GROUP_CONCAT(ref_user_img) userImgs,GROUP_CONCAT(order_status) ordersStatus"
+	@Select(value = "<script>select order_trace,GROUP_CONCAT(ref_user_img) userImgs,GROUP_CONCAT(order_status) ordersStatus,ref_user_wx_unionid"
 			+ " from grouba_order" + " where order_trace in (${orderTraces}) GROUP BY order_trace</script>")
 	public List<GroubaOrder> selectMyOrder4userImgs(@Param(value = "orderTraces") String orderTraces);
 	

@@ -31,6 +31,7 @@ public class GroubActivity extends BaseEntity {
 	private String relationOrderTrace;
 	private String orderRelationUser;
 	private String distance;
+	private boolean isJoined;
 
 	public String getGroubaTrace() {
 		return groubaTrace;
@@ -255,5 +256,14 @@ public class GroubActivity extends BaseEntity {
 	public void setDistance(String distance) {
 		this.distance = distance;
 	}
+
+	public boolean getIsJoined() {
+		return isJoined;
+	}
+
+	public void setIsJoined(boolean isJoined) {
+		this.isJoined = isJoined;
+	}
+	
 
 }

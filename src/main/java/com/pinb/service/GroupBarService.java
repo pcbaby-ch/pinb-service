@@ -3,7 +3,6 @@
  */
 package com.pinb.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +30,7 @@ import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.mapper.GroupBarMapper;
 import com.pinb.util.BeanUtil;
 import com.pinb.util.IpUtils;
+import com.pinb.util.MapBeanUtil;
 
 /**
  * 拼吧-店铺
@@ -146,7 +146,7 @@ public class GroupBarService {
 	}
 
 	private void logParams(GroupBar groupBar) {
-		log.debug("#入参校验通过,#GroubTrace:[{}]", groupBar.getGroubTrace());
+		log.debug("#入参校验通过:[{}]", JSONObject.toJSON(groupBar));
 	}
 
 	public boolean update(GroupBar groupBar) {
@@ -202,32 +202,37 @@ public class GroupBarService {
 	 * @param groupBar
 	 * @return
 	 */
-	public Object selectOneShare(GroupBar groupBar) {
+	public Object selectOneShare(GroupBar groupBarVo) {
 		// #入参校验
-		if (StringUtils.isEmpty(groupBar.getGroubTrace())) {
+		if (StringUtils.isEmpty(groupBarVo.getGroubTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubTrace");
 		}
-		if (StringUtils.isEmpty(groupBar.getOrderRelationUser())) {
+		if (StringUtils.isEmpty(groupBarVo.getOrderRelationUser())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderRelationUser");
 		}
-		logParams(groupBar);
-		groupBar = groupBarMapper.selectOne(null, groupBar.getGroubTrace());
+		if (StringUtils.isEmpty(groupBarVo.getRefUserWxUnionid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");
+		}
+		logParams(groupBarVo);
+		GroupBar groupBar = groupBarMapper.selectOne(null, groupBarVo.getGroubTrace());
 		if (BeanUtil.checkFieldValueNull(groupBar)) {
 			throw new ServiceException("#店铺基础信息查询失败");
 		}
 		GroubActivity shareGroubActivity = null;
 		// #查询分享商品店铺下所有活动商品
-		List<GroubActivity> goodsList = groubActivityService.select(groupBar.getGroubTrace(),
+		List<GroubActivity> goodsList = groubActivityService.select(groupBarVo.getGroubTrace(),
 				groupBar.getOrderRelationUser());
-		if (!StringUtils.isEmpty(groupBar.getOrderTrace())) {
+		if (!StringUtils.isEmpty(groupBarVo.getOrderTrace())) {
 			// 去除分享订单对应的商品
-			GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBar.getOrderTrace(),
-					groupBar.getOrderRelationUser());
-			List<GroubaOrder> shareOrderImgs = groubaOrderMapper.selectMyOrder4userImgs(groupBar.getOrderTrace());
-			List<GroubActivity> goodsListTemp = new ArrayList<>();
-			goodsListTemp.addAll(goodsList);
-			for (int i = 0; i < goodsListTemp.size(); i++) {
-				GroubActivity groubActivity = goodsListTemp.get(i);
+			GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBarVo.getOrderTrace(),
+					groupBarVo.getOrderRelationUser());
+			if (shareOrder == null) {
+				throw new ServiceException(RespCode.order_unExistOrderTrace);
+			}
+			List<GroubaOrder> shareOrderImgs = groubaOrderMapper
+					.selectMyOrder4userImgs("'" + groupBarVo.getOrderTrace() + "'");
+			for (int i = 0; i < goodsList.size(); i++) {
+				GroubActivity groubActivity = goodsList.get(i);
 				if (groubActivity.getGroubaTrace().equals(shareOrder.getRefGroubaTrace())) {
 					shareGroubActivity = goodsList.get(i);
 					goodsList.remove(i);
@@ -235,11 +240,13 @@ public class GroupBarService {
 				}
 			}
 			// #整合分享订单信息到分享订单对应活动商品下
-			if (!(shareGroubActivity == null || BeanUtil.checkFieldValueNull(shareGroubActivity))) {
+			if (shareGroubActivity != null) {
 				shareGroubActivity.setUserImgs(shareOrderImgs.get(0).getUserImgs());
 				shareGroubActivity.setOrdersStatus(shareOrderImgs.get(0).getOrdersStatus());
-				shareGroubActivity.setRelationOrderTrace(groupBar.getOrderTrace());
-				shareGroubActivity.setOrderRelationUser(groupBar.getOrderRelationUser());
+				shareGroubActivity.setRelationOrderTrace(groupBarVo.getOrderTrace());
+				shareGroubActivity.setOrderRelationUser(groupBarVo.getOrderRelationUser());
+				shareGroubActivity.setIsJoined(MapBeanUtil.objectsToSet(shareOrderImgs, "refUserWxUnionid")
+						.contains(groupBarVo.getRefUserWxUnionid()));
 			}
 		}
 		JSONObject resp = new JSONObject();
