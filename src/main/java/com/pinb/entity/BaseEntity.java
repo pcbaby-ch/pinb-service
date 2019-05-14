@@ -1,9 +1,12 @@
 package com.pinb.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * 
  * @author chenzhao @date Apr 9, 2019
  */
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class BaseEntity {
 
 

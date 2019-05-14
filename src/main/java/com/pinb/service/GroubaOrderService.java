@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.JSONScanner;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinb.common.BusinessesFlowNum;
@@ -62,6 +61,21 @@ public class GroubaOrderService {
 		if (StringUtils.isEmpty(groubaOrder.getRefUserImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserImg");
 		}
+		if (StringUtils.isEmpty(groubaOrder.getGoodsName())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "goodsName");
+		}
+		if (StringUtils.isEmpty(groubaOrder.getGoodsImg())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "goodsImg");
+		}
+		if (StringUtils.isEmpty(groubaOrder.getGoodsPrice())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "goodsPrice");
+		}
+		if (StringUtils.isEmpty(groubaOrder.getGroubaDiscountAmount())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "groubaDiscountAmount");
+		}
+		if (StringUtils.isEmpty(groubaOrder.getGroubaIsnew())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "groubaIsnew");
+		}
 		logParams(groubaOrder);
 		groubaOrder.setOrderTrace(BusinessesFlowNum.getNum("GO", RedisConst.groubaOrderTrace));
 		groubaOrder.setOrderExpiredTime(DateUtil.dfyyyy_MM_ddhhmmss.format(
@@ -104,6 +118,11 @@ public class GroubaOrderService {
 		groubaOrderParams.setOrderExpiredTime(oldOrder.getOrderExpiredTime());
 		groubaOrderParams.setRefUserWxUnionid(groubaOrder.getShareUser());
 		groubaOrderParams.setRefUserImg(groubaOrder.getRefUserImg());
+		groubaOrderParams.setGoodsName(oldOrder.getGoodsName());
+		groubaOrderParams.setGoodsImg(oldOrder.getGoodsImg());
+		groubaOrderParams.setGoodsPrice(oldOrder.getGoodsPrice());
+		groubaOrderParams.setGroubaDiscountAmount(oldOrder.getGroubaDiscountAmount());
+		groubaOrderParams.setGroubaIsnew(oldOrder.getGroubaIsnew());
 		int count = groubaOrderMapper.insert(groubaOrderParams);
 		groubActivityService.share(groubaOrder.getRefGroubaTrace());
 		if (count > 0) {

@@ -19,6 +19,11 @@ public class GroubaOrder extends BaseEntity {
 	private String joinSucceedTime;
 	private String consumeTime;
 	private String consumeSuccessTime;
+	private String goodsName;
+	private String goodsImg;
+	private String goodsPrice;
+	private String groubaDiscountAmount;
+	private int groubaIsnew;
 	// #vo冗余字段
 	private String userImgs;
 	private String ordersStatus;
@@ -110,6 +115,46 @@ public class GroubaOrder extends BaseEntity {
 
 	public void setConsumeSuccessTime(String consumeSuccessTime) {
 		this.consumeSuccessTime = consumeSuccessTime;
+	}
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public String getGoodsImg() {
+		return goodsImg;
+	}
+
+	public void setGoodsImg(String goodsImg) {
+		this.goodsImg = goodsImg;
+	}
+
+	public String getGoodsPrice() {
+		return goodsPrice;
+	}
+
+	public void setGoodsPrice(String goodsPrice) {
+		this.goodsPrice = goodsPrice;
+	}
+
+	public String getGroubaDiscountAmount() {
+		return groubaDiscountAmount;
+	}
+
+	public void setGroubaDiscountAmount(String groubaDiscountAmount) {
+		this.groubaDiscountAmount = groubaDiscountAmount;
+	}
+
+	public int getGroubaIsnew() {
+		return groubaIsnew;
+	}
+
+	public void setGroubaIsnew(int groubaIsnew) {
+		this.groubaIsnew = groubaIsnew;
 	}
 
 	public String getUserImgs() {
