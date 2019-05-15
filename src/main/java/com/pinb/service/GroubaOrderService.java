@@ -148,9 +148,16 @@ public class GroubaOrderService {
 	}
 
 	private void logParams(GroubaOrder groubaOrder) {
-		log.info("#入参校验通过,#OrderTrace:[{}]", groubaOrder.getOrderTrace());
+		log.info("#入参校验通过:[{}]", JSONObject.toJSON(groubaOrder));
 	}
 
+	/**
+	 * 扫描消费订单
+	 * 
+	 * @author chenzhao @date May 15, 2019
+	 * @param groubaOrder
+	 * @return
+	 */
 	public boolean orderConsume(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getOrderTrace())) {
@@ -182,11 +189,7 @@ public class GroubaOrderService {
 		groubaOrderParams.setOrderStatus(OrderStatus.consume_success.getCode() + "");
 
 		int count = groubaOrderMapper.update(groubaOrderParams);
-		if (count > 0) {
-			return true;
-		} else {
-			throw new ServiceException(RespCode.FAILURE);
-		}
+		return count > 0;
 	}
 
 	public Page<?> select(GroubaOrder groubaOrder) {
@@ -244,25 +247,6 @@ public class GroubaOrderService {
 		map.put("retCode", RespCode.SUCCESS.getCode());
 		map.put("retMsg", RespCode.SUCCESS.getMsg());
 		return map;
-	}
-
-	/**
-	 * 查询分享订单
-	 * 
-	 * @author chenzhao @date May 8, 2019
-	 * @param groubaOrder
-	 * @return
-	 */
-	public List<GroubaOrder> selectShareOrder(GroubaOrder groubaOrder) {
-		// #入参校验
-		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace()) && StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())
-				&& StringUtils.isEmpty(groubaOrder.getOrderStatus())
-				&& StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refroubTrace、refGroubaTrace、orderStatus，至少传一个");
-		}
-		logParams(groubaOrder);
-		return groubaOrderMapper.select(null, groubaOrder.getRefGroubTrace(), groubaOrder.getRefGroubaTrace(),
-				groubaOrder.getOrderStatus(), null);
 	}
 
 }

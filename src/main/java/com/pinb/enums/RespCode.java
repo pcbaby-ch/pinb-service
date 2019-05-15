@@ -54,9 +54,9 @@ public enum RespCode {
 	 */
 	order_unJoinSuccess("30001", "未成团，不能消费"),
 	/**
-	 * "30005", "已成团，不能重复消费"
+	 * "30005", "已消费，不能重复消费"
 	 */
-	order_unRepeatConsume("30005", "已成团，不能重复消费"),
+	order_unRepeatConsume("30005", "已消费，不能重复消费"),
 	/**
 	 * "30007", "参团失败，还未开团
 	 */

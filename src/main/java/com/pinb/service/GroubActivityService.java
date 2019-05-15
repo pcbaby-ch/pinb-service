@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinb.common.BusinessesFlowNum;
@@ -71,17 +72,18 @@ public class GroubActivityService {
 		if (StringUtils.isEmpty(groubActivity.getCity())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "City");
 		}
-		log.info("#入参校验通过");
+		logParams(groubActivity);
 		groubActivity.setGroubaTrace(BusinessesFlowNum.getNum("GA", RedisConst.groubActivityTrace));
 		return groubActivityMapper.insert(groubActivity) > 0;
 	}
 
 	/**
 	 * 活动商品分享计数
+	 * 
 	 * @param groubActivity
 	 * @return
 	 */
-	public boolean share(String  groubaTrace) {
+	public boolean share(String groubaTrace) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaTrace)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaTrace");
@@ -90,7 +92,7 @@ public class GroubActivityService {
 	}
 
 	private void logParams(GroubActivity groubActivity) {
-		log.debug("#入参校验通过,#GroubaTrace:[{}]", groubActivity.getGroubaTrace());
+		log.debug("#入参校验通过:[{}]", JSONObject.toJSON(groubActivity));
 	}
 
 	public List<GroubActivity> select(String refGroubTrace, String refUserWxUnionid) {

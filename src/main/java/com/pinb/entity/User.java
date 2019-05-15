@@ -20,6 +20,7 @@ public class User extends BaseEntity {
 	private String platform;
 	private String benchmark;
 	private String nickname;
+	private int gender;
 	private String city;
 	private String province;
 	private String latitude;
@@ -112,6 +113,14 @@ public class User extends BaseEntity {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public int getGender() {
+		return gender;
+	}
+
+	public void setGender(int gender) {
+		this.gender = gender;
 	}
 
 	public String getCity() {

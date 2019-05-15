@@ -200,7 +200,7 @@ public class GroupBarService {
 	 * 
 	 * @author chenzhao @date May 14, 2019
 	 * @param groupBar
-	 * @return
+	 * @return {返回goodsList + shareGoods（可参团 | 已参团）+ goodsList}
 	 */
 	public Object selectOneShare(GroupBar groupBarVo) {
 		// #入参校验

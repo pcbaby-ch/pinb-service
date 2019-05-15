@@ -185,7 +185,7 @@ public class UserService {
 			return unionUser;
 		}
 	}
-	
+
 	public Object wxLogin(UserVo user) {
 		JSONObject openidJson = getOpenid(user);
 		user.setSessionKey(openidJson.getString("session_key"));
@@ -193,6 +193,7 @@ public class UserService {
 		/** unionid获取是否成功{unionid不为空&unionid不等于openid} ***************************/
 		user.setWxUnionid(StringUtils.isEmpty(openidJson.getString("unionid")) ? openidJson.getString("openid")
 				: openidJson.getString("unionid"));
+		user.setIsOpenGroub("0");
 
 		log.info("#根据unionid查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
 		User unionUser = userMapper.selectOne(user.getWxUnionid(), null);
@@ -213,7 +214,7 @@ public class UserService {
 	 * @param user
 	 */
 	private void logParams(User user) {
-		log.debug("#入参校验通过,#UserWxUnionid:[{}]", user.getWxUnionid());
+		log.debug("#入参校验通过:[{}]", JSONObject.toJSON(user));
 	}
 
 	public static void main(String[] args) {

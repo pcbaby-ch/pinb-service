@@ -38,9 +38,9 @@ public interface UserMapper {
 
 	@Insert(value = "INSERT INTO user"
 			+ " (`wx_unionid`,`wx_openid`,`phone`,`head_img`,`is_open_groub`,`register_ip`"
-			+ ",`brand`,`model`,`system`,`platform`,`benchmark`,`nickname`,`city`,`province`,`latitude`,`longitude`) "
+			+ ",`brand`,`model`,`system`,`platform`,`benchmark`,`nickname`,`gender`,`city`,`province`,`latitude`,`longitude`) "
 			+ " VALUES (#{wxUnionid},#{wxOpenid},#{phone},#{headImg},#{isOpenGroub},#{clientIp}"
-			+ ",#{brand},#{model},#{system},#{platform},#{benchmark},#{nickname},#{city},#{province},#{latitude},#{longitude})")
+			+ ",#{brand},#{model},#{system},#{platform},#{benchmark},#{nickname},#{gender},#{city},#{province},#{latitude},#{longitude})")
 	public int insert(User user);
 	
 	@Update(value = "<script>UPDATE user SET  uptime=NOW()"
