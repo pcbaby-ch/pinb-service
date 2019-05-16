@@ -120,7 +120,7 @@ public class MapBeanUtil {
 		StringBuffer strb = new StringBuffer();
 		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
 			Object object = (Object) iterator.next();
-			strb.append(object).append(",");
+			strb.append("'").append(object).append("',");
 		}
 		return strb.substring(0, strb.lastIndexOf(","));
 	}

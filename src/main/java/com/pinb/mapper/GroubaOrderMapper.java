@@ -50,7 +50,7 @@ public interface GroubaOrderMapper {
 	 * @param orderTraces
 	 * @return
 	 */
-	@Select(value = "<script>select order_trace,GROUP_CONCAT(ref_user_img ORDER BY id) userImgs,GROUP_CONCAT(order_status ORDER BY id) ordersStatus,GROUP_CONCAT(ref_user_wx_unionid ORDER BY id) orderRefUsers"
+	@Select(value = "<script>select order_trace,ref_grouba_trace,GROUP_CONCAT(ref_user_img ORDER BY id) userImgs,GROUP_CONCAT(order_status ORDER BY id) ordersStatus,GROUP_CONCAT(ref_user_wx_unionid ORDER BY id) orderRefUsers"
 			+ " from grouba_order" + "<where>"
 			+ "<if test=\"orderTraces != null and orderTraces != '' \">" + " and order_trace in (${orderTraces})" + "</if>"
 			+ "<if test=\"refGroubTrace != null and refGroubTrace != '' \">" + " and ref_groub_trace = #{refGroubTrace}" + "</if>"

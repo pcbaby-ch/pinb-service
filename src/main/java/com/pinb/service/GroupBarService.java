@@ -3,10 +3,8 @@
  */
 package com.pinb.service;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -235,16 +233,22 @@ public class GroupBarService {
 		Set<Object> orderTraceSet = MapBeanUtil.objectsToSet(orderList, "orderTrace");
 		String orderTraces = MapBeanUtil.setToStrs(orderTraceSet);
 		if (!StringUtils.isEmpty(groupBarVo.getOrderTrace())) {
-			orderTraces += "," + groupBarVo.getOrderTrace();
+			orderTraces += ",'" + groupBarVo.getOrderTrace() + "'";
 		}
 		List<GroubaOrder> orderUserImgs = groubaOrderMapper.selectMyOrder4userImgs(orderTraces, null);
 		Map<String, Object> goodsMap = MapBeanUtil.objListToMap(goodsList, "groubaTrace");
 		log.info("#所有数据查询end-组装响应数据start,#groubTrace:[{}]，#相关订单:[{}]", groupBarVo.getGroubTrace(),
 				JSONObject.toJSON(orderList));
 		GroubActivity shareGroubActivity = null;
-		GroubaOrder shareOrder = 	groubaOrderMapper.selectOne(groupBarVo.getOrderTrace(), groupBarVo.getOrderLeader());
+		GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBarVo.getOrderTrace(), groupBarVo.getOrderLeader());
+		if (shareOrder == null) {
+			throw new ServiceException(RespCode.order_unExistOrderTrace);
+		}
 		for (int i = 0; i < goodsList.size(); i++) {
 			GroubActivity goods = goodsList.get(i);
+			if (goods.getGroubaTrace().equals(shareOrder.getRefGroubaTrace())) {
+				shareGroubActivity = goods;
+			}
 			for (int j = 0; j < orderUserImgs.size(); j++) {
 				GroubaOrder orderUserImg = orderUserImgs.get(j);
 				if (goods.getGroubaTrace().equals(orderUserImg.getRefGroubaTrace())) {
@@ -259,6 +263,9 @@ public class GroupBarService {
 				}
 			}
 		}
+		shareGroubActivity.setOrderRefUsers(shareOrder.getOrderRefUsers());
+		shareGroubActivity.setUserImgs(shareOrder.getUserImgs());
+		shareGroubActivity.setOrdersStatus(shareOrder.getOrdersStatus());
 		JSONObject resp = new JSONObject();
 		resp.put("groubInfo", groupBar);
 		resp.put("goodsList", goodsList);// 普通商品，可能携带和我相关的订单头像信息
