@@ -14,6 +14,7 @@ public class GroubaOrder extends BaseEntity {
 	private String orderExpiredTime;
 	private String orderStatus;
 	private String refUserWxUnionid;
+	private String leader;
 	private String refUserImg;
 	private String orderShareCount;
 	private String joinSucceedTime;
@@ -25,9 +26,28 @@ public class GroubaOrder extends BaseEntity {
 	private String groubaDiscountAmount;
 	private int groubaIsnew;
 	// #vo冗余字段
+	private String orderRefUsers;
 	private String userImgs;
 	private String ordersStatus;
-	private String shareUser;
+
+	/**
+	 * @param orderTrace
+	 * @param refUserWxUnionid
+	 * @param orderStatus
+	 */
+	public GroubaOrder(String orderTrace, String refUserWxUnionid, String orderStatus) {
+		super();
+		this.orderTrace = orderTrace;
+		this.refUserWxUnionid = refUserWxUnionid;
+		this.orderStatus = orderStatus;
+	}
+
+	/**
+	 * 
+	 */
+	public GroubaOrder() {
+		super();
+	}
 
 	public String getOrderTrace() {
 		return orderTrace;
@@ -75,6 +95,14 @@ public class GroubaOrder extends BaseEntity {
 
 	public void setRefUserWxUnionid(String refUserWxUnionid) {
 		this.refUserWxUnionid = refUserWxUnionid;
+	}
+
+	public String getLeader() {
+		return leader;
+	}
+
+	public void setLeader(String leader) {
+		this.leader = leader;
 	}
 
 	public String getRefUserImg() {
@@ -157,6 +185,26 @@ public class GroubaOrder extends BaseEntity {
 		this.groubaIsnew = groubaIsnew;
 	}
 
+	/**
+	 * 同团所有订单的归属用户
+	 * 
+	 * @author chenzhao @date May 16, 2019
+	 * @return
+	 */
+	public String getOrderRefUsers() {
+		return orderRefUsers;
+	}
+
+	/**
+	 * 同团所有订单的归属用户
+	 * 
+	 * @author chenzhao @date May 16, 2019
+	 * @param orderRefUsers
+	 */
+	public void setOrderRefUsers(String orderRefUsers) {
+		this.orderRefUsers = orderRefUsers;
+	}
+
 	public String getUserImgs() {
 		return userImgs;
 	}
@@ -164,35 +212,23 @@ public class GroubaOrder extends BaseEntity {
 	public void setUserImgs(String userImgs) {
 		this.userImgs = userImgs;
 	}
+
 	/**
 	 * 同团所有订单的状态
+	 * 
 	 * @return
 	 */
 	public String getOrdersStatus() {
 		return ordersStatus;
 	}
+
 	/**
 	 * 同团所有订单的状态
+	 * 
 	 * @param ordersStatus
 	 */
 	public void setOrdersStatus(String ordersStatus) {
 		this.ordersStatus = ordersStatus;
 	}
-
-	/**
-	 * 团订单分享发起者
-	 * @return
-	 */
-	public String getShareUser() {
-		return shareUser;
-	}
-	/**
-	 * 团订单分享发起者
-	 * @param shareUser
-	 */
-	public void setShareUser(String shareUser) {
-		this.shareUser = shareUser;
-	}
-	
 
 }

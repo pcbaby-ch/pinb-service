@@ -17,7 +17,7 @@ public class GroupBar extends BaseEntity {
 	private String isOpen;
 	// vo冗余添加部分属性
 	private String orderTrace;
-	private String orderRelationUser;
+	private String orderLeader;
 
 	public String getGroubTrace() {
 		return groubTrace;
@@ -74,7 +74,11 @@ public class GroupBar extends BaseEntity {
 	public void setIsOpen(String isOpen) {
 		this.isOpen = isOpen;
 	}
-
+	/**
+	 * 被分享的订单
+	 * @author chenzhao @date May 16, 2019
+	 * @return
+	 */
 	public String getOrderTrace() {
 		return orderTrace;
 	}
@@ -83,22 +87,20 @@ public class GroupBar extends BaseEntity {
 		this.orderTrace = orderTrace;
 	}
 	/**
-	 * 分享订单所属用户
-	 * @author chenzhao @date May 8, 2019
+	 *  被分享订单的团长
+	 * @author chenzhao @date May 16, 2019
 	 * @return
 	 */
-	public String getOrderRelationUser() {
-		return orderRelationUser;
+	public String getOrderLeader() {
+		return orderLeader;
 	}
 	/**
-	 * 分享订单所属用户
-	 * @author chenzhao @date May 8, 2019
-	 * @param orderRelationUser
+	 * 被分享订单的团长
+	 * @author chenzhao @date May 16, 2019
+	 * @param orderLeader
 	 */
-	public void setOrderRelationUser(String orderRelationUser) {
-		this.orderRelationUser = orderRelationUser;
+	public void setOrderLeader(String orderLeader) {
+		this.orderLeader = orderLeader;
 	}
-	
-	
 
 }

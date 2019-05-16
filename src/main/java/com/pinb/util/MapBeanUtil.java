@@ -87,7 +87,7 @@ public class MapBeanUtil {
 	}
 
 	/**
-	 * 将List<T>转换为Set<T>
+	 * 将List<T>转换为Set<T> ,会过滤重复数据(**小心使用，可能丢失数据**)
 	 * 
 	 * @param objList
 	 * @return
@@ -107,6 +107,22 @@ public class MapBeanUtil {
 			}
 		}
 		return set;
+	}
+
+	/**
+	 * 将set转为，分隔的字符串
+	 * 
+	 * @author chenzhao @date May 16, 2019
+	 * @param set
+	 * @return
+	 */
+	public static String setToStrs(Set set) {
+		StringBuffer strb = new StringBuffer();
+		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
+			Object object = (Object) iterator.next();
+			strb.append(object).append(",");
+		}
+		return strb.substring(0, strb.lastIndexOf(","));
 	}
 
 	/**

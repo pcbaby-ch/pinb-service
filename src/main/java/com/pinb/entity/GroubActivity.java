@@ -26,10 +26,9 @@ public class GroubActivity extends BaseEntity {
 	private String longitude;
 	private String address;
 	// #vo冗余字段
+	private String orderRefUsers;
 	private String userImgs;
 	private String ordersStatus;
-	private String relationOrderTrace;
-	private String orderRelationUser;
 	private String distance;
 	private boolean isJoined;
 
@@ -170,6 +169,30 @@ public class GroubActivity extends BaseEntity {
 	}
 
 	/**
+	 * 同团所有订单的归属用户
+	 * 
+	 * @author chenzhao @date May 16, 2019
+	 * @return
+	 */
+	public String getOrderRefUsers() {
+		return orderRefUsers;
+	}
+
+	/**
+	 * 同团所有订单的归属用户
+	 * 
+	 * @author chenzhao @date May 16, 2019
+	 * @param orderRefUsers
+	 */
+	public void setOrderRefUsers(String orderRefUsers) {
+		this.orderRefUsers = orderRefUsers;
+	}
+
+	public void setJoined(boolean isJoined) {
+		this.isJoined = isJoined;
+	}
+
+	/**
 	 * 活动商品分享订单下的同团用户
 	 * 
 	 * @author chenzhao @date May 8, 2019
@@ -209,46 +232,6 @@ public class GroubActivity extends BaseEntity {
 		this.ordersStatus = ordersStatus;
 	}
 
-	/**
-	 * 活动商品关联订单trace
-	 * 
-	 * @author chenzhao @date May 8, 2019
-	 * @return
-	 */
-	public String getRelationOrderTrace() {
-		return relationOrderTrace;
-	}
-
-	/**
-	 * 活动商品关联订单trace
-	 * 
-	 * @author chenzhao @date May 8, 2019
-	 * @param refOrderTrace
-	 */
-	public void setRelationOrderTrace(String relationOrderTrace) {
-		this.relationOrderTrace = relationOrderTrace;
-	}
-
-	/**
-	 * 订单所属用户（wx_unionid）
-	 * 
-	 * @author chenzhao @date May 8, 2019
-	 * @return
-	 */
-	public String getOrderRelationUser() {
-		return orderRelationUser;
-	}
-
-	/**
-	 * 订单所属用户（wx_unionid）
-	 * 
-	 * @author chenzhao @date May 8, 2019
-	 * @param orderRefUser
-	 */
-	public void setOrderRelationUser(String orderRelationUser) {
-		this.orderRelationUser = orderRelationUser;
-	}
-
 	public String getDistance() {
 		return distance;
 	}
@@ -264,6 +247,5 @@ public class GroubActivity extends BaseEntity {
 	public void setIsJoined(boolean isJoined) {
 		this.isJoined = isJoined;
 	}
-	
 
 }

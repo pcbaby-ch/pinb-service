@@ -22,7 +22,6 @@ import com.pinb.entity.GroubActivity;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroubActivityMapper;
 import com.pinb.util.MapDistance;
-import com.pinb.util.RespUtil;
 
 /**
  * 拼吧-活动
@@ -110,15 +109,6 @@ public class GroubActivityService {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace|refUserWxUnionid");
 		}
 		return groubActivityMapper.delete(refGroubTrace, refUserWxUnionid) > 0;
-	}
-
-	public Object selectOne(GroubActivity groubActivity) {
-		// #入参校验
-		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "getGroubaTrace");
-		}
-		logParams(groubActivity);
-		return RespUtil.dataResp(groubActivityMapper.selectOne(groubActivity.getGroubaTrace()));
 	}
 
 	/**
