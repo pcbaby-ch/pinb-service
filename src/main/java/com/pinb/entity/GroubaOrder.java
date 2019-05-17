@@ -29,6 +29,9 @@ public class GroubaOrder extends BaseEntity {
 	private String orderRefUsers;
 	private String userImgs;
 	private String ordersStatus;
+	private boolean isJoined;
+	private String shareOrder;
+	private String shareLeader;
 
 	/**
 	 * @param orderTrace
@@ -230,5 +233,30 @@ public class GroubaOrder extends BaseEntity {
 	public void setOrdersStatus(String ordersStatus) {
 		this.ordersStatus = ordersStatus;
 	}
+
+	public boolean getIsJoined() {
+		return isJoined;
+	}
+
+	public void setIsJoined(boolean isJoined) {
+		this.isJoined = isJoined;
+	}
+
+	public String getShareOrder() {
+		return shareOrder;
+	}
+
+	public void setShareOrder(String shareOrder) {
+		this.shareOrder = shareOrder;
+	}
+
+	public String getShareLeader() {
+		return shareLeader;
+	}
+
+	public void setShareLeader(String shareLeader) {
+		this.shareLeader = shareLeader;
+	}
+
 
 }

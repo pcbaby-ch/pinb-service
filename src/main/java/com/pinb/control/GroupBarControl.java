@@ -53,7 +53,7 @@ public class GroupBarControl {
 	
 	@PostMapping("selectOneShare")
 	public Object selectOneShare(@RequestBody GroupBar groupBar) {
-		return RespUtil.dataResp(groupBarService.selectOneShare(groupBar));
+		return RespUtil.dataResp(groupBarService.getOneShopShare(groupBar));
 	}
 
 	@ApiOperation("店铺入驻-新增")

@@ -32,20 +32,9 @@ public class GroubaOrderControl {
 	@Autowired
 	private GroubaOrderService groubaOrderService;
 
-	@ApiOperation("订单list数据集查询 {店铺所有成团订单、vip店长统计报表功能（TODO）}")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "店铺所属用户", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "refroubTrace", value = "归属店铺，以下字段至少传一个或多个", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "refGroubaTrace", value = "归属活动", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "orderStatus", value = "订单状态", required = false, dataType = "string"), })
-	@PostMapping("select")
-	public Object select(@RequestBody GroubaOrder groubaOrder) {
-		return RespUtil.listResp(groubaOrderService.select(groubaOrder));
-	}
-	
 	@PostMapping("selectMyOrder4user")
 	public Object selectMyOrder4user(@RequestBody GroubaOrder groubaOrder) {
-		return RespUtil.dataResp(groubaOrderService.selectMyOrder4user(groubaOrder));
+		return RespUtil.dataResp(groubaOrderService.getMyOrder4user(groubaOrder));
 	}
 
 	@ApiOperation("开团下单")

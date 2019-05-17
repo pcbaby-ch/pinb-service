@@ -106,7 +106,7 @@ public class MapBeanUtil {
 				set.add(map.get(fieldKey));
 			}
 		}
-		return set;
+		return set != null && set.size() > 0 ? set : null;
 	}
 
 	/**
@@ -118,6 +118,9 @@ public class MapBeanUtil {
 	 */
 	public static String setToStrs(Set set) {
 		StringBuffer strb = new StringBuffer();
+		if (set == null || set.size() <= 0) {
+			return strb.toString();
+		}
 		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
 			Object object = (Object) iterator.next();
 			strb.append("'").append(object).append("',");

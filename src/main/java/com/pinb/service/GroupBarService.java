@@ -3,6 +3,7 @@
  */
 package com.pinb.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -198,80 +199,111 @@ public class GroupBarService {
 	}
 
 	/**
-	 * 加载被分享订单的店铺的基本信息+商品信息+商品关联同团订单信息（头像、状态）
+	 * 加载店铺的基本信息+商品信息+商品关联同团订单信息（头像、状态）{分享订单的信息可选}
 	 * {GroubTrace、OrderTrace、OrderLeader、RefUserWxUnionid}
 	 * 
 	 * @author chenzhao @date May 14, 2019
 	 * @param groupBar
 	 * @return {返回goodsList + shareGoods（可参团 | 已参团）+ goodsList}
 	 */
-	public Object selectOneShare(GroupBar groupBarVo) {
+	public Object getOneShopShare(GroupBar groupBarVo) {
 		// #入参校验
 		if (StringUtils.isEmpty(groupBarVo.getGroubTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubTrace");
 		}
-		if (StringUtils.isEmpty(groupBarVo.getOrderTrace())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderTrace");
-		}
-		if (StringUtils.isEmpty(groupBarVo.getOrderLeader())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderLeader");
+		if (!StringUtils.isEmpty(groupBarVo.getOrderTrace())) {
+			if (StringUtils.isEmpty(groupBarVo.getOrderLeader())) {
+				throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderLeader");
+			}
 		}
 		if (StringUtils.isEmpty(groupBarVo.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");
 		}
 		logParams(groupBarVo);
 		GroupBar groupBar = groupBarMapper.selectOne(null, groupBarVo.getGroubTrace());
-		log.info("#店铺信息查询end-店铺商品查询start,#groubTrace:[{}]", groupBarVo.getGroubTrace());
+		log.info("#店铺信息查询end-商品查询start,#groubTrace:[{}]", groupBarVo.getGroubTrace());
 		if (BeanUtil.checkFieldValueNull(groupBar)) {
 			throw new ServiceException("#店铺基础信息查询失败");
 		}
 		// #查询关联店铺下所有活动商品
 		List<GroubActivity> goodsList = groubActivityService.select(groupBarVo.getGroubTrace(), null);
-		log.info("#店铺商品查询end-相关订单头像信息查询start,#groubTrace:[{}]", groupBarVo.getGroubTrace());
-		List<GroubaOrder> orderList = groubaOrderMapper.selectMyOrder4Groub(groupBarVo.getGroubTrace(),
-				groupBarVo.getRefUserWxUnionid());
-		Set<Object> orderTraceSet = MapBeanUtil.objectsToSet(orderList, "orderTrace");
-		String orderTraces = MapBeanUtil.setToStrs(orderTraceSet);
-		if (!StringUtils.isEmpty(groupBarVo.getOrderTrace())) {
-			orderTraces += ",'" + groupBarVo.getOrderTrace() + "'";
-		}
-		List<GroubaOrder> orderUserImgs = groubaOrderMapper.selectMyOrder4userImgs(orderTraces, null);
-		Map<String, Object> goodsMap = MapBeanUtil.objListToMap(goodsList, "groubaTrace");
-		log.info("#所有数据查询end-组装响应数据start,#groubTrace:[{}]，#相关订单:[{}]", groupBarVo.getGroubTrace(),
-				JSONObject.toJSON(orderList));
-		GroubActivity shareGroubActivity = null;
-		GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBarVo.getOrderTrace(), groupBarVo.getOrderLeader());
-		if (shareOrder == null) {
-			throw new ServiceException(RespCode.order_unExistOrderTrace);
-		}
-		for (int i = 0; i < goodsList.size(); i++) {
-			GroubActivity goods = goodsList.get(i);
-			if (goods.getGroubaTrace().equals(shareOrder.getRefGroubaTrace())) {
-				shareGroubActivity = goods;
-			}
-			for (int j = 0; j < orderUserImgs.size(); j++) {
-				GroubaOrder orderUserImg = orderUserImgs.get(j);
-				if (goods.getGroubaTrace().equals(orderUserImg.getRefGroubaTrace())) {
-					goods.setOrderRefUsers(orderUserImg.getOrderRefUsers());
-					goods.setUserImgs(orderUserImg.getUserImgs());
-					goods.setOrdersStatus(orderUserImg.getOrdersStatus());
-				}
-				if (orderUserImg.getRefGroubaTrace().equals(shareOrder.getRefGroubaTrace())) {
-					shareOrder.setOrderRefUsers(orderUserImg.getOrderRefUsers());
-					shareOrder.setUserImgs(orderUserImg.getUserImgs());
-					shareOrder.setOrdersStatus(orderUserImg.getOrdersStatus());
-				}
-			}
-		}
-		shareGroubActivity.setOrderRefUsers(shareOrder.getOrderRefUsers());
-		shareGroubActivity.setUserImgs(shareOrder.getUserImgs());
-		shareGroubActivity.setOrdersStatus(shareOrder.getOrdersStatus());
 		JSONObject resp = new JSONObject();
+		log.info("#商品查询end-头像信息查询start,#groubTrace:[{}]", groupBarVo.getGroubTrace());
+		if (!StringUtils.isEmpty(groupBarVo.getOrderTrace())) {
+			GroubActivity shareGroubActivity = getGoodsImgs(groupBarVo, goodsList);
+			resp.put("shareGoods", shareGroubActivity);// 被分享商品，携带被分享团的订单头像信息
+		}
+		log.info("#头像信息查询end-END,#groubTrace:[{}]", groupBarVo.getGroubTrace());
 		resp.put("groubInfo", groupBar);
 		resp.put("goodsList", goodsList);// 普通商品，可能携带和我相关的订单头像信息
-		resp.put("shareGoods", shareGroubActivity);// 被分享商品，携带被分享团的订单头像信息
-
 		return resp;
+	}
+
+	/**
+	 * 获取商铺商品+分享商品下，相关团的订单头像、状态
+	 * 
+	 * @author chenzhao @date May 17, 2019
+	 * @param groupBarVo
+	 * @param goodsList
+	 * @return
+	 */
+	private GroubActivity getGoodsImgs(GroupBar groupBarVo, List<GroubActivity> goodsList) {
+		List<GroubaOrder> orderList = groubaOrderMapper.selectMyOrder4Groub(groupBarVo.getGroubTrace(),
+				groupBarVo.getRefUserWxUnionid());
+		GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBarVo.getOrderTrace(), groupBarVo.getOrderLeader());
+		if (orderList == null && shareOrder == null) {
+			return null;
+		}
+		GroubActivity shareGoods = null;
+		Set<Object> orderTraceSet = MapBeanUtil.objectsToSet(orderList, "orderTrace");
+		String orderTraces = orderTraceSet == null ? "" : MapBeanUtil.setToStrs(orderTraceSet);
+		if (shareOrder != null) {
+			orderTraces = StringUtils.isEmpty(orderTraces) ? "'" + groupBarVo.getOrderTrace() + "'"
+					: orderTraces + ",'" + groupBarVo.getOrderTrace() + "'";
+		}
+		List<GroubaOrder> orderUserImgs = groubaOrderMapper.selectMyOrder4userImgs(orderTraces, null);
+		log.info("#所有数据查询end-组装响应数据start,#groubTrace:[{}]，#相关订单:[{}]", groupBarVo.getGroubTrace(),
+				JSONObject.toJSON(orderList));
+		Map<String, Object> groubaImgMap = MapBeanUtil.objListToMap(orderUserImgs, "refGroubaTrace");
+		int removeIndex = -1;
+		for (int i = 0; i < goodsList.size(); i++) {
+			GroubActivity goods = goodsList.get(i);
+			if (shareOrder != null && goods.getGroubaTrace().equals(shareOrder.getRefGroubaTrace())) {
+				shareGoods = goods;
+				removeIndex = i;
+			}
+			if (groubaImgMap.containsKey(goods.getGroubaTrace())) {// 整合店铺商品的订单头像信息
+				GroubaOrder orderImgs = (GroubaOrder) groubaImgMap.get(goods.getGroubaTrace());
+				goods.setOrderRefUsers(orderImgs.getOrderRefUsers());
+				goods.setUserImgs(orderImgs.getUserImgs());
+				goods.setOrdersStatus(orderImgs.getOrdersStatus());
+				if (orderImgs.getOrderRefUsers().contains(groupBarVo.getRefUserWxUnionid())
+						|| goods.getGroubaSize() == orderImgs.getOrderRefUsers().split(",").length) {
+					// #如果我已参团，或者团已满，
+					goods.setIsJoined(true);
+				}
+				goods.setShareOrder(orderImgs.getOrderTrace());
+				goods.setShareLeader(orderImgs.getLeader());
+			}
+		}
+		// #店铺商品list中，去除分享商品
+		if (removeIndex >= 0) {
+			goodsList.remove(removeIndex);
+		}
+		if (shareGoods != null && groubaImgMap.containsKey(shareGoods.getGroubaTrace())) {// 整合分享商品的订单头像信息
+			GroubaOrder orderImgs = (GroubaOrder) groubaImgMap.get(shareGoods.getGroubaTrace());
+			shareGoods.setOrderRefUsers(orderImgs.getOrderRefUsers());
+			shareGoods.setUserImgs(orderImgs.getUserImgs());
+			shareGoods.setOrdersStatus(orderImgs.getOrdersStatus());
+			if (orderImgs.getOrderRefUsers().contains(groupBarVo.getRefUserWxUnionid())
+					|| shareGoods.getGroubaSize() == orderImgs.getOrderRefUsers().split(",").length) {
+				// #如果我已参团，或者团已满，
+				shareGoods.setIsJoined(true);
+			}
+			shareGoods.setShareOrder(shareOrder.getOrderTrace());
+			shareGoods.setShareLeader(shareOrder.getLeader());
+		}
+		return shareGoods;
 	}
 
 }

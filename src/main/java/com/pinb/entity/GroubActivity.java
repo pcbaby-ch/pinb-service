@@ -31,6 +31,8 @@ public class GroubActivity extends BaseEntity {
 	private String ordersStatus;
 	private String distance;
 	private boolean isJoined;
+	private String shareOrder;
+	private String shareLeader;
 
 	public String getGroubaTrace() {
 		return groubaTrace;
@@ -246,6 +248,46 @@ public class GroubActivity extends BaseEntity {
 
 	public void setIsJoined(boolean isJoined) {
 		this.isJoined = isJoined;
+	}
+
+	/**
+	 * 分享订单
+	 * 
+	 * @author chenzhao @date May 17, 2019
+	 * @return
+	 */
+	public String getShareOrder() {
+		return shareOrder;
+	}
+
+	/**
+	 * 分享订单
+	 * 
+	 * @author chenzhao @date May 17, 2019
+	 * @param shareOrder
+	 */
+	public void setShareOrder(String shareOrder) {
+		this.shareOrder = shareOrder;
+	}
+
+	/**
+	 * 分享订单-所属团团长
+	 * 
+	 * @author chenzhao @date May 17, 2019
+	 * @return
+	 */
+	public String getShareLeader() {
+		return shareLeader;
+	}
+
+	/**
+	 * 分享订单-所属团团长
+	 * 
+	 * @author chenzhao @date May 17, 2019
+	 * @param shareLeader
+	 */
+	public void setShareLeader(String shareLeader) {
+		this.shareLeader = shareLeader;
 	}
 
 }

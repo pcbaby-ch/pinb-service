@@ -46,11 +46,11 @@ public interface GroubaOrderMapper {
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" + "</where></script>")
 	public List<GroubaOrder> selectMyOrder4user(@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 	/**
-	 * 查询相关订单同团的用户、头像、状态
+	 * 查询相关订单同团的用户、头像、状态{order_trace,ref_grouba_trace,userImgs,ordersStatus,orderRefUsers}
 	 * @param orderTraces
 	 * @return
 	 */
-	@Select(value = "<script>select order_trace,ref_grouba_trace,GROUP_CONCAT(ref_user_img ORDER BY id) userImgs,GROUP_CONCAT(order_status ORDER BY id) ordersStatus,GROUP_CONCAT(ref_user_wx_unionid ORDER BY id) orderRefUsers"
+	@Select(value = "<script>select order_trace,ref_grouba_trace,leader,GROUP_CONCAT(ref_user_img ORDER BY id) userImgs,GROUP_CONCAT(order_status ORDER BY id) ordersStatus,GROUP_CONCAT(ref_user_wx_unionid ORDER BY id) orderRefUsers"
 			+ " from grouba_order" + "<where>"
 			+ "<if test=\"orderTraces != null and orderTraces != '' \">" + " and order_trace in (${orderTraces})" + "</if>"
 			+ "<if test=\"refGroubTrace != null and refGroubTrace != '' \">" + " and ref_groub_trace = #{refGroubTrace}" + "</if>"
@@ -80,6 +80,20 @@ public interface GroubaOrderMapper {
 			+ "<if test=\"refGroubTrace != null and refGroubTrace != '' \">" + " and ref_groub_trace = #{refGroubTrace}" + "</if>"
 			+ "</where></script>")
 	public int selectCount(@Param(value = "orderTrace") String orderTrace,@Param(value = "refGroubTrace") String refGroubTrace);
+	
+	/**
+	 * 查询某商品已成团数
+	 * @author chenzhao @date May 17, 2019
+	 * @param orderTrace
+	 * @param refGroubTrace
+	 * @return
+	 */
+	@Select(value = "<script>select count(1)"
+			+ " from grouba_order" + "<where>" 
+			+ "<if test=\"refGroubTrace != null and refGroubTrace != '' \">" + " and ref_groub_trace = #{refGroubTrace}" + "</if>"
+			+ "<if test=\"refGroubaTrace != null and refGroubaTrace != '' \">" + " and ref_grouba_trace = #{refGroubaTrace}" + "</if>"
+			+ "</where></script>")
+	public int selectOpenGroubCount(@Param(value = "refGroubTrace") String refGroubTrace,@Param(value = "refGroubaTrace") String refGroubaTrace);
 
 	@Insert(value = "<script>INSERT INTO grouba_order"
 			+ " (order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,ref_user_wx_unionid,leader,ref_user_img,client_ip"
