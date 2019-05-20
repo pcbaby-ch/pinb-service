@@ -107,8 +107,9 @@ public class GroubaOrderService {
 	 * 
 	 * @param groubaOrderVo
 	 * @return
+	 * @throws Exception
 	 */
-	public boolean orderJoin(GroubaOrder groubaOrderVo) {
+	public boolean orderJoin(GroubaOrder groubaOrderVo) throws Exception {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrderVo.getOrderTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderTrace");
@@ -126,6 +127,14 @@ public class GroubaOrderService {
 		GroubaOrder orderLeader = groubaOrderMapper.selectOne(groubaOrderVo.getOrderTrace(), groubaOrderVo.getLeader());
 		if (orderLeader == null) {
 			throw new ServiceException(RespCode.order_unOpenOrder);
+		}
+		if (DateUtil.compareDate(orderLeader.getOrderExpiredTime(), new Date()) <= 0) {//拼团有效时长已过
+			throw new ServiceException(RespCode.order_joinTimeExpired);
+		}
+		int orderCount4User = groubaOrderMapper.selectOrderCount4User(orderLeader.getRefGroubaTrace(),
+				groubaOrderVo.getRefUserWxUnionid());
+		if (orderLeader.getGroubaIsnew() == 1 && orderCount4User >= 1) {//老用户不能进拉新团
+			throw new ServiceException(RespCode.order_joinedRepeat);
 		}
 
 		log.info("#参团业务校验通过,#orderTrace:[{}]", groubaOrderVo.getOrderTrace());

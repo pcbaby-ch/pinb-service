@@ -24,6 +24,7 @@ public class RedisPool {
 	static ShardedJedisPool pool;
 	static ShardedJedis jedis;
 	private static JedisPoolConfig config;// Jedis客户端池配置
+	private static String redisEnvSuffix = PropertiesUtils.getProperty("redisEnvSuffix", "");//redis 键环境后缀，多环境公用redis实例，防键冲突后缀
 
 	static {
 		List<JedisShardInfo> list = new LinkedList<>();
@@ -81,6 +82,7 @@ public class RedisPool {
 	 ********************************************/
 	@SuppressWarnings("deprecation")
 	public static String get(String key) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -104,6 +106,7 @@ public class RedisPool {
 	 ********************************************/
 	@SuppressWarnings("deprecation")
 	public static void set(String key, int seconds, String value) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -146,6 +149,7 @@ public class RedisPool {
 	 * *******************************************
 	 */
 	public static void setByte(byte[] key, int seconds, byte[] value) {
+		key = (new String(key) + redisEnvSuffix).getBytes();
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -158,6 +162,7 @@ public class RedisPool {
 	}
 
 	public static void setByte(byte[] key, byte[] value) {
+		key = (new String(key) + redisEnvSuffix).getBytes();
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -174,6 +179,7 @@ public class RedisPool {
 	}
 
 	public static void set(String key, Object obj) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -186,6 +192,7 @@ public class RedisPool {
 	}
 
 	public static void set(String key, String obj) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -202,6 +209,7 @@ public class RedisPool {
 	 * : 在list尾部扩展一个元素 ******************************************
 	 */
 	public static void rpush(String key, Object obj) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -229,6 +237,7 @@ public class RedisPool {
 	 * @return : void
 	 ********************************************/
 	public static List<String> lrange(String key, long start, long end) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		List<String> list = new ArrayList<String>();
 		try {

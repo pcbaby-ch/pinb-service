@@ -284,6 +284,7 @@ public class GroupBarService {
 				}
 				goods.setShareOrder(orderImgs.getOrderTrace());
 				goods.setShareLeader(orderImgs.getLeader());
+				goods.setOrderExpredTime(orderImgs.getOrderExpiredTime());
 			}
 		}
 		// #店铺商品list中，去除分享商品
@@ -302,6 +303,7 @@ public class GroupBarService {
 			}
 			shareGoods.setShareOrder(shareOrder.getOrderTrace());
 			shareGoods.setShareLeader(shareOrder.getLeader());
+			shareGoods.setOrderExpredTime(orderImgs.getOrderExpiredTime());
 		}
 		return shareGoods;
 	}

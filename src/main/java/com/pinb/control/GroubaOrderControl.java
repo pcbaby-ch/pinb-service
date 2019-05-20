@@ -56,7 +56,7 @@ public class GroubaOrderControl {
 			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "订单参团用户", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YrefUserImg", value = "用户头像fileid", required = false, dataType = "string"), })
 	@PostMapping("orderJoin")
-	public Object orderJoin(@RequestBody GroubaOrder groubaOrder) {
+	public Object orderJoin(@RequestBody GroubaOrder groubaOrder) throws Exception {
 
 		return RespUtil.baseResp(groubaOrderService.orderJoin(groubaOrder));
 	}
