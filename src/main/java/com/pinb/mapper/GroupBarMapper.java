@@ -47,6 +47,10 @@ public interface GroupBarMapper {
 			+ "<if test=\"groubPhone != null and groubPhone != '' \">" + ",groub_phone = #{groubPhone}" + "</if>"
 			+ "<if test=\"groubAddress != null and groubAddress != '' \">" + ",groub_address = #{groubAddress}"+ "</if>"
 			+ "<if test=\"isOpen != null and isOpen != '' \">" + ",is_open = #{isOpen}"+ "</if>"
+			+ "<if test=\"province != null and province != '' \">" + ",province = #{province}" + "</if>"
+			+ "<if test=\"city != null and groubImg != '' \">" + ",city = #{city}" + "</if>"
+			+ "<if test=\"latitude != null and latitude != '' \">" + ",latitude = #{latitude}" + "</if>"
+			+ "<if test=\"longitude != null and longitude != '' \">" + ",longitude = #{longitude}"+ "</if>"
 			+ " where groub_trace=#{groubTrace}</script>")
 	public int update(GroupBar groupBar);
 
