@@ -23,13 +23,13 @@ import com.pinb.entity.GroupBar;
 @Mapper
 public interface GroupBarMapper {
 	
-	@Select(value = "<script>select groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address,is_open"
+	@Select(value = "<script>select groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address,is_open,province,city,latitude,longitude"
 			+ " from group_bar" + "<where>"
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}"+ "</if>"
 			+ "</where></script>")
 	public List<GroupBar> select(@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
-	@Select(value = "<script>select  groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address,is_open"
+	@Select(value = "<script>select  groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address,is_open,province,city,latitude,longitude"
 			+ " from group_bar" + "<where>"
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}"+ "</if>"
 			+ "<if test=\"groubTrace != null and groubTrace != '' \">" + " and groub_trace = #{groubTrace}"+ "</if>"
@@ -37,8 +37,8 @@ public interface GroupBarMapper {
 	public GroupBar selectOne(@Param(value = "refUserWxUnionid") String refUserWxUnionid,@Param(value = "groubTrace") String groubTrace);
 
 	@Insert(value = "INSERT INTO group_bar"
-			+ " ( groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address,is_open) "
-			+ " VALUES (#{groubTrace},#{refUserWxUnionid},#{groubName},#{groubImg},#{groubPhone},#{groubAddress},#{isOpen})")
+			+ " ( groub_trace,ref_user_wx_unionid,groub_name,groub_img,groub_phone,groub_address,is_open,province,city,latitude,longitude) "
+			+ " VALUES (#{groubTrace},#{refUserWxUnionid},#{groubName},#{groubImg},#{groubPhone},#{groubAddress},#{isOpen},#{province},#{city},#{latitude},#{longitude})")
 	public int insert(GroupBar groupBar);
 	
 	@Update(value = "<script>UPDATE group_bar SET  uptime=NOW(),update_count=update_count+1"

@@ -84,13 +84,13 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 	public void errorNotifications(Exception e) {
 		if (e instanceof ServiceException) {
 			if ("true".equals(businessError)) {
-				mailService.sendSimpleMail(logNotificationMan, "业务异常告警",
+				mailService.sendSimpleMail(logNotificationMan.split(","), "业务异常告警",
 						(StringUtils.isEmpty(((ServiceException) e).getMsg()) ? ((ServiceException) e).getMessage()
 								: ((ServiceException) e).getMsg()));
 			}
 		} else {
 			if ("true".equals(systemError)) {
-				mailService.sendSimpleMail(logNotificationMan, "系统异常告警", e.getMessage());
+				mailService.sendSimpleMail(logNotificationMan.split(","), "系统异常告警", e.getMessage());
 			}
 		}
 	}

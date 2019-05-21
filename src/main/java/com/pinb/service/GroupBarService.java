@@ -129,10 +129,10 @@ public class GroupBarService {
 			groubActivity.setGroubaTrace(BusinessesFlowNum.getNum("GA", RedisConst.groubActivityTrace));
 			groubActivity.setRefGroubTrace(groupBar.getGroubTrace());
 			groubActivity.setRefUserWxUnionid(user.getWxUnionid());
-			groubActivity.setProvince(user.getProvince());
-			groubActivity.setCity(user.getCity());
-			groubActivity.setLatitude(user.getLatitude());
-			groubActivity.setLongitude(user.getLongitude());
+			groubActivity.setProvince(groupBar.getProvince());
+			groubActivity.setCity(groupBar.getCity());
+			groubActivity.setLatitude(groupBar.getLatitude());
+			groubActivity.setLongitude(groupBar.getLongitude());
 			// #如果此商品没有设置图片，则直接忽略跳过
 			if (StringUtils.isEmpty(groubActivity.getGoodsImg())) {
 				continue;

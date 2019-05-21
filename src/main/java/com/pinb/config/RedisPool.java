@@ -24,7 +24,8 @@ public class RedisPool {
 	static ShardedJedisPool pool;
 	static ShardedJedis jedis;
 	private static JedisPoolConfig config;// Jedis客户端池配置
-	private static String redisEnvSuffix = PropertiesUtils.getProperty("redisEnvSuffix", "");//redis 键环境后缀，多环境公用redis实例，防键冲突后缀
+	private static String redisEnvSuffix = PropertiesUtils.getProperty("redisEnvSuffix", "");// redis
+																								// 键环境后缀，多环境公用redis实例，防键冲突后缀
 
 	static {
 		List<JedisShardInfo> list = new LinkedList<>();
@@ -129,6 +130,7 @@ public class RedisPool {
 	 * @return : byte[] *******************************************
 	 */
 	public static byte[] getByte(byte[] key) {
+		key = (new String(key) + redisEnvSuffix).getBytes();
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -257,6 +259,7 @@ public class RedisPool {
 	 * 
 	 ********************************************/
 	public static void expire(String key, int seconds) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -273,6 +276,7 @@ public class RedisPool {
 	 * 
 	 ********************************************/
 	public static void del(String key) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = getResource();
@@ -303,6 +307,7 @@ public class RedisPool {
 	 * @return : Long
 	 ********************************************/
 	public static Long incr(String key) {
+		key += redisEnvSuffix;
 		Long result = null;
 		ShardedJedis jds = null;
 		try {
@@ -321,6 +326,7 @@ public class RedisPool {
 	 * 
 	 ********************************************/
 	public static void hset(String key, String field, String value) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = pool.getResource();
@@ -346,6 +352,7 @@ public class RedisPool {
 	 * 
 	 ********************************************/
 	public static void hdel(String key, String fields) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		try {
 			jds = pool.getResource();
@@ -363,6 +370,7 @@ public class RedisPool {
 	 * 
 	 ********************************************/
 	public static Map<String, String> hgetall(String key) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		Map<String, String> map = new HashMap<String, String>();
 		try {
@@ -383,6 +391,7 @@ public class RedisPool {
 	 * @return : String
 	 ********************************************/
 	public static String hget(String key, String fields) {
+		key += redisEnvSuffix;
 		ShardedJedis jds = null;
 		String value = "";
 		try {
@@ -442,6 +451,7 @@ public class RedisPool {
 	 * @return : Long *******************************************
 	 */
 	public static Long incrBy(String key, long num) {
+		key += redisEnvSuffix;
 		Long result = null;
 		ShardedJedis jds = null;
 		try {
@@ -464,6 +474,7 @@ public class RedisPool {
 	 * @return Long
 	 */
 	public static Long decrBy(String key, long num) {
+		key += redisEnvSuffix;
 		Long result = null;
 		ShardedJedis jds = null;
 		try {
@@ -486,6 +497,7 @@ public class RedisPool {
 	 * @return Long
 	 */
 	public static Long setnx(String key, String value) {
+		key += redisEnvSuffix;
 		Long result = null;
 		ShardedJedis jds = null;
 		try {
@@ -508,6 +520,7 @@ public class RedisPool {
 	 * @return boolean
 	 */
 	public static boolean exists(String key) {
+		key += redisEnvSuffix;
 		boolean result = false;
 		ShardedJedis jds = null;
 		try {
@@ -522,6 +535,7 @@ public class RedisPool {
 	}
 
 	public static boolean exists(String key, String filed) {
+		key += redisEnvSuffix;
 		boolean result = false;
 		ShardedJedis jds = null;
 		try {
@@ -536,6 +550,7 @@ public class RedisPool {
 	}
 
 	public static Long sAdd(String key, String value) {
+		key += redisEnvSuffix;
 		Long result = 0L;
 		ShardedJedis jds = null;
 		try {
@@ -550,6 +565,7 @@ public class RedisPool {
 	}
 
 	public static Boolean sismember(String key, String value) {
+		key += redisEnvSuffix;
 		Boolean result = false;
 		ShardedJedis jds = null;
 		try {
@@ -564,6 +580,7 @@ public class RedisPool {
 	}
 
 	public static Set<String> smembers(String key) {
+		key += redisEnvSuffix;
 		Set<String> result = null;
 		ShardedJedis jds = null;
 		try {
@@ -578,6 +595,7 @@ public class RedisPool {
 	}
 
 	public static Long ttl(String key) {
+		key += redisEnvSuffix;
 		Long result = 0L;
 		ShardedJedis jds = null;
 		try {
@@ -593,6 +611,7 @@ public class RedisPool {
 	}
 
 	public static Long pexpireAt(String key, long millisecondsTimestamp) {
+		key += redisEnvSuffix;
 		Long result = null;
 		ShardedJedis jds = null;
 		try {

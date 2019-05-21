@@ -48,6 +48,22 @@ public class EmailService {
 			logger.error("发送简单邮件时发生异常！", e);
 		}
 	}
+	
+	@Async("getThreadPoolTaskExecutor")
+	public void sendSimpleMail(String []to, String subject, String content) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom(from);
+		message.setTo(to);
+		message.setSubject(subject);
+		message.setText(content);
+
+		try {
+			sender.send(message);
+			logger.info("邮件已经发送。");
+		} catch (Exception e) {
+			logger.error("发送简单邮件时发生异常！", e);
+		}
+	}
 
 	/**
 	 * 发送html格式的邮件
