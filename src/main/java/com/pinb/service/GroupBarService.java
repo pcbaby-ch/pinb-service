@@ -3,7 +3,6 @@
  */
 package com.pinb.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -133,6 +132,7 @@ public class GroupBarService {
 			groubActivity.setCity(groupBar.getCity());
 			groubActivity.setLatitude(groupBar.getLatitude());
 			groubActivity.setLongitude(groupBar.getLongitude());
+			groubActivity.setAddress(groupBar.getGroubAddress());
 			// #如果此商品没有设置图片，则直接忽略跳过
 			if (StringUtils.isEmpty(groubActivity.getGoodsImg())) {
 				continue;
