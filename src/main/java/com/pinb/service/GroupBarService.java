@@ -229,10 +229,8 @@ public class GroupBarService {
 		List<GroubActivity> goodsList = groubActivityService.select(groupBarVo.getGroubTrace(), null);
 		JSONObject resp = new JSONObject();
 		log.info("#商品查询end-头像信息查询start,#groubTrace:[{}]", groupBarVo.getGroubTrace());
-		if (!StringUtils.isEmpty(groupBarVo.getOrderTrace())) {
-			GroubActivity shareGroubActivity = getGoodsImgs(groupBarVo, goodsList);
-			resp.put("shareGoods", shareGroubActivity);// 被分享商品，携带被分享团的订单头像信息
-		}
+		GroubActivity shareGroubActivity = getGoodsImgs(groupBarVo, goodsList);
+		resp.put("shareGoods", shareGroubActivity);// 被分享商品，携带被分享团的订单头像信息
 		log.info("#头像信息查询end-END,#groubTrace:[{}]", groupBarVo.getGroubTrace());
 		resp.put("groubInfo", groupBar);
 		resp.put("goodsList", goodsList);// 普通商品，可能携带和我相关的订单头像信息
@@ -284,7 +282,7 @@ public class GroupBarService {
 				}
 				goods.setShareOrder(orderImgs.getOrderTrace());
 				goods.setShareLeader(orderImgs.getLeader());
-				goods.setOrderExpredTime(orderImgs.getOrderExpiredTime());
+				goods.setOrderExpiredTime(orderImgs.getOrderExpiredTime());
 			}
 		}
 		// #店铺商品list中，去除分享商品
@@ -303,7 +301,7 @@ public class GroupBarService {
 			}
 			shareGoods.setShareOrder(shareOrder.getOrderTrace());
 			shareGoods.setShareLeader(shareOrder.getLeader());
-			shareGoods.setOrderExpredTime(orderImgs.getOrderExpiredTime());
+			shareGoods.setOrderExpiredTime(orderImgs.getOrderExpiredTime());
 		}
 		return shareGoods;
 	}

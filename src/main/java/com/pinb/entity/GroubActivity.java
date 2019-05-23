@@ -33,7 +33,7 @@ public class GroubActivity extends BaseEntity {
 	private boolean isJoined;
 	private String shareOrder;
 	private String shareLeader;
-	private String orderExpredTime;
+	private String orderExpiredTime;
 
 	public String getGroubaTrace() {
 		return groubaTrace;
@@ -294,19 +294,21 @@ public class GroubActivity extends BaseEntity {
 	/**
 	 * 拼团到期时间
 	 * 
+	 * @author chenzhao @date May 23, 2019
 	 * @return
 	 */
-	public String getOrderExpredTime() {
-		return orderExpredTime;
+	public String getOrderExpiredTime() {
+		return orderExpiredTime;
 	}
 
 	/**
 	 * 拼团到期时间
 	 * 
-	 * @param orderExpredTime
+	 * @author chenzhao @date May 23, 2019
+	 * @param orderExpiredTime
 	 */
-	public void setOrderExpredTime(String orderExpredTime) {
-		this.orderExpredTime = orderExpredTime;
+	public void setOrderExpiredTime(String orderExpiredTime) {
+		this.orderExpiredTime = orderExpiredTime;
 	}
 
 }
