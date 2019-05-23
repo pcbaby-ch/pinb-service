@@ -197,7 +197,7 @@ public class UserService {
 
 		log.info("#根据unionid查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
 		User unionUser = userMapper.selectOne(user.getWxUnionid(), null);
-		if (BeanUtil.checkFieldValueNull(unionUser)) {
+		if (unionUser == null) {
 			// 不存在uinion用户
 			log.info("#入库新增用户unionid start #WxUnionid[{}]", user.getWxUnionid());
 			userMapper.insert(user);
