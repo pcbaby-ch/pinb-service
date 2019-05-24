@@ -43,7 +43,7 @@ public interface UserMapper {
 			+ ",#{brand},#{model},#{system},#{platform},#{benchmark},#{nickname},#{gender},#{city},#{province},#{latitude},#{longitude})")
 	public int insert(User user);
 	
-	@Update(value = "<script>UPDATE user SET  uptime=NOW()"
+	@Update(value = "<script>UPDATE user SET  uptime=NOW(),upcount=upcount+1"
 			+ "<if test=\"phone != null and phone != '' \">" + ",phone = #{phone}" + "</if>"
 			+ "<if test=\"headImg != null and headImg != '' \">" + ",head_img = #{headImg}" + "</if>"
 			+ "<if test=\"creditScoreUser != null and creditScoreUser != '' \">" + ",credit_score_user = #{creditScoreUser}" + "</if>"
@@ -53,7 +53,7 @@ public interface UserMapper {
 			+ "<if test=\"model != null and model != '' \">" + ",model = #{model}" + "</if>"
 			+ "<if test=\"system != null and system != '' \">" + ",system = #{system}" + "</if>"
 			+ "<if test=\"platform != null and platform != '' \">" + ",platform = #{platform}" + "</if>"
-			+ "<if test=\"benchmark != null and benchmark != '' \">" + " and benchmark = #{benchmark}"+ "</if>"
+			+ "<if test=\"benchmark != null and benchmark != '' \">" + ",benchmark = #{benchmark}"+ "</if>"
 			+ "<if test=\"nickname != null and nickname != '' \">" + ",nickname = #{nickname}" + "</if>"
 			+ "<if test=\"city != null and city != '' \">" + ",city = #{city}" + "</if>"
 			+ "<if test=\"province != null and province != '' \">" + ",province = #{province}" + "</if>"
@@ -63,7 +63,7 @@ public interface UserMapper {
 			+ "</where></script>")
 	public int update(User user);
 	
-	@Update(value = "<script>UPDATE user SET  uptime=NOW()"
+	@Update(value = "<script>UPDATE user SET  uptime=NOW(),upcount=upcount+1"
 			+ "<if test=\"wxUnionid != null and wxUnionid != '' \">" + ",wx_unionid = #{wxUnionid}" + "</if>"
 			+ " where phone = #{phone} and wxUnionid <![CDATA[<>]]> wxOpenid</script>")
 	public int updateUnionid(User user);

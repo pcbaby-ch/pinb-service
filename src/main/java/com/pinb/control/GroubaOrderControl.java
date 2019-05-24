@@ -45,7 +45,7 @@ public class GroubaOrderControl {
 			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "订单参团用户", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YrefUserImg", value = "用户头像fileid", required = false, dataType = "string"), })
 	@PostMapping("orderOpen")
-	public Object orderOpen(@RequestBody GroubaOrder groubaOrder,HttpServletRequest req) throws Exception {
+	public Object orderOpen(@RequestBody GroubaOrder groubaOrder, HttpServletRequest req) throws Exception {
 		groubaOrder.setClientIp(IpUtils.getIpFromRequest(req));
 		return RespUtil.baseResp(groubaOrderService.orderOpen(groubaOrder));
 	}
@@ -56,9 +56,9 @@ public class GroubaOrderControl {
 			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "订单参团用户", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YrefUserImg", value = "用户头像fileid", required = false, dataType = "string"), })
 	@PostMapping("orderJoin")
-	public Object orderJoin(@RequestBody GroubaOrder groubaOrder) throws Exception {
-
-		return RespUtil.baseResp(groubaOrderService.orderJoin(groubaOrder));
+	public Object orderJoin(@RequestBody GroubaOrder groubaOrder, HttpServletRequest req) throws Exception {
+		groubaOrder.setClientIp(IpUtils.getIpFromRequest(req));
+		return RespUtil.baseResp(groubaOrderService.orderOpen(groubaOrder));
 	}
 
 	@ApiOperation("已有团订单-扫码消费 {二维码设计成包含订单trace+消费用户数据的QR，店长扫QR时，便可从二维码中同时获得消费订单+用户}")

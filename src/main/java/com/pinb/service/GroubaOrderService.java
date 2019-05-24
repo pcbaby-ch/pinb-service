@@ -26,6 +26,7 @@ import com.pinb.entity.GroubActivity;
 import com.pinb.entity.GroubaOrder;
 import com.pinb.enums.OrderStatus;
 import com.pinb.enums.RespCode;
+import com.pinb.mapper.GroubActivityCache;
 import com.pinb.mapper.GroubActivityMapper;
 import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.util.DateUtil;
@@ -42,7 +43,7 @@ public class GroubaOrderService {
 	private static final Logger log = LoggerFactory.getLogger(GroubaOrderService.class);
 
 	@Autowired
-	GroubActivityMapper groubActivityMapper;
+	GroubActivityCache groubActivityCache;
 	@Autowired
 	GroubaOrderMapper groubaOrderMapper;
 	@Autowired
@@ -90,7 +91,7 @@ public class GroubaOrderService {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "groubaIsnew");
 		}
 		logParams(groubaOrder);
-		GroubActivity groubActivity = groubActivityMapper.selectOne(groubaOrder.getRefGroubaTrace());
+		GroubActivity groubActivity = groubActivityCache.selectOne(groubaOrder.getRefGroubaTrace());
 		int groubOrderCount = groubaOrderMapper.selectOpenGroubCount(null, groubaOrder.getRefGroubaTrace());
 		if (groubOrderCount >= groubActivity.getGroubaMaxCount()) {
 			throw new ServiceException(RespCode.order_openGrouba);
@@ -152,7 +153,7 @@ public class GroubaOrderService {
 		groubaOrderParams.setGroubaDiscountAmount(orderLeader.getGroubaDiscountAmount());
 		groubaOrderParams.setGroubaIsnew(orderLeader.getGroubaIsnew());
 		log.info("#成团处理>>>>>>>>>>>>>> A");
-		GroubActivity groubActivity = groubActivityMapper.selectOne(orderLeader.getRefGroubaTrace());
+		GroubActivity groubActivity = groubActivityCache.selectOne(orderLeader.getRefGroubaTrace());
 		synchronized (groubActivity) {
 			log.info("#成团处理>>>>>>>>>>>>>> B1");
 			int orderCount = groubaOrderMapper.selectCount(groubaOrderVo.getOrderTrace(),

@@ -28,9 +28,9 @@ import com.pinb.entity.GroubaOrder;
 import com.pinb.entity.GroupBar;
 import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
+import com.pinb.mapper.GroubActivityCache;
 import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.mapper.GroupBarMapper;
-import com.pinb.util.BeanUtil;
 import com.pinb.util.IpUtils;
 import com.pinb.util.MapBeanUtil;
 
@@ -49,6 +49,8 @@ public class GroupBarService {
 	@Autowired
 	GroubaOrderMapper groubaOrderMapper;
 	@Autowired
+	GroubActivityCache groubActivityCache;
+	@Autowired
 	GroubActivityService groubActivityService;
 	@Autowired
 	private UserService userService;
@@ -65,16 +67,17 @@ public class GroupBarService {
 	public boolean add(String reqStr, HttpServletRequest request) {
 		JSONObject reqJson = JSONObject.parseObject(reqStr);
 		GroupBar groupBar = reqJson.getObject("groub", GroupBar.class);
-		User user = reqJson.getObject("userinfo", User.class);
-		if (StringUtils.isEmpty(user.getWxUnionid())) {
-			user.setWxUnionid(user.getWxOpenid());
+		User userVo = reqJson.getObject("userinfo", User.class);
+		if (StringUtils.isEmpty(userVo.getWxUnionid())) {
+			userVo.setWxUnionid(userVo.getWxOpenid());
 		}
-		user.setPhone(groupBar.getGroubPhone());
-		user.setHeadImg(reqJson.getJSONObject("userinfo").getString("avatarUrl"));
-		user.setIsOpenGroub("1");
-		user.setClientIp(IpUtils.getIpFromRequest(request));
+		userVo.setPhone(groupBar.getGroubPhone());
+		userVo.setHeadImg(reqJson.getJSONObject("userinfo").getString("avatarUrl"));
+		userVo.setIsOpenGroub("1");
+		userVo.setClientIp(IpUtils.getIpFromRequest(request));
 		List<JSONObject> groubActivityList = reqJson.getObject("goodsList", List.class);
-		log.debug("#user:[{}],#groubActivityList:[{}]", JSONObject.toJSON(user), JSONObject.toJSON(groubActivityList));
+		log.debug("#user:[{}],#groubActivityList:[{}]", JSONObject.toJSON(userVo),
+				JSONObject.toJSON(groubActivityList));
 		// #入参校验
 //		if (StringUtils.isEmpty(groupBar.getGroubName())) {
 //			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubName");
@@ -93,7 +96,7 @@ public class GroupBarService {
 		if (StringUtils.isEmpty(groupBar.getGroubTrace())) {
 			groupBar.setGroubTrace(BusinessesFlowNum.getNum("G", RedisConst.groupBarTrace));
 		}
-		groupBar.setRefUserWxUnionid(user.getWxUnionid());
+		groupBar.setRefUserWxUnionid(userVo.getWxUnionid());
 		groupBar.setIsOpen("1");
 		log.info("#保存店铺信息start,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		boolean isUpdateAction = false;
@@ -108,26 +111,23 @@ public class GroupBarService {
 		log.info("#保存店铺信息end-保存用户信息start,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		if (!isUpdateAction) {
 			try {
-				userService.add(user);
+				userService.add(userVo);
 			} catch (DuplicateKeyException e) {
 				log.info("#已注册普通用户-店铺入驻,#GroubTrace:[{}]", groupBar.getGroubTrace());
-				User userParams = new User();
-				userParams.setWxUnionid(user.getWxUnionid());
-				userParams.setIsOpenGroub("1");
-				userService.update(user);
+				userOpenGroub(userVo);
 			}
 		} else {
-			// #店铺二次更新，则从库中获取用户位置信息
-			user = userService.selectOne(user);
+			log.info("#已注册普通用户-店铺入驻,#GroubTrace:[{}]", groupBar.getGroubTrace());
+			userOpenGroub(userVo);
 		}
 		log.info("#保存用户信息end-保存商品信息start,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		boolean groubActivityResult = false;
-		groubActivityService.delete(groupBar.getGroubTrace(), user.getWxUnionid());
+		groubActivityCache.delete(groupBar.getCity(), groupBar.getGroubTrace(), userVo.getWxUnionid());
 		for (int i = 0; i < groubActivityList.size(); i++) {
 			GroubActivity groubActivity = groubActivityList.get(i).toJavaObject(GroubActivity.class);
 			groubActivity.setGroubaTrace(BusinessesFlowNum.getNum("GA", RedisConst.groubActivityTrace));
 			groubActivity.setRefGroubTrace(groupBar.getGroubTrace());
-			groubActivity.setRefUserWxUnionid(user.getWxUnionid());
+			groubActivity.setRefUserWxUnionid(userVo.getWxUnionid());
 			groubActivity.setProvince(groupBar.getProvince());
 			groubActivity.setCity(groupBar.getCity());
 			groubActivity.setLatitude(groupBar.getLatitude());
@@ -146,6 +146,13 @@ public class GroupBarService {
 			log.info("#店铺入驻成功,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		}
 		return true;
+	}
+
+	private void userOpenGroub(User userVo) {
+		User userParams = new User();
+		userParams.setWxUnionid(userVo.getWxUnionid());
+		userParams.setIsOpenGroub("1");
+		userService.update(userParams);
 	}
 
 	private void logParams(GroupBar groupBar) {
@@ -185,11 +192,11 @@ public class GroupBarService {
 		}
 		logParams(groupBar);
 		groupBar = groupBarMapper.selectOne(groupBar.getRefUserWxUnionid(), null);
-		if (BeanUtil.checkFieldValueNull(groupBar)) {
+		if (groupBar == null) {
 			throw new ServiceException("#店铺基础信息查询失败");
 		}
 		// #查询商品信息
-		List<GroubActivity> goodsList = groubActivityService.select(groupBar.getGroubTrace(),
+		List<GroubActivity> goodsList = groubActivityCache.selectOneGroub(groupBar.getGroubTrace(),
 				groupBar.getRefUserWxUnionid());
 		JSONObject resp = new JSONObject();
 		resp.put("groubInfo", groupBar);
@@ -222,11 +229,11 @@ public class GroupBarService {
 		logParams(groupBarVo);
 		GroupBar groupBar = groupBarMapper.selectOne(null, groupBarVo.getGroubTrace());
 		log.info("#店铺信息查询end-商品查询start,#groubTrace:[{}]", groupBarVo.getGroubTrace());
-		if (BeanUtil.checkFieldValueNull(groupBar)) {
+		if (groupBar == null) {
 			throw new ServiceException("#店铺基础信息查询失败");
 		}
 		// #查询关联店铺下所有活动商品
-		List<GroubActivity> goodsList = groubActivityService.select(groupBarVo.getGroubTrace(), null);
+		List<GroubActivity> goodsList = groubActivityCache.selectOneGroub(groupBarVo.getGroubTrace(), null);
 		JSONObject resp = new JSONObject();
 		log.info("#商品查询end-头像信息查询start,#groubTrace:[{}]", groupBarVo.getGroubTrace());
 		GroubActivity shareGroubActivity = getGoodsImgs(groupBarVo, goodsList);

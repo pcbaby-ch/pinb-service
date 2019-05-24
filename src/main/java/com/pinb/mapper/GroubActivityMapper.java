@@ -29,7 +29,7 @@ public interface GroubActivityMapper {
 			+ " and ref_groub_trace = #{refGroubTrace}" + "</if>"
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">"
 			+ " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" + "</where></script>")
-	public List<GroubActivity> select(@Param(value = "refGroubTrace") String refGroubTrace,
+	public List<GroubActivity> selectOneGroub(@Param(value = "refGroubTrace") String refGroubTrace,
 			@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
 	@Select(value = "select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude"

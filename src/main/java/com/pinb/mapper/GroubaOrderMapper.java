@@ -31,7 +31,7 @@ public interface GroubaOrderMapper {
 			+ " and ref_grouba_trace = #{refGroubaTrace}" + "</if>"
 			+ "<if test=\"orderStatus != null and orderStatus != '' \">" + " and order_status = #{orderStatus}"
 			+ "</if>" + "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">"
-			+ " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" + "</where></script>")
+			+ " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" + "</where> order by id desc</script>")
 	public List<GroubaOrder> select(@Param(value = "orderTrace") String orderTrace,
 			@Param(value = "refGroubTrace") String refGroubTrace,
 			@Param(value = "refGroubaTrace") String refGroubaTrace, @Param(value = "orderStatus") String orderStatus,
@@ -43,7 +43,7 @@ public interface GroubaOrderMapper {
 	 */
 	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,join_succeed_time,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
 			+ " from grouba_order" + "<where>" 
-			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" + "</where></script>")
+			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" + "</where> order by id desc</script>")
 	public List<GroubaOrder> selectMyOrder4user(@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 	/**
 	 * 查询相关订单同团的用户、头像、状态{order_trace,ref_grouba_trace,userImgs,ordersStatus,orderRefUsers}

@@ -18,7 +18,6 @@ import com.pinb.common.ServiceException;
 import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.UserMapper;
-import com.pinb.util.BeanUtil;
 import com.pinb.util.CheckUtil;
 import com.pinb.util.HttpUtil;
 import com.pinb.util.PropertiesUtils;
@@ -161,7 +160,7 @@ public class UserService {
 
 		log.info("#根据unionid查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
 		User unionUser = userMapper.selectOne(user.getWxUnionid(), null);
-		if (BeanUtil.checkFieldValueNull(unionUser)) {
+		if (unionUser == null) {
 			// 不存在uinion用户
 //			if (StringUtils.isEmpty(user.getPhone())) {
 //				throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Phone");
@@ -220,7 +219,6 @@ public class UserService {
 	public static void main(String[] args) {
 		User user = new User();
 		user.setCity("");
-		System.out.println(BeanUtil.checkFieldValueNull(null));
 	}
 
 }

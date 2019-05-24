@@ -4,7 +4,6 @@
 package com.pinb.service;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,7 @@ import com.pinb.common.ServiceException;
 import com.pinb.constant.RedisConst;
 import com.pinb.entity.GroubActivity;
 import com.pinb.enums.RespCode;
-import com.pinb.mapper.GroubActivityMapper;
+import com.pinb.mapper.GroubActivityCache;
 import com.pinb.util.MapDistance;
 
 /**
@@ -34,7 +33,7 @@ public class GroubActivityService {
 	private static final Logger log = LoggerFactory.getLogger(GroubActivityService.class);
 
 	@Autowired
-	GroubActivityMapper groubActivityMapper;
+	GroubActivityCache groubActivityCache;
 
 	public boolean add(GroubActivity groubActivity) {
 		// #入参校验
@@ -73,7 +72,7 @@ public class GroubActivityService {
 		}
 		logParams(groubActivity);
 		groubActivity.setGroubaTrace(BusinessesFlowNum.getNum("GA", RedisConst.groubActivityTrace));
-		return groubActivityMapper.insert(groubActivity) > 0;
+		return groubActivityCache.insert(groubActivity) > 0;
 	}
 
 	/**
@@ -87,28 +86,11 @@ public class GroubActivityService {
 		if (StringUtils.isEmpty(groubaTrace)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaTrace");
 		}
-		return groubActivityMapper.share(groubaTrace) > 0;
+		return groubActivityCache.share(groubaTrace) > 0;
 	}
 
 	private void logParams(GroubActivity groubActivity) {
 		log.debug("#入参校验通过:[{}]", JSONObject.toJSON(groubActivity));
-	}
-
-	public List<GroubActivity> select(String refGroubTrace, String refUserWxUnionid) {
-		// #入参校验
-		if (StringUtils.isEmpty(refGroubTrace) && StringUtils.isEmpty(refUserWxUnionid)) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace|refUserWxUnionid");
-		}
-
-		return groubActivityMapper.select(refGroubTrace, refUserWxUnionid);
-	}
-
-	public boolean delete(String refGroubTrace, String refUserWxUnionid) {
-		// #入参校验
-		if (StringUtils.isEmpty(refGroubTrace) && StringUtils.isEmpty(refUserWxUnionid)) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace|refUserWxUnionid");
-		}
-		return groubActivityMapper.delete(refGroubTrace, refUserWxUnionid) > 0;
 	}
 
 	/**
@@ -136,7 +118,8 @@ public class GroubActivityService {
 		Page<?> page = PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
 		// #用户未指定位置时，显示所在城市分享数最高的前100个商品
 		if (StringUtils.isEmpty(groubActivity.getLatitude())) {
-			groubActivityMapper.selectNearGroubaTop100(groubActivity.getProvince(), groubActivity.getCity());
+			groubActivityCache.selectNearGroubaTop100(groubActivity.getProvince(), groubActivity.getCity(),
+					groubActivity.getPage());
 			return page;
 		}
 
@@ -154,8 +137,8 @@ public class GroubActivityService {
 				"#计算附近的商品，#minLat:[{}],#maxLat[{}],#minLng[{}],#maxLng[{}]，util计算结果,#minLat:[{}],#maxLat[{}],#minLng[{}],#maxLng[{}]",
 				minLat, maxLat, minLng, maxLng, map.get("minLat"), map.get("maxLat"), map.get("minLng"),
 				map.get("maxLng"));
-		groubActivityMapper.selectNearGrouba(groubActivity.getProvince(), groubActivity.getCity(), minLat, maxLat,
-				minLng, maxLng);
+		groubActivityCache.selectNearGrouba(groubActivity.getProvince(), groubActivity.getCity(), minLat, maxLat,
+				minLng, maxLng, groubActivity.getPage());
 		return page;
 	}
 

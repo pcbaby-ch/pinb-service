@@ -534,13 +534,13 @@ public class RedisPool {
 		return result;
 	}
 
-	public static boolean exists(String key, String filed) {
+	public static boolean exists(String key, String field) {
 		key += redisEnvSuffix;
 		boolean result = false;
 		ShardedJedis jds = null;
 		try {
 			jds = pool.getResource();
-			result = jds.hexists(key, filed);
+			result = jds.hexists(key, field);
 		} catch (Exception e) {
 			log.error("#RedisPool() exists异常：", e);
 		} finally {

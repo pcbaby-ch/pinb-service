@@ -41,7 +41,7 @@ public interface GroupBarMapper {
 			+ " VALUES (#{groubTrace},#{refUserWxUnionid},#{groubName},#{groubImg},#{groubPhone},#{groubAddress},#{isOpen},#{province},#{city},#{latitude},#{longitude})")
 	public int insert(GroupBar groupBar);
 	
-	@Update(value = "<script>UPDATE group_bar SET  uptime=NOW(),update_count=update_count+1"
+	@Update(value = "<script>UPDATE group_bar SET  uptime=NOW(),upcount=upcount+1"
 			+ "<if test=\"groubName != null and groubName != '' \">" + ",groub_name = #{groubName}" + "</if>"
 			+ "<if test=\"groubImg != null and groubImg != '' \">" + ",groub_img = #{groubImg}" + "</if>"
 			+ "<if test=\"groubPhone != null and groubPhone != '' \">" + ",groub_phone = #{groubPhone}" + "</if>"
