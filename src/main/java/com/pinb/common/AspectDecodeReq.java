@@ -23,6 +23,7 @@ import com.pinb.util.RSAUtil;
 
 /**
  * 解密请求报文切面管理
+ * 
  * @author chenzhao @date Apr 29, 2019
  */
 //@Aspect
@@ -48,31 +49,44 @@ public class AspectDecodeReq {
 			Parameter parameter = params[i];
 			if (parameter.isAnnotationPresent(DecodeReq.class)) {
 				log.debug("#注解参数-解密前,[{}]:[{}]", params[i], args[i]);
-				String oldReqStr=args[i]+"";
-				args[i]=RSAUtil.decrypt(oldReqStr);
+				String oldReqStr = args[i] + "";
+				args[i] = RSAUtil.decrypt(oldReqStr);
 				log.debug("#注解参数-解密后,[{}]:[{}]", params[i], args[i]);
 			} else {
 				log.debug("#未注解arg,[{}]:[{}]", params[i], args[i]);
 			}
 		}
-		log.info(">>>解密完成 proceedInterval,#api[{}],#interval:[{}]", methodName,
-				System.currentTimeMillis() - startTime);
+		log.info(">>>解密完成 proceedInterval,#api[{}],#interval:[{}]", methodName, System.currentTimeMillis() - startTime);
 		// #go on
 		Object obj = pjp.proceed(args);
 		return obj;
 	}
 
 	public static String base64(String str) {
-		String strBase64 = Base64.getEncoder().encodeToString(str.getBytes());
-		System.out.println("#str加密后:" + strBase64);
-		byte[] bytes = Base64.getDecoder().decode(strBase64);
-		System.out.println("#str加解密后:" + new String(bytes));
+		str = "1234567890";
 
 		return null;
 	}
 
+	public static String addIndexChar(int index, String str, char c) {
+		if (index < 0 || index > str.length()) {
+			throw new ServiceException(String.format("#index:[%s]，越界，#str:[%s]", index, str));
+		}
+		return str.substring(0, index + 1) + c + str.substring(index + 1, str.length());
+	}
+
+	public static String removeIndexChar(int index, String str) {
+		if (index < 0 || index >= str.length()) {
+			throw new ServiceException(String.format("#index:[%s]，越界，#str:[%s]", index, str));
+		}
+		return str.substring(0, index) + str.substring(index + 1, str.length());
+	}
+
 	public static void main(String[] args) {
-		base64("撒旦解放了手机发了几位老人家");
+		System.out.println( addIndexChar(1+1, addIndexChar(0, "123456789", 'a'), 'b'));//"1a2b3c45678d90"
+		System.out.println(addIndexChar(2 + 2, addIndexChar(1+1, addIndexChar(0, "123456789", 'a'), 'b'), 'c'));//"1a2b3c45678d90"
+		System.out.println(addIndexChar(9 + 3, addIndexChar(2 + 2, addIndexChar(1+1, addIndexChar(0, "1234567890", 'a'), 'b'), 'c'), 'd'));//"1a2b3c45678d90"
+		System.out.println(removeIndexChar(2 - 2+1, removeIndexChar(1 - 1+1, removeIndexChar(0+1, "1a2b3c4567890d"))));
 	}
 
 }

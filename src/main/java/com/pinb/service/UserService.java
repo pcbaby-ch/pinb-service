@@ -3,7 +3,6 @@
  */
 package com.pinb.service;
 
-import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +18,6 @@ import com.pinb.entity.User;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.UserMapper;
 import com.pinb.util.CheckUtil;
-import com.pinb.util.HttpUtil;
-import com.pinb.util.PropertiesUtils;
 import com.pinb.util.WxUtil;
 import com.pinb.vo.UserVo;
 
@@ -36,6 +33,8 @@ public class UserService {
 
 	@Autowired
 	UserMapper userMapper;
+	@Autowired
+	WxApiService wxService;
 
 	public boolean add(User user) {
 		// #入参校验
@@ -94,39 +93,6 @@ public class UserService {
 		return userMapper.selectOne(user.getWxUnionid(), null);
 	}
 
-	/**
-	 * 获取用户openid
-	 * 
-	 * @author chenzhao @date Apr 26, 2019
-	 * @param user 必传{appid、secret、jsCode、grantType}
-	 * @return
-	 */
-	public JSONObject getOpenid(UserVo user) {
-		// #入参校验
-		if (StringUtils.isEmpty(user.getAppid())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "appid");
-		}
-		if (StringUtils.isEmpty(user.getSecret())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "secret");
-		}
-		if (StringUtils.isEmpty(user.getJsCode())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "jsCode");
-		}
-		if (StringUtils.isEmpty(user.getGrantType())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "grantType");
-		}
-		logParams(user);
-		String url = PropertiesUtils.getProperty("wxGetOpenid", "127.0.0.1:9668/pinb-mock") + "/sns/jscode2session";
-		HashMap<String, Object> wxreq = new HashMap<>();
-		wxreq.put("appid", user.getAppid());
-		wxreq.put("secret", user.getSecret());
-		wxreq.put("js_code", user.getJsCode());
-		wxreq.put("grant_type", user.getGrantType());
-
-		String wxresp = HttpUtil.doGet(url, wxreq);
-
-		return JSONObject.parseObject(wxresp);
-	}
 
 	public JSONObject decoderWxData(UserVo user) {
 		// #入参校验
@@ -151,7 +117,7 @@ public class UserService {
 	 * @return
 	 */
 	public Object wxLogin4Shop(UserVo user) {
-		JSONObject openidJson = getOpenid(user);
+		JSONObject openidJson = wxService.getOpenid(user);
 		user.setSessionKey(openidJson.getString("session_key"));
 		user.setWxOpenid(openidJson.getString("openid"));
 		/** unionid获取是否成功{unionid不为空&unionid不等于openid} ***************************/
@@ -186,7 +152,7 @@ public class UserService {
 	}
 
 	public Object wxLogin(UserVo user) {
-		JSONObject openidJson = getOpenid(user);
+		JSONObject openidJson = wxService.getOpenid(user);
 		user.setSessionKey(openidJson.getString("session_key"));
 		user.setWxOpenid(openidJson.getString("openid"));
 		/** unionid获取是否成功{unionid不为空&unionid不等于openid} ***************************/

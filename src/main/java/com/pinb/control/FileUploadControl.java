@@ -30,23 +30,24 @@ public class FileUploadControl {
 	private static final Logger log = LoggerFactory.getLogger(FileUploadControl.class);
 
 	@RequestMapping("fileUpload")
-	public Object fileUpload(@RequestParam("file") MultipartFile file, @RequestParam("fileMd5") String fileMd5,HttpServletRequest req)
-			throws Exception {
+	public Object fileUpload(@RequestParam("file") MultipartFile file, @RequestParam("fileMd5") String fileMd5,
+			@RequestParam("fileTypePath") String fileTypePath, HttpServletRequest req) throws Exception {
 		if (file.isEmpty()) {
 			throw new ServiceException(RespCode.file_unExist);
 		}
 		if (StringUtils.isEmpty(fileMd5)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "fileMd5");
 		}
-		
-		String imagesPath = PropertiesUtils.getProperty("images.path", "/data/pinb/images/");
+
+		String imagesPath = PropertiesUtils.getProperty("images.path", "/data/pinb/images/") + fileTypePath + "/";
 		String oldFileName = file.getOriginalFilename();
 		String newFileName = fileMd5 + oldFileName.substring(oldFileName.lastIndexOf("."), oldFileName.length());
 		if (System.getProperty("user.dir").contains(":")) {
 			// windows 环境
 			imagesPath = System.getProperty("user.dir").substring(0, 2) + imagesPath;
 		}
-		log.debug("#oldFileName:[{}]，#newFileName:[{}]，#imagesPath:[{}]", oldFileName, newFileName, imagesPath + newFileName);
+		log.debug("#oldFileName:[{}]，#newFileName:[{}]，#imagesPath:[{}]", oldFileName, newFileName,
+				imagesPath + newFileName);
 		File newFile = new File(imagesPath + newFileName);
 		if (newFile.exists()) {
 			log.debug("#文件已存在服务器，上传成功,#path:[{}]", newFile.getPath());

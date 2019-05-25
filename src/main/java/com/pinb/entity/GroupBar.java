@@ -22,6 +22,8 @@ public class GroupBar extends BaseEntity {
 	// vo冗余添加部分属性
 	private String orderTrace;
 	private String orderLeader;
+	private String appid;
+	private String secret;
 
 	public String getGroubTrace() {
 		return groubTrace;
@@ -143,6 +145,22 @@ public class GroupBar extends BaseEntity {
 	 */
 	public void setOrderLeader(String orderLeader) {
 		this.orderLeader = orderLeader;
+	}
+
+	public String getAppid() {
+		return appid;
+	}
+
+	public void setAppid(String appid) {
+		this.appid = appid;
+	}
+
+	public String getSecret() {
+		return secret;
+	}
+
+	public void setSecret(String secret) {
+		this.secret = secret;
 	}
 
 }

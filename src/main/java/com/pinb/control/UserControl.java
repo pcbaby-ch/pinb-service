@@ -49,17 +49,6 @@ public class UserControl {
 		return PropertiesUtils.getProperty("server.port", "server.port");
 	}
 
-	@ApiOperation("获取微信openid、unionid")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "Yappid", value = "详情查看微信开发平台api：https://developers.weixin.qq.com/miniprogram/dev/api/getPhoneNumber.html >开放接口>登陆", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "Ysecret", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "YjsCode", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "YgrantType", value = "", required = false, dataType = "string") })
-	@PostMapping("getOpenid")
-	public Object getOpenid(@RequestBody UserVo userVo) {
-		return RespUtil.dataResp(userService.getOpenid(userVo));
-	}
-	
 	@ApiOperation("微信登陆-店长")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "Yappid", value = "详情查看微信开发平台api：https://developers.weixin.qq.com/miniprogram/dev/api/getPhoneNumber.html >开放接口>登陆", required = false, dataType = "string"),

@@ -3,6 +3,8 @@
  */
 package com.pinb.control;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +34,6 @@ public class GroupBarControl {
 
 	@Autowired
 	private GroupBarService groupBarService;
-	
-	
 
 	@ApiOperation("暂，无需对接")
 	@ApiImplicitParams({
@@ -50,7 +50,7 @@ public class GroupBarControl {
 	public Object selectOne(@RequestBody GroupBar groupBar) {
 		return RespUtil.dataResp(groupBarService.selectOne(groupBar));
 	}
-	
+
 	@PostMapping("selectOneShare")
 	public Object selectOneShare(@RequestBody GroupBar groupBar) {
 		return RespUtil.dataResp(groupBarService.getOneShopShare(groupBar));
@@ -64,9 +64,9 @@ public class GroupBarControl {
 			@ApiImplicitParam(name = "YgroubPhone", value = "店铺客服电话", required = false, dataType = "string"),
 			@ApiImplicitParam(name = "YgroubAddress", value = "店铺地址", required = false, dataType = "string") })
 	@PostMapping("add")
-	public Object add(@RequestBody String reqStr,HttpServletRequest request) {
-		
-		return RespUtil.baseResp(groupBarService.add(reqStr,request));
+	public Object add(@RequestBody String reqStr, HttpServletRequest request) {
+
+		return RespUtil.baseResp(groupBarService.add(reqStr, request));
 	}
 
 	@ApiOperation("店铺信息-更新")
@@ -79,6 +79,11 @@ public class GroupBarControl {
 	@PostMapping("update")
 	public Object update(@RequestBody GroupBar groupBar) {
 		return RespUtil.baseResp(groupBarService.update(groupBar));
+	}
+
+	@PostMapping("getShopQR")
+	public Object getShopQR(@RequestBody GroupBar groupBar) throws IOException {
+		return RespUtil.dataResp(groupBarService.getShopQR(groupBar));
 	}
 
 }

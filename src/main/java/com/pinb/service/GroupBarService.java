@@ -3,6 +3,9 @@
  */
 package com.pinb.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +25,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinb.common.BusinessesFlowNum;
 import com.pinb.common.ServiceException;
+import com.pinb.config.RedisPool;
 import com.pinb.constant.RedisConst;
 import com.pinb.entity.GroubActivity;
 import com.pinb.entity.GroubaOrder;
@@ -33,6 +37,8 @@ import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.mapper.GroupBarMapper;
 import com.pinb.util.IpUtils;
 import com.pinb.util.MapBeanUtil;
+import com.pinb.util.PropertiesUtils;
+import com.pinb.util.RespUtil;
 
 /**
  * 拼吧-店铺
@@ -53,7 +59,9 @@ public class GroupBarService {
 	@Autowired
 	GroubActivityService groubActivityService;
 	@Autowired
-	private UserService userService;
+	UserService userService;
+	@Autowired
+	WxApiService wxApiService;
 
 	/**
 	 * 店铺入驻 | 店铺信息+商品信息保存
@@ -242,6 +250,64 @@ public class GroupBarService {
 		resp.put("groubInfo", groupBar);
 		resp.put("goodsList", goodsList);// 普通商品，可能携带和我相关的订单头像信息
 		return resp;
+	}
+
+	/**
+	 * 获取店铺小程序二维码
+	 * 
+	 * @param groupBar
+	 * @return 获取成功，返回二维码文件名
+	 * @throws IOException
+	 */
+	public Object getShopQR(GroupBar groupBar) throws IOException {
+		// #入参校验
+		if (StringUtils.isEmpty(groupBar.getGroubTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "groubTrace");
+		}
+
+		// #获取accessToken
+		String accessToken = null;
+		if (RedisPool.exists(RedisConst.accessToken)) {
+			accessToken = RedisPool.get(RedisConst.accessToken);
+		} else {
+			JSONObject json = wxApiService.getAccessToken(groupBar.getAppid(), groupBar.getSecret());
+			accessToken = json.getString("access_token");
+			if (!StringUtils.isEmpty(accessToken)) {
+				RedisPool.set(RedisConst.accessToken, 6000, accessToken);
+			}
+		}
+		// #获取小程序二维码
+		Object wxQR = wxApiService.getUnlimited(accessToken, groupBar.getGroubTrace());
+		if (wxQR instanceof String) {
+			throw new ServiceException(RespCode.END);
+		} else {
+			// #保存QR字节流到指定目录
+			String imagesPath = PropertiesUtils.getProperty("images.path", "/data/pinb/images/") + "shopQR/";
+			String newFileName = groupBar.getGroubTrace() + ".jpg";
+			if (System.getProperty("user.dir").contains(":")) {
+				// windows 环境
+				imagesPath = System.getProperty("user.dir").substring(0, 2) + imagesPath;
+			}
+			File newFile = new File(imagesPath + newFileName);
+			if (newFile.exists()) {
+				log.debug("#文件已存在服务器，上传成功,#path:[{}]", newFile.getPath());
+				return RespUtil.dataResp(newFileName);
+			}
+			if (!newFile.getParentFile().exists()) { // 判断文件父目录是否存在
+				newFile.getParentFile().mkdirs();
+			}
+			FileOutputStream fos = null;
+			try {
+				fos = new FileOutputStream(newFile);
+				fos.write((byte[]) wxQR);
+			} catch (Exception e) {
+				log.error("#店铺二维码保存失败");
+			} finally {
+				if (fos != null)
+					fos.close();
+			}
+			return RespUtil.dataResp(newFileName);
+		}
 	}
 
 	/**
