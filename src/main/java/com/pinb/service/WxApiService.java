@@ -50,7 +50,7 @@ public class WxApiService {
 		if (StringUtils.isEmpty(user.getGrantType())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "grantType");
 		}
-		String url = PropertiesUtils.getProperty("wxGetOpenid", "127.0.0.1:9668/pinb-mock") + "/sns/jscode2session";
+		String url = PropertiesUtils.getProperty("wxapiHost", "127.0.0.1:9668/pinb-mock") + "/sns/jscode2session";
 		HashMap<String, Object> wxreq = new HashMap<>();
 		wxreq.put("appid", user.getAppid());
 		wxreq.put("secret", user.getSecret());
