@@ -187,36 +187,37 @@ public class GroubaOrderService {
 	 * 扫描消费订单
 	 * 
 	 * @author chenzhao @date May 15, 2019
-	 * @param groubaOrder
+	 * @param groubaOrderVo
 	 * @return
 	 */
-	public boolean orderConsume(GroubaOrder groubaOrder) {
+	public boolean orderConsume(GroubaOrder groubaOrderVo) {
 		// #入参校验
-		if (StringUtils.isEmpty(groubaOrder.getOrderTrace())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getOrderTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderTrace");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getRefGroubTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace");
 		}
-		logParams(groubaOrder);
+		logParams(groubaOrderVo);
 		// #根据消费二维码信息，查询消费订单
-		GroubaOrder oldOrder = groubaOrderMapper.selectOne(groubaOrder.getOrderTrace(), groubaOrder.getWxUnionid());
+		GroubaOrder oldOrder = groubaOrderMapper.selectOne(groubaOrderVo.getOrderTrace(),
+				groubaOrderVo.getRefUserWxUnionid());
 		if (oldOrder == null || Integer.parseInt(oldOrder.getOrderStatus()) < OrderStatus.join_success.getCode()) {
 			throw new ServiceException(RespCode.order_unJoinSuccess);
 		}
 		if (Integer.parseInt(oldOrder.getOrderStatus()) == OrderStatus.consume_success.getCode()) {
 			throw new ServiceException(RespCode.order_unRepeatConsume);
 		}
-		if (!groubaOrder.getRefGroubTrace().equals(oldOrder.getRefGroubTrace())) {
+		if (!groubaOrderVo.getRefGroubTrace().equals(oldOrder.getRefGroubTrace())) {
 			throw new ServiceException(RespCode.order_groubError);
 		}
 
 		GroubaOrder groubaOrderParams = new GroubaOrder();
-		groubaOrderParams.setOrderTrace(groubaOrder.getOrderTrace());
-		groubaOrderParams.setRefUserWxUnionid(groubaOrder.getRefUserWxUnionid());
+		groubaOrderParams.setOrderTrace(groubaOrderVo.getOrderTrace());
+		groubaOrderParams.setRefUserWxUnionid(groubaOrderVo.getRefUserWxUnionid());
 		groubaOrderParams.setConsumeSuccessTime("udpate");
 		groubaOrderParams.setOrderStatus(OrderStatus.consume_success.getCode() + "");
 
