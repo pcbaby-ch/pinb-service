@@ -58,7 +58,7 @@ public class GroubaOrderControl {
 	@PostMapping("orderJoin")
 	public Object orderJoin(@RequestBody GroubaOrder groubaOrder, HttpServletRequest req) throws Exception {
 		groubaOrder.setClientIp(IpUtils.getIpFromRequest(req));
-		return RespUtil.baseResp(groubaOrderService.orderOpen(groubaOrder));
+		return RespUtil.baseResp(groubaOrderService.orderJoin(groubaOrder));
 	}
 
 	@ApiOperation("已有团订单-扫码消费 {二维码设计成包含订单trace+消费用户数据的QR，店长扫QR时，便可从二维码中同时获得消费订单+用户}")

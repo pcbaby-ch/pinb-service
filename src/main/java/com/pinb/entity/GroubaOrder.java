@@ -20,6 +20,7 @@ public class GroubaOrder extends BaseEntity {
 	private String joinSucceedTime;
 	private String consumeTime;
 	private String consumeSuccessTime;
+	private int groubaSize;
 	private String goodsName;
 	private String goodsImg;
 	private String goodsPrice;
@@ -148,6 +149,14 @@ public class GroubaOrder extends BaseEntity {
 		this.consumeSuccessTime = consumeSuccessTime;
 	}
 
+	public int getGroubaSize() {
+		return groubaSize;
+	}
+
+	public void setGroubaSize(int groubaSize) {
+		this.groubaSize = groubaSize;
+	}
+
 	public String getGoodsName() {
 		return goodsName;
 	}
@@ -257,6 +266,5 @@ public class GroubaOrder extends BaseEntity {
 	public void setShareLeader(String shareLeader) {
 		this.shareLeader = shareLeader;
 	}
-
 
 }

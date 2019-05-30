@@ -27,7 +27,6 @@ import com.pinb.entity.GroubaOrder;
 import com.pinb.enums.OrderStatus;
 import com.pinb.enums.RespCode;
 import com.pinb.mapper.GroubActivityCache;
-import com.pinb.mapper.GroubActivityMapper;
 import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.util.DateUtil;
 import com.pinb.util.MapBeanUtil;
@@ -97,6 +96,7 @@ public class GroubaOrderService {
 			throw new ServiceException(RespCode.order_openGrouba);
 		}
 		groubaOrder.setOrderTrace(BusinessesFlowNum.getNum("GO", RedisConst.groubaOrderTrace));
+		groubaOrder.setGroubaSize(groubActivity.getGroubaSize());
 		groubaOrder.setOrderExpiredTime(DateUtil.dfyyyy_MM_ddhhmmss.format(
 				DateUtil.add(new Date(), Calendar.MINUTE, Integer.parseInt(groubaOrder.getOrderExpiredTime()))));
 		groubaOrder.setLeader(groubaOrder.getRefUserWxUnionid());
@@ -129,12 +129,12 @@ public class GroubaOrderService {
 		if (orderLeader == null) {
 			throw new ServiceException(RespCode.order_unOpenOrder);
 		}
-		if (DateUtil.compareDate(orderLeader.getOrderExpiredTime(), new Date()) <= 0) {//拼团有效时长已过
+		if (DateUtil.compareDate(orderLeader.getOrderExpiredTime(), new Date()) <= 0) {// 拼团有效时长已过
 			throw new ServiceException(RespCode.order_joinTimeExpired);
 		}
 		int orderCount4User = groubaOrderMapper.selectOrderCount4User(orderLeader.getRefGroubaTrace(),
 				groubaOrderVo.getRefUserWxUnionid());
-		if (orderLeader.getGroubaIsnew() == 1 && orderCount4User >= 1) {//老用户不能进拉新团
+		if (orderLeader.getGroubaIsnew() == 1 && orderCount4User >= 1) {// 老用户不能进拉新团
 			throw new ServiceException(RespCode.order_joinedRepeat);
 		}
 
@@ -147,11 +147,13 @@ public class GroubaOrderService {
 		groubaOrderParams.setRefUserWxUnionid(groubaOrderVo.getRefUserWxUnionid());
 		groubaOrderParams.setLeader(orderLeader.getLeader());
 		groubaOrderParams.setRefUserImg(groubaOrderVo.getRefUserImg());
+		groubaOrderParams.setGroubaSize(orderLeader.getGroubaSize());
 		groubaOrderParams.setGoodsName(orderLeader.getGoodsName());
 		groubaOrderParams.setGoodsImg(orderLeader.getGoodsImg());
 		groubaOrderParams.setGoodsPrice(orderLeader.getGoodsPrice());
 		groubaOrderParams.setGroubaDiscountAmount(orderLeader.getGroubaDiscountAmount());
 		groubaOrderParams.setGroubaIsnew(orderLeader.getGroubaIsnew());
+		groubaOrderParams.setClientIp(groubaOrderVo.getClientIp());
 		log.info("#成团处理>>>>>>>>>>>>>> A");
 		GroubActivity groubActivity = groubActivityCache.selectOne(orderLeader.getRefGroubaTrace());
 		synchronized (groubActivity) {
@@ -242,7 +244,7 @@ public class GroubaOrderService {
 	 * @param groubaOrder
 	 * @return
 	 */
-	public HashMap getMyOrder4user(GroubaOrder groubaOrder) {
+	public HashMap<String, Object> getMyOrder4user(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxUnionid");

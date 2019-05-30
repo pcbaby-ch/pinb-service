@@ -109,9 +109,9 @@ public interface GroubaOrderMapper {
 
 	@Insert(value = "<script>INSERT INTO grouba_order"
 			+ " (order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,ref_user_wx_unionid,leader,ref_user_img,client_ip"
-			+ ",goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew) "
+			+ ",grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew) "
 			+ " VALUES (#{orderTrace},#{refGroubTrace},#{refGroubaTrace},#{orderExpiredTime},#{refUserWxUnionid},#{leader},#{refUserImg},#{clientIp}"
-			+ ",#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew})</script>")
+			+ ",#{groubaSize},#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew})</script>")
 	public int insert(GroubaOrder groubaOrder);
 
 	@Update(value = "<script>UPDATE grouba_order SET  uptime=NOW()"

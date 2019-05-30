@@ -63,6 +63,8 @@ public class GroupBarService {
 	@Autowired
 	WxApiService wxApiService;
 
+	private int[] groubaSize = { 6, 8, 9 };
+
 	/**
 	 * 店铺入驻 | 店铺信息+商品信息保存
 	 * 
@@ -349,7 +351,7 @@ public class GroupBarService {
 				goods.setUserImgs(orderImgs.getUserImgs());
 				goods.setOrdersStatus(orderImgs.getOrdersStatus());
 				if (orderImgs.getOrderRefUsers().contains(groupBarVo.getRefUserWxUnionid())
-						|| goods.getGroubaSize() == orderImgs.getOrderRefUsers().split(",").length) {
+						|| groubaSize[goods.getGroubaSize()] == orderImgs.getOrderRefUsers().split(",").length) {
 					// #如果我已参团，或者团已满，
 					goods.setIsJoined(true);
 				}
@@ -368,7 +370,7 @@ public class GroupBarService {
 			shareGoods.setUserImgs(orderImgs.getUserImgs());
 			shareGoods.setOrdersStatus(orderImgs.getOrdersStatus());
 			if (orderImgs.getOrderRefUsers().contains(groupBarVo.getRefUserWxUnionid())
-					|| shareGoods.getGroubaSize() == orderImgs.getOrderRefUsers().split(",").length) {
+					|| groubaSize[shareGoods.getGroubaSize()] == orderImgs.getOrderRefUsers().split(",").length) {
 				// #如果我已参团，或者团已满，
 				shareGoods.setIsJoined(true);
 			}
