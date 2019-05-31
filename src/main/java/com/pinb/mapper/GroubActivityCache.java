@@ -110,21 +110,18 @@ public class GroubActivityCache {
 		}
 	};
 
-	public List<GroubActivity> selectNearGroubaTop100(String province, String city, int page) {
+	public List<GroubActivity> selectNearGroubaTop100(int page) {
 		if (!openCache) {
-			return groubActivityMapper.selectNearGroubaTop100(province, city);
+			return groubActivityMapper.selectNearGroubaTop100(null, null);
 		}
-		province = province == null ? "" : province;
-		city = city == null ? "" : city;
-		List<GroubActivity> result = groubActivityMapper.selectNearGroubaTop100(province, city);
-		String key = RedisConst.GroubActivityCache + city;
-		String field = province + "_" + page;
-		if (RedisPool.exists(key) && RedisPool.exists(key, field)) {
-			log.debug("#命中缓存,#city:[{}],#[{}]", city, province);
-			return JSONObject.parseArray(RedisPool.hget(key, field), GroubActivity.class);
+		List<GroubActivity> result = groubActivityMapper.selectNearGroubaTop100(null, null);
+		String key = RedisConst.GroubActivityCache + "selectNearGroubaTop100_" + page;
+		if (RedisPool.exists(key)) {
+			log.debug("#命中缓存");
+			return JSONObject.parseArray(RedisPool.get(key), GroubActivity.class);
 		} else {
-			log.debug("#无缓存,#city:[{}],#[{}]", city, province);
-			RedisPool.hset(key, field, result, 60000);
+			log.debug("#无缓存");
+			RedisPool.set(key, 60, result);
 			return result;
 		}
 	};
