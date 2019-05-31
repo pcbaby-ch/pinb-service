@@ -14,6 +14,7 @@ public class GroubaOrder extends BaseEntity {
 	private String orderExpiredTime;
 	private String orderStatus;
 	private String refUserWxUnionid;
+	private String refUserWxOpenid;
 	private String leader;
 	private String refUserImg;
 	private String orderShareCount;
@@ -147,6 +148,14 @@ public class GroubaOrder extends BaseEntity {
 
 	public void setConsumeSuccessTime(String consumeSuccessTime) {
 		this.consumeSuccessTime = consumeSuccessTime;
+	}
+
+	public String getRefUserWxOpenid() {
+		return refUserWxOpenid;
+	}
+
+	public void setRefUserWxOpenid(String refUserWxOpenid) {
+		this.refUserWxOpenid = refUserWxOpenid;
 	}
 
 	public int getGroubaSize() {

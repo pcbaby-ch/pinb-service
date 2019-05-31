@@ -33,8 +33,6 @@ public class UserService {
 
 	@Autowired
 	UserMapper userMapper;
-	@Autowired
-	WxApiService wxService;
 
 	public boolean add(User user) {
 		// #入参校验
@@ -109,50 +107,8 @@ public class UserService {
 		return WxUtil.getUserInfo(user.getEncryptedData(), user.getSessionKey(), user.getIv());
 	}
 
-	/**
-	 * 微信登陆
-	 * 
-	 * @author chenzhao @date Apr 26, 2019
-	 * @param user 必传{WxUnionid、WxOpenid}
-	 * @return
-	 */
-	public Object wxLogin4Shop(UserVo user) {
-		JSONObject openidJson = wxService.getOpenid(user);
-		user.setSessionKey(openidJson.getString("session_key"));
-		user.setWxOpenid(openidJson.getString("openid"));
-		/** unionid获取是否成功{unionid不为空&unionid不等于openid} ***************************/
-		user.setWxUnionid(StringUtils.isEmpty(openidJson.getString("unionid")) ? openidJson.getString("openid")
-				: openidJson.getString("unionid"));
-
-		log.info("#根据unionid查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
-		User unionUser = userMapper.selectOne(user.getWxUnionid(), null);
-		if (unionUser == null) {
-			// 不存在uinion用户
-//			if (StringUtils.isEmpty(user.getPhone())) {
-//				throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Phone");
-//			}
-//			log.info("#根据phone查用户是否存在?start #WxUnionid[{}]", user.getWxUnionid());
-//			User phoneUser = userMapper.selectOne(null, user.getPhone());
-//			if (phoneUser == null || StringUtils.isEmpty(phoneUser)) {
-//				// TODO check用户基本信息+设备信息
-//				// 入库新增 用户信息 (静默注册) {基本信息+设备信息+位置经纬度信息}
-//				log.info("#入库新增 用户信息start #WxUnionid[{}]", user.getWxUnionid());
-//				userMapper.insert(user);
-//			} else {
-//				// 入库更新用户unionid （此后:此用户unionid不等于openid） ***************************
-//				log.error("#入库更新用户unionid start #WxUnionid[{}]", user.getWxUnionid());
-//				userMapper.updateUnionid(user);
-//			}
-			log.info("#入库新增用户unionid start #WxUnionid[{}]", user.getWxUnionid());
-			throw new ServiceException(JSONObject.toJSONString(user), RespCode.user_unExist);
-		} else {
-			log.info("#存在unionUser用户，直接返回用户信息、是否入驻 #WxUnionid[{}]", user.getWxUnionid());
-			return unionUser;
-		}
-	}
-
 	public Object wxLogin(UserVo user) {
-		JSONObject openidJson = wxService.getOpenid(user);
+		JSONObject openidJson = WxApiService.getOpenid(user);
 		user.setSessionKey(openidJson.getString("session_key"));
 		user.setWxOpenid(openidJson.getString("openid"));
 		/** unionid获取是否成功{unionid不为空&unionid不等于openid} ***************************/

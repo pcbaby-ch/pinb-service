@@ -8,6 +8,7 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -81,6 +82,7 @@ public class GroubActivityService {
 	 * @param groubActivity
 	 * @return
 	 */
+	@Async("getThreadPoolTaskExecutor")
 	public boolean share(String groubaTrace) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaTrace)) {
@@ -102,12 +104,12 @@ public class GroubActivityService {
 	 */
 	public Page<?> selectNearGrouba(GroubActivity groubActivity) {
 		// #入参校验
-		if (StringUtils.isEmpty(groubActivity.getProvince())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Province");
-		}
-		if (StringUtils.isEmpty(groubActivity.getCity())) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "City");
-		}
+//		if (StringUtils.isEmpty(groubActivity.getProvince())) {
+//			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Province");
+//		}
+//		if (StringUtils.isEmpty(groubActivity.getCity())) {
+//			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "City");
+//		}
 //		if (StringUtils.isEmpty(groubActivity.getLatitude())) {
 //			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Latitude");
 //		}

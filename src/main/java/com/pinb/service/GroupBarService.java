@@ -25,7 +25,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinb.common.BusinessesFlowNum;
 import com.pinb.common.ServiceException;
-import com.pinb.config.RedisPool;
 import com.pinb.constant.RedisConst;
 import com.pinb.entity.GroubActivity;
 import com.pinb.entity.GroubaOrder;
@@ -60,8 +59,6 @@ public class GroupBarService {
 	GroubActivityService groubActivityService;
 	@Autowired
 	UserService userService;
-	@Autowired
-	WxApiService wxApiService;
 
 	private int[] groubaSize = { 6, 8, 9 };
 
@@ -203,7 +200,7 @@ public class GroupBarService {
 		logParams(groupBar);
 		groupBar = groupBarMapper.selectOne(groupBar.getRefUserWxUnionid(), null);
 		if (groupBar == null) {
-			throw new ServiceException("#店铺基础信息查询失败");
+			throw new ServiceException(RespCode.groub_unExist);
 		}
 		// #查询商品信息
 		List<GroubActivity> goodsList = groubActivityCache.selectOneGroub(groupBar.getGroubTrace(),
@@ -268,18 +265,9 @@ public class GroupBarService {
 		}
 
 		// #获取accessToken
-		String accessToken = null;
-		if (RedisPool.exists(RedisConst.accessToken)) {
-			accessToken = RedisPool.get(RedisConst.accessToken);
-		} else {
-			JSONObject json = wxApiService.getAccessToken(groupBar.getAppid(), groupBar.getSecret());
-			accessToken = json.getString("access_token");
-			if (!StringUtils.isEmpty(accessToken)) {
-				RedisPool.set(RedisConst.accessToken, 6000, accessToken);
-			}
-		}
+		String accessToken = WxApiService.getAccessToken(groupBar.getAppid(), groupBar.getSecret());
 		// #获取小程序二维码
-		Object wxQR = wxApiService.getUnlimited(accessToken, groupBar.getGroubTrace());
+		Object wxQR = WxApiService.getUnlimited(accessToken, groupBar.getGroubTrace());
 		if (wxQR instanceof String) {
 			throw new ServiceException(RespCode.END);
 		} else {

@@ -3,20 +3,17 @@
  */
 package com.pinb.service;
 
-import java.io.File;
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.pinb.common.ServiceException;
+import com.pinb.config.RedisPool;
+import com.pinb.constant.RedisConst;
 import com.pinb.enums.RespCode;
 import com.pinb.util.HttpUtil;
 import com.pinb.util.PropertiesUtils;
-import com.pinb.util.RespUtil;
 import com.pinb.vo.UserVo;
 
 /**
@@ -24,10 +21,7 @@ import com.pinb.vo.UserVo;
  * 
  * @author chenzhao @date Apr 15, 2019
  */
-@Service
 public class WxApiService {
-
-	private static final Logger log = LoggerFactory.getLogger(WxApiService.class);
 
 	/**
 	 * 获取用户openid
@@ -36,7 +30,7 @@ public class WxApiService {
 	 * @param user 必传{appid、secret、jsCode、grantType}
 	 * @return
 	 */
-	public JSONObject getOpenid(UserVo user) {
+	public static JSONObject getOpenid(UserVo user) {
 		// #入参校验
 		if (StringUtils.isEmpty(user.getAppid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "appid");
@@ -62,7 +56,7 @@ public class WxApiService {
 		return JSONObject.parseObject(wxresp);
 	}
 
-	public JSONObject getAccessToken(String appid, String secret) {
+	public static String getAccessToken(String appid, String secret) {
 		// #入参校验
 		if (StringUtils.isEmpty(appid)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "appid");
@@ -70,15 +64,23 @@ public class WxApiService {
 		if (StringUtils.isEmpty(secret)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "secret");
 		}
-		String url = PropertiesUtils.getProperty("wxapiHost", "127.0.0.1:9668/pinb-mock") + "/cgi-bin/token";
-		HashMap<String, Object> wxreq = new HashMap<>();
-		wxreq.put("appid", appid);
-		wxreq.put("secret", secret);
-		wxreq.put("grant_type", "client_credential");
+		String accessToken = null;
+		if (RedisPool.exists(RedisConst.accessToken)) {
+			accessToken = RedisPool.get(RedisConst.accessToken);
+		} else {
+			String url = PropertiesUtils.getProperty("wxapiHost", "127.0.0.1:9668/pinb-mock") + "/cgi-bin/token";
+			HashMap<String, Object> wxreq = new HashMap<>();
+			wxreq.put("appid", appid);
+			wxreq.put("secret", secret);
+			wxreq.put("grant_type", "client_credential");
 
-		String wxresp = HttpUtil.doGet(url, wxreq);
-
-		return JSONObject.parseObject(wxresp);
+			String wxresp = HttpUtil.doGet(url, wxreq);
+			accessToken = JSONObject.parseObject(wxresp).getString("access_token");
+			if (!StringUtils.isEmpty(accessToken)) {
+				RedisPool.set(RedisConst.accessToken, 6000, accessToken);
+			}
+		}
+		return accessToken;
 	}
 
 	/**
@@ -88,7 +90,7 @@ public class WxApiService {
 	 * @param scene
 	 * @return #为string类型：获取失败的json异常响应；#为byte[]时：获取成功
 	 */
-	public Object getUnlimited(String accessToken, String scene) {
+	public static Object getUnlimited(String accessToken, String scene) {
 		// #入参校验
 		if (StringUtils.isEmpty(accessToken)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "accessToken");
@@ -108,6 +110,39 @@ public class WxApiService {
 		} else {
 			return wxresp;
 		}
+	}
+
+	/**
+	 * 发送模板消息
+	 * 
+	 * @author chenzhao @date May 31, 2019
+	 * @param appid
+	 * @param secret
+	 * @param touser
+	 * @param templateId
+	 * @return
+	 */
+	public static Object templateSend(String templateId, String touser, JSONObject data) {
+		// #入参校验
+		if (StringUtils.isEmpty(touser)) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "touser");
+		}
+		if (StringUtils.isEmpty(templateId)) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "templateId");
+		}
+		String appid = PropertiesUtils.getProperty("wxappid", "wxappid");
+		String secret = PropertiesUtils.getProperty("wxsecret", "wxsecret");
+		// #获取accessToken
+		String accessToken = getAccessToken(appid, secret);
+		String url = PropertiesUtils.getProperty("wxapiHost", "127.0.0.1:9668/pinb-mock")
+				+ "/cgi-bin/message/wxopen/template/send?access_token=" + accessToken;
+		HashMap<String, Object> wxreq = new HashMap<>();
+		wxreq.put("touser", touser);
+		wxreq.put("template_id", templateId);
+		wxreq.put("form_id", "form_id");
+		wxreq.put("data", data + "");
+
+		return HttpUtil.doPost(url, JSONObject.toJSONString(wxreq));
 	}
 
 }

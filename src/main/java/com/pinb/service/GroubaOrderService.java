@@ -47,6 +47,8 @@ public class GroubaOrderService {
 	GroubaOrderMapper groubaOrderMapper;
 	@Autowired
 	GroubActivityService groubActivityService;
+	@Autowired
+	MsgSendService msgSendService;
 
 	private int[] groubaSize = { 6, 8, 9 };
 
@@ -70,6 +72,9 @@ public class GroubaOrderService {
 		}
 		if (StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
+		}
+		if (StringUtils.isEmpty(groubaOrder.getRefUserWxOpenid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxOpenid");
 		}
 		if (StringUtils.isEmpty(groubaOrder.getRefUserImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserImg");
@@ -96,6 +101,7 @@ public class GroubaOrderService {
 			throw new ServiceException(RespCode.order_openGrouba);
 		}
 		groubaOrder.setOrderTrace(BusinessesFlowNum.getNum("GO", RedisConst.groubaOrderTrace));
+		groubaOrder.setRefUserWxOpenid(groubaOrder.getRefUserWxOpenid());
 		groubaOrder.setGroubaSize(groubActivity.getGroubaSize());
 		groubaOrder.setOrderExpiredTime(DateUtil.dfyyyy_MM_ddhhmmss.format(
 				DateUtil.add(new Date(), Calendar.MINUTE, Integer.parseInt(groubaOrder.getOrderExpiredTime()))));
@@ -117,6 +123,9 @@ public class GroubaOrderService {
 		}
 		if (StringUtils.isEmpty(groubaOrderVo.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
+		}
+		if (StringUtils.isEmpty(groubaOrderVo.getRefUserWxOpenid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxOpenid");
 		}
 		if (StringUtils.isEmpty(groubaOrderVo.getLeader())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Leader");
@@ -147,6 +156,7 @@ public class GroubaOrderService {
 		groubaOrderParams.setRefUserWxUnionid(groubaOrderVo.getRefUserWxUnionid());
 		groubaOrderParams.setLeader(orderLeader.getLeader());
 		groubaOrderParams.setRefUserImg(groubaOrderVo.getRefUserImg());
+		groubaOrderParams.setRefUserWxOpenid(groubaOrderVo.getRefUserWxOpenid());
 		groubaOrderParams.setGroubaSize(orderLeader.getGroubaSize());
 		groubaOrderParams.setGoodsName(orderLeader.getGoodsName());
 		groubaOrderParams.setGoodsImg(orderLeader.getGoodsImg());
@@ -171,6 +181,9 @@ public class GroubaOrderService {
 					groubaOrderMapper.update(new GroubaOrder(orderLeader.getOrderTrace(), null,
 							OrderStatus.join_success.getCode() + ""));
 					log.info("#成团处理>>>>>>>>>>>>>> B3");
+					// 异步发送成团通知，for团所有成员
+					msgSendService.wxMsgSend4Joined(orderLeader.getGoodsName(), orderLeader.getLeader(),
+							orderLeader.getGroubaSize(), orderLeader.getOrderTrace());
 				}
 			} else {
 				throw new ServiceException(RespCode.order_groubaFull);

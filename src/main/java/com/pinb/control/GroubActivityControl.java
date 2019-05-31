@@ -28,10 +28,14 @@ public class GroubActivityControl {
 	@Autowired
 	private GroubActivityService groubActivityService;
 
-
 	@PostMapping("selectNearGrouba")
 	public Object selectNearGrouba(@RequestBody GroubActivity groubActivity) {
 		return RespUtil.listResp(groubActivityService.selectNearGrouba(groubActivity));
+	}
+
+	@PostMapping("share")
+	public Object share(@RequestBody GroubActivity groubActivity) {
+		return RespUtil.baseResp(groubActivityService.share(groubActivity.getGroubaTrace()));
 	}
 
 }
