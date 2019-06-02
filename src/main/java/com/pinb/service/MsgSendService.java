@@ -37,6 +37,8 @@ public class MsgSendService {
 	@Autowired
 	GroubActivityCache groubActivityCache;
 
+	private int[] groubaSize = { 6, 8, 9 };
+
 	/**
 	 * 成团消息通知
 	 * 
@@ -44,7 +46,8 @@ public class MsgSendService {
 	 * @param orderTrace
 	 */
 	@Async("getThreadPoolTaskExecutor")
-	public void wxMsgSend4Joined(String goodsName, String leaderUserTrace, int groubSize, String orderTrace) {
+	public void wxMsgSend4Joined(String goodsName, String leaderUserTrace, int groubSize, String orderTrace,
+			String formId) {
 		String templateId = PropertiesUtils.getProperty("msgTemplate", "8QB4bYZYGLqYlk5lia0DIG5PeomZUy9eVOQY8UWVF1Y");
 		List<GroubaOrder> groubOrders = groubaOrderMapper.select(orderTrace, null, null, null, null);
 		log.info("#异步成团通知开始，#通知用户数:[{}]", groubOrders.size());
@@ -54,12 +57,16 @@ public class MsgSendService {
 			GroubaOrder order = groubOrders.get(i);
 			log.debug("#通知用户:[{}]", order.getRefUserWxOpenid());
 			JSONObject data = new JSONObject();
-			data.put("keyword1", goodsName + "-拼团");
-			data.put("keyword2", learderUser.getNickname());
-			data.put("keyword3", groubSize);
+			JSONObject value = new JSONObject();
+			value.put("value", goodsName + "-拼团");
+			data.put("keyword1", value.clone());
+			value.put("value", learderUser.getNickname());
+			data.put("keyword2", value.clone());
+			value.put("value", groubaSize[groubSize]);
+			data.put("keyword3", value);
 			String openid = StringUtils.isEmpty(order.getRefUserWxOpenid()) ? order.getRefUserWxUnionid()
 					: order.getRefUserWxOpenid();
-			WxApiService.templateSend(templateId, openid, data);
+			WxApiService.templateSend(templateId, openid, order.getFormId(), order.getRefGroubTrace(), data);
 		}
 	}
 

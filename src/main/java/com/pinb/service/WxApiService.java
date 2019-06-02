@@ -122,7 +122,7 @@ public class WxApiService {
 	 * @param templateId
 	 * @return
 	 */
-	public static Object templateSend(String templateId, String touser, JSONObject data) {
+	public static Object templateSend(String templateId, String touser, String formId,String groubTrace, JSONObject data) {
 		// #入参校验
 		if (StringUtils.isEmpty(touser)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "touser");
@@ -139,8 +139,9 @@ public class WxApiService {
 		HashMap<String, Object> wxreq = new HashMap<>();
 		wxreq.put("touser", touser);
 		wxreq.put("template_id", templateId);
-		wxreq.put("form_id", "form_id");
-		wxreq.put("data", data + "");
+		wxreq.put("form_id", formId);
+		wxreq.put("page", "/pages/index/index?groubTrace=" + groubTrace +"&pageParamsClear=true");
+		wxreq.put("data", data);
 
 		return HttpUtil.doPost(url, JSONObject.toJSONString(wxreq));
 	}

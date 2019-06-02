@@ -55,58 +55,61 @@ public class GroubaOrderService {
 	/**
 	 * 开团服务
 	 * 
-	 * @param groubaOrder
+	 * @param groubaOrderVo
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean orderOpen(GroubaOrder groubaOrder) throws Exception {
+	public boolean orderOpen(GroubaOrder groubaOrderVo) throws Exception {
 		// #入参校验
-		if (StringUtils.isEmpty(groubaOrder.getRefGroubaTrace())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getRefGroubaTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubaTrace");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getRefGroubTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getOrderExpiredTime())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getOrderExpiredTime())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "orderExpiredTime");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getRefUserWxUnionid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getRefUserWxOpenid())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getRefUserWxOpenid())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefUserWxOpenid");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getRefUserImg())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getRefUserImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserImg");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getGoodsName())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getGoodsName())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "goodsName");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getGoodsImg())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getGoodsImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "goodsImg");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getGoodsPrice())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getGoodsPrice())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "goodsPrice");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getGroubaDiscountAmount())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getGroubaDiscountAmount())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "groubaDiscountAmount");
 		}
-		if (StringUtils.isEmpty(groubaOrder.getGroubaIsnew())) {
+		if (StringUtils.isEmpty(groubaOrderVo.getGroubaIsnew())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "groubaIsnew");
 		}
-		logParams(groubaOrder);
-		GroubActivity groubActivity = groubActivityCache.selectOne(groubaOrder.getRefGroubaTrace());
-		int groubOrderCount = groubaOrderMapper.selectOpenGroubCount(null, groubaOrder.getRefGroubaTrace());
+		if (StringUtils.isEmpty(groubaOrderVo.getFormId())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "FormId");
+		}
+		logParams(groubaOrderVo);
+		GroubActivity groubActivity = groubActivityCache.selectOne(groubaOrderVo.getRefGroubaTrace());
+		int groubOrderCount = groubaOrderMapper.selectOpenGroubCount(null, groubaOrderVo.getRefGroubaTrace());
 		if (groubOrderCount >= groubActivity.getGroubaMaxCount()) {
 			throw new ServiceException(RespCode.order_openGrouba);
 		}
-		groubaOrder.setOrderTrace(BusinessesFlowNum.getNum("GO", RedisConst.groubaOrderTrace));
-		groubaOrder.setRefUserWxOpenid(groubaOrder.getRefUserWxOpenid());
-		groubaOrder.setGroubaSize(groubActivity.getGroubaSize());
-		groubaOrder.setOrderExpiredTime(DateUtil.dfyyyy_MM_ddhhmmss.format(
-				DateUtil.add(new Date(), Calendar.MINUTE, Integer.parseInt(groubaOrder.getOrderExpiredTime()))));
-		groubaOrder.setLeader(groubaOrder.getRefUserWxUnionid());
-		return groubaOrderMapper.insert(groubaOrder) > 0;
+		groubaOrderVo.setOrderTrace(BusinessesFlowNum.getNum("GO", RedisConst.groubaOrderTrace));
+		groubaOrderVo.setRefUserWxOpenid(groubaOrderVo.getRefUserWxOpenid());
+		groubaOrderVo.setGroubaSize(groubActivity.getGroubaSize());
+		groubaOrderVo.setOrderExpiredTime(DateUtil.dfyyyy_MM_ddhhmmss.format(
+				DateUtil.add(new Date(), Calendar.MINUTE, Integer.parseInt(groubaOrderVo.getOrderExpiredTime()))));
+		groubaOrderVo.setLeader(groubaOrderVo.getRefUserWxUnionid());
+		return groubaOrderMapper.insert(groubaOrderVo) > 0;
 	}
 
 	/**
@@ -132,6 +135,9 @@ public class GroubaOrderService {
 		}
 		if (StringUtils.isEmpty(groubaOrderVo.getRefUserImg())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserImg");
+		}
+		if (StringUtils.isEmpty(groubaOrderVo.getFormId())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "FormId");
 		}
 		logParams(groubaOrderVo);
 		GroubaOrder orderLeader = groubaOrderMapper.selectOne(groubaOrderVo.getOrderTrace(), groubaOrderVo.getLeader());
@@ -164,6 +170,7 @@ public class GroubaOrderService {
 		groubaOrderParams.setGroubaDiscountAmount(orderLeader.getGroubaDiscountAmount());
 		groubaOrderParams.setGroubaIsnew(orderLeader.getGroubaIsnew());
 		groubaOrderParams.setClientIp(groubaOrderVo.getClientIp());
+		groubaOrderParams.setFormId(groubaOrderVo.getFormId());
 		log.info("#成团处理>>>>>>>>>>>>>> A");
 		GroubActivity groubActivity = groubActivityCache.selectOne(orderLeader.getRefGroubaTrace());
 		synchronized (groubActivity) {
@@ -183,7 +190,7 @@ public class GroubaOrderService {
 					log.info("#成团处理>>>>>>>>>>>>>> B3");
 					// 异步发送成团通知，for团所有成员
 					msgSendService.wxMsgSend4Joined(orderLeader.getGoodsName(), orderLeader.getLeader(),
-							orderLeader.getGroubaSize(), orderLeader.getOrderTrace());
+							orderLeader.getGroubaSize(), orderLeader.getOrderTrace(), groubaOrderVo.getFormId());
 				}
 			} else {
 				throw new ServiceException(RespCode.order_groubaFull);

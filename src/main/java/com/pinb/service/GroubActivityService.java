@@ -4,11 +4,13 @@
 package com.pinb.service;
 
 import java.util.HashMap;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -83,12 +85,11 @@ public class GroubActivityService {
 	 * @return
 	 */
 	@Async("getThreadPoolTaskExecutor")
-	public boolean share(String groubaTrace) {
-		// #入参校验
-		if (StringUtils.isEmpty(groubaTrace)) {
-			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaTrace");
-		}
-		return groubActivityCache.share(groubaTrace) > 0;
+	public Future<String> share(String groubaTrace) {
+		groubActivityCache.share(groubaTrace);
+		log.debug("#分享累计成功");
+		Future<String> future = new AsyncResult<>("successs");
+		return future;
 	}
 
 	private void logParams(GroubActivity groubActivity) {

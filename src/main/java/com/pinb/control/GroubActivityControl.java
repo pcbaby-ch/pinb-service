@@ -35,7 +35,8 @@ public class GroubActivityControl {
 
 	@PostMapping("share")
 	public Object share(@RequestBody GroubActivity groubActivity) {
-		return RespUtil.baseResp(groubActivityService.share(groubActivity.getGroubaTrace()));
+		groubActivityService.share(groubActivity.getGroubaTrace());
+		return RespUtil.baseResp(true);
 	}
 
 }

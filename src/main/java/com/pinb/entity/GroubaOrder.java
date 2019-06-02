@@ -34,6 +34,7 @@ public class GroubaOrder extends BaseEntity {
 	private boolean isJoined;
 	private String shareOrder;
 	private String shareLeader;
+	private String formId;
 
 	/**
 	 * @param orderTrace
@@ -275,5 +276,14 @@ public class GroubaOrder extends BaseEntity {
 	public void setShareLeader(String shareLeader) {
 		this.shareLeader = shareLeader;
 	}
+
+	public String getFormId() {
+		return formId;
+	}
+
+	public void setFormId(String formId) {
+		this.formId = formId;
+	}
+	
 
 }
