@@ -4,6 +4,7 @@
 package com.pinb.service;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.springframework.util.StringUtils;
 
@@ -52,8 +53,11 @@ public class WxApiService {
 		wxreq.put("grant_type", user.getGrantType());
 
 		String wxresp = HttpUtil.doGet(url, wxreq);
-
-		return JSONObject.parseObject(wxresp);
+		JSONObject openidJson = JSONObject.parseObject(wxresp);
+		if (StringUtils.isEmpty(openidJson.getString("openid"))) {
+			openidJson.put("openid", "M" + UUID.randomUUID().toString().replaceAll("-", ""));
+		}
+		return openidJson;
 	}
 
 	public static String getAccessToken(String appid, String secret) {
@@ -122,7 +126,8 @@ public class WxApiService {
 	 * @param templateId
 	 * @return
 	 */
-	public static Object templateSend(String templateId, String touser, String formId,String groubTrace, JSONObject data) {
+	public static Object templateSend(String templateId, String touser, String formId, String groubTrace,
+			JSONObject data) {
 		// #入参校验
 		if (StringUtils.isEmpty(touser)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "touser");
@@ -140,10 +145,14 @@ public class WxApiService {
 		wxreq.put("touser", touser);
 		wxreq.put("template_id", templateId);
 		wxreq.put("form_id", formId);
-		wxreq.put("page", "/pages/index/index?groubTrace=" + groubTrace +"&pageParamsClear=true");
+		wxreq.put("page", "/pages/index/index?groubTrace=" + groubTrace + "&pageParamsClear=true");
 		wxreq.put("data", data);
 
 		return HttpUtil.doPost(url, JSONObject.toJSONString(wxreq));
+	}
+
+	public static void main(String[] args) {
+		System.out.println("M" + UUID.randomUUID().toString().replaceAll("-", ""));
 	}
 
 }
