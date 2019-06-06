@@ -190,7 +190,7 @@ public class GroubaOrderService {
 					log.info("#成团处理>>>>>>>>>>>>>> B3");
 					// 异步发送成团通知，for团所有成员
 					msgSendService.wxMsgSend4Joined(orderLeader.getGoodsName(), orderLeader.getLeader(),
-							orderLeader.getGroubaSize(), orderLeader.getOrderTrace(), groubaOrderVo.getFormId());
+							orderLeader.getGroubaSize(), orderLeader.getOrderTrace());
 				}
 			} else {
 				throw new ServiceException(RespCode.order_groubaFull);
@@ -242,6 +242,9 @@ public class GroubaOrderService {
 		groubaOrderParams.setOrderStatus(OrderStatus.consume_success.getCode() + "");
 
 		int count = groubaOrderMapper.update(groubaOrderParams);
+		// 异步发送消费通知，for当前消费成员
+		msgSendService.wxMsgSend4Consumed(oldOrder.getGoodsName(), oldOrder.getRefGroubTrace(),
+				oldOrder.getOrderTrace());
 		return count > 0;
 	}
 
