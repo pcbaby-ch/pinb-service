@@ -71,16 +71,22 @@ public class GroupBarService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public boolean add(String reqStr, HttpServletRequest request) {
+	public Object add(String reqStr, HttpServletRequest request) {
 		JSONObject reqJson = JSONObject.parseObject(reqStr);
 		GroupBar groupBar = reqJson.getObject("groub", GroupBar.class);
 		User userVo = reqJson.getObject("userinfo", User.class);
 		if (StringUtils.isEmpty(userVo.getWxUnionid())) {
 			userVo.setWxUnionid(userVo.getWxOpenid());
 		}
+		groupBar.setRefUserWxUnionid(userVo.getWxUnionid());
+		groupBar.setIsOpen("1");
+		if (StringUtils.isEmpty(groupBar.getGroubTrace())) {
+			groupBar.setGroubTrace(BusinessesFlowNum.getNum("G", RedisConst.groupBarTrace));
+		}
 		userVo.setPhone(groupBar.getGroubPhone());
 		userVo.setHeadImg(reqJson.getJSONObject("userinfo").getString("avatarUrl"));
 		userVo.setIsOpenGroub("1");
+		userVo.setGroubTrace(groupBar.getGroubTrace());
 		userVo.setClientIp(IpUtils.getIpFromRequest(request));
 		List<JSONObject> groubActivityList = reqJson.getObject("goodsList", List.class);
 		log.debug("#user:[{}],#groubActivityList:[{}]", JSONObject.toJSON(userVo),
@@ -100,11 +106,6 @@ public class GroupBarService {
 		}
 		logParams(groupBar);
 
-		if (StringUtils.isEmpty(groupBar.getGroubTrace())) {
-			groupBar.setGroubTrace(BusinessesFlowNum.getNum("G", RedisConst.groupBarTrace));
-		}
-		groupBar.setRefUserWxUnionid(userVo.getWxUnionid());
-		groupBar.setIsOpen("1");
 		log.info("#保存店铺信息start,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		boolean isUpdateAction = false;
 		boolean groubResult;
@@ -147,18 +148,17 @@ public class GroupBarService {
 			groubActivityResult = groubActivityService.add(groubActivity);
 			log.info("#保存商品信息end,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		}
-		if (groubResult && groubActivityResult)
-
-		{
+		if (groubResult && groubActivityResult){
 			log.info("#店铺入驻成功,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		}
-		return true;
+		return groupBar.getGroubTrace();
 	}
 
 	private void userOpenGroub(User userVo) {
 		User userParams = new User();
 		userParams.setWxUnionid(userVo.getWxUnionid());
 		userParams.setIsOpenGroub("1");
+		userParams.setGroubTrace(userVo.getGroubTrace());
 		userService.update(userParams);
 	}
 

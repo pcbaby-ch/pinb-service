@@ -23,13 +23,13 @@ import com.pinb.entity.User;
 @Mapper
 public interface UserMapper {
 	
-	@Select(value = "<script>select wx_unionid,wx_openid,phone,head_img,credit_score_user,is_open_groub,credit_score_groub,nickname,`city`,`province`,`latitude`,`longitude`"
+	@Select(value = "<script>select wx_unionid,wx_openid,phone,head_img,credit_score_user,groub_trace,is_open_groub,credit_score_groub,nickname,`city`,`province`,`latitude`,`longitude`"
 			+ " from user" + "<where>"
 			+ "<if test=\"isOpenGroub != null and isOpenGroub != '' \">" + " and is_open_groub = #{isOpenGroub}"+ "</if>"
 			+ "</where></script>")
 	public List<User> select(@Param(value = "isOpenGroub") String isOpenGroub);
 
-	@Select(value = "<script>select  wx_unionid,wx_openid,phone,head_img,credit_score_user,is_open_groub,credit_score_groub,nickname,`city`,`province`,`latitude`,`longitude`"
+	@Select(value = "<script>select  wx_unionid,wx_openid,phone,head_img,credit_score_user,groub_trace,is_open_groub,credit_score_groub,nickname,`city`,`province`,`latitude`,`longitude`"
 			+ " from user" + "<where>"
 			+ "<if test=\"wxUnionid != null and wxUnionid != '' \">" + " and wx_unionid = #{wxUnionid}"+ "</if>"
 			+ "<if test=\"phone != null and phone != '' \">" + " and phone = #{phone}"+ "</if>"
@@ -37,9 +37,9 @@ public interface UserMapper {
 	public User selectOne(@Param(value = "wxUnionid") String wxUnionid,@Param(value = "phone") String phone);
 
 	@Insert(value = "INSERT INTO user"
-			+ " (`wx_unionid`,`wx_openid`,`phone`,`head_img`,`is_open_groub`,`register_ip`"
+			+ " (`wx_unionid`,`wx_openid`,`phone`,`head_img`,groub_trace,`is_open_groub`,`register_ip`"
 			+ ",`brand`,`model`,`system`,`platform`,`benchmark`,`nickname`,`gender`,`city`,`province`,`latitude`,`longitude`) "
-			+ " VALUES (#{wxUnionid},#{wxOpenid},#{phone},#{headImg},#{isOpenGroub},#{clientIp}"
+			+ " VALUES (#{wxUnionid},#{wxOpenid},#{phone},#{headImg},#{groubTrace},#{isOpenGroub},#{clientIp}"
 			+ ",#{brand},#{model},#{system},#{platform},#{benchmark},#{nickname},#{gender},#{city},#{province},#{latitude},#{longitude})")
 	public int insert(User user);
 	
@@ -47,6 +47,7 @@ public interface UserMapper {
 			+ "<if test=\"phone != null and phone != '' \">" + ",phone = #{phone}" + "</if>"
 			+ "<if test=\"headImg != null and headImg != '' \">" + ",head_img = #{headImg}" + "</if>"
 			+ "<if test=\"creditScoreUser != null and creditScoreUser != '' \">" + ",credit_score_user = #{creditScoreUser}" + "</if>"
+			+ "<if test=\"groubTrace != null and groubTrace != '' \">" + ",groub_trace = #{groubTrace}" + "</if>"
 			+ "<if test=\"isOpenGroub != null and isOpenGroub != '' \">" + ",is_open_groub = #{isOpenGroub}" + "</if>"
 			+ "<if test=\"creditScoreGroub != null and creditScoreGroub != '' \">" + " and credit_score_groub = #{creditScoreGroub}"+ "</if>"
 			+ "<if test=\"brand != null and brand != '' \">" + ",brand = #{brand}" + "</if>"

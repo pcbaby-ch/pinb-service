@@ -66,7 +66,7 @@ public class GroupBarControl {
 	@PostMapping("add")
 	public Object add(@RequestBody String reqStr, HttpServletRequest request) {
 
-		return RespUtil.baseResp(groupBarService.add(reqStr, request));
+		return RespUtil.dataResp(groupBarService.add(reqStr, request));
 	}
 
 	@ApiOperation("店铺信息-更新")

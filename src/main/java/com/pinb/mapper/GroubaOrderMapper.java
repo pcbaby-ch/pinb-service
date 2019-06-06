@@ -41,10 +41,20 @@ public interface GroubaOrderMapper {
 	 * @param refUserWxUnionid
 	 * @return
 	 */
-	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_unionid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
+	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_openid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
 			+ " from grouba_order" + "<where>" 
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" + "</where> order by id desc</script>")
 	public List<GroubaOrder> selectMyOrder4user(@Param(value = "refUserWxUnionid") String refUserWxUnionid);
+	/**
+	 * 查询我的店铺相关的所有订单
+	 * @param refGroubTrace
+	 * @return
+	 */
+	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_openid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
+			+ " from grouba_order where ref_user_wx_unionid=leader"
+			+ "<if test=\"refGroubTrace != null and refGroubTrace != '' \">" + " and ref_groub_trace = #{refGroubTrace}" + "</if>" 
+			+ " order by id desc</script>")
+	public List<GroubaOrder> selectMyOrder4Shop(@Param(value = "refGroubTrace") String refGroubTrace);
 	/**
 	 * 查询相关订单同团的用户、头像、状态{order_trace,ref_grouba_trace,userImgs,ordersStatus,orderRefUsers}
 	 * @param orderTraces
@@ -68,7 +78,7 @@ public interface GroubaOrderMapper {
 			+ " GROUP BY ref_grouba_trace</script>")
 	public List<GroubaOrder> selectMyOrder4Groub(@Param(value = "refGroubTrace") String refGroubTrace,@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 	
-	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_unionid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
+	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_openid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
 			+ " from grouba_order"
 			+ " where order_trace = #{orderTrace} and ref_user_wx_unionid=#{refUserWxUnionid}</script>")
 	public GroubaOrder selectOne(@Param(value = "orderTrace") String orderTrace,
@@ -125,7 +135,7 @@ public interface GroubaOrderMapper {
 			+ "</where></script>")
 	public int update(GroubaOrder groubaOrder);
 	
-	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,grouba_size,leader,ref_user_img,form_id,join_succeed_time,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
+	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,ref_user_wx_openid,grouba_size,leader,ref_user_img,form_id,join_succeed_time,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
 			+ " from grouba_order" + "<where>" + "<if test=\"orderTrace != null and orderTrace != '' \">"
 			+ " and order_trace = #{orderTrace}" + "</if>"
 			+ "</where></script>")

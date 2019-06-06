@@ -37,6 +37,11 @@ public class GroubaOrderControl {
 		return RespUtil.dataResp(groubaOrderService.getMyOrder4user(groubaOrder));
 	}
 
+	@PostMapping("selectMyOrder4Shop")
+	public Object selectMyOrder4Shop(@RequestBody GroubaOrder groubaOrder) {
+		return RespUtil.dataResp(groubaOrderService.getMyOrder4Shop(groubaOrder));
+	}
+
 	@ApiOperation("开团下单")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "YrefGroubTrace,", value = "归属店铺", required = false, dataType = "string"),

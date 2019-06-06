@@ -309,5 +309,53 @@ public class GroubaOrderService {
 		map.put("retMsg", RespCode.SUCCESS.getMsg());
 		return map;
 	}
+	
+	/**
+	 * 我的订单查询4店长
+	 * 
+	 * @param groubaOrder
+	 * @return
+	 */
+	public HashMap<String, Object> getMyOrder4Shop(GroubaOrder groubaOrder) {
+		// #入参校验
+		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "RefGroubTrace");
+		}
+		logParams(groubaOrder);
+		Page<?> page = PageHelper.startPage(groubaOrder.getPage(), groubaOrder.getRows());
+		groubaOrderMapper.selectMyOrder4Shop(groubaOrder.getRefGroubTrace());
+		List<GroubaOrder> groubaOrderList = (List<GroubaOrder>) page.getResult();
+		StringBuffer orderTraces = new StringBuffer();
+		List<GroubaOrder> userImgs = null;
+		for (int i = 0; i < groubaOrderList.size(); i++) {
+			orderTraces.append("'").append(groubaOrderList.get(i).getOrderTrace()).append("',");
+		}
+		if (orderTraces.length() > 0) {
+			userImgs = groubaOrderMapper.selectMyOrder4userImgs(orderTraces.substring(0, orderTraces.lastIndexOf(",")),
+					null);
+		}
+		log.info("#用户所有订单查询end-查询订单同团订单头像、状态start,#RefUserWxUnionid:[{}]", groubaOrder.getRefUserWxUnionid());
+		Map<String, Object> orderImgMap = MapBeanUtil.objListToMap(userImgs, "orderTrace");
+		for (int i = 0; i < groubaOrderList.size(); i++) {
+			String orderTrace = groubaOrderList.get(i).getOrderTrace();
+			if (orderImgMap.containsKey(orderTrace)) {
+				GroubaOrder orderImgs = (GroubaOrder) orderImgMap.get(orderTrace);
+				groubaOrderList.get(i).setOrderRefUsers(orderImgs.getOrderRefUsers());
+				groubaOrderList.get(i).setUserImgs(orderImgs.getUserImgs());
+				groubaOrderList.get(i).setOrdersStatus(orderImgs.getOrdersStatus());
+				groubaOrderList.get(i).setShareOrder(orderImgs.getOrderTrace());
+				groubaOrderList.get(i).setShareLeader(orderImgs.getLeader());
+			}
+		}
+		log.info("#用户所有订单查询end-查询订单同团订单头像、状态end,#RefUserWxUnionid:[{}]，#groubaOrderList:[{}]",
+				groubaOrder.getRefUserWxUnionid(), JSONObject.toJSON(groubaOrderList));
+		// 组装相应报文
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("total", page.getTotal());
+		map.put("rows", groubaOrderList);
+		map.put("retCode", RespCode.SUCCESS.getCode());
+		map.put("retMsg", RespCode.SUCCESS.getMsg());
+		return map;
+	}
 
 }

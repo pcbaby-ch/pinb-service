@@ -11,6 +11,7 @@ public class User extends BaseEntity {
 	private String phone;
 	private String headImg;
 	private String creditScoreUser;
+	private String groubTrace;
 	private String isOpenGroub;
 	private String creditScoreGroub;
 
@@ -49,6 +50,14 @@ public class User extends BaseEntity {
 
 	public void setCreditScoreUser(String creditScoreUser) {
 		this.creditScoreUser = creditScoreUser;
+	}
+
+	public String getGroubTrace() {
+		return groubTrace;
+	}
+
+	public void setGroubTrace(String groubTrace) {
+		this.groubTrace = groubTrace;
 	}
 
 	public String getIsOpenGroub() {
