@@ -244,7 +244,7 @@ public class GroubaOrderService {
 		int count = groubaOrderMapper.update(groubaOrderParams);
 		// 异步发送消费通知，for当前消费成员
 		msgSendService.wxMsgSend4Consumed(oldOrder.getGoodsName(), oldOrder.getRefGroubTrace(),
-				oldOrder.getOrderTrace());
+				oldOrder.getOrderTrace(), groubaOrderVo.getFormId());
 		return count > 0;
 	}
 
@@ -268,6 +268,7 @@ public class GroubaOrderService {
 	 * @param groubaOrder
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public HashMap<String, Object> getMyOrder4user(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefUserWxUnionid())) {
@@ -309,13 +310,14 @@ public class GroubaOrderService {
 		map.put("retMsg", RespCode.SUCCESS.getMsg());
 		return map;
 	}
-	
+
 	/**
 	 * 我的订单查询4店长
 	 * 
 	 * @param groubaOrder
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public HashMap<String, Object> getMyOrder4Shop(GroubaOrder groubaOrder) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrder.getRefGroubTrace())) {
