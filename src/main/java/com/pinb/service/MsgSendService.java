@@ -54,28 +54,19 @@ public class MsgSendService {
 	 * @param orderTrace
 	 */
 	@Async("getThreadPoolTaskExecutor")
-	public void wxMsgSend4Consumed(String goodsName, String groubTrace, String orderTrace, String formId) {
+	public void wxMsgSend4Consumed(String goodsName, String refUserWxOpenid, String refUserWxUnionid,
+			String refGroubTrace, String formId) {
 		String templateId = PropertiesUtils.getProperty("msgTemplate4Consumed",
 				"DmXkTUIeCZjkREgS1uvizW7TRjCWExd-5OC_pUALQgU");
 		// #团购名称 取货地址 参与时间
-		List<GroubaOrder> groubOrders = groubaOrderMapper.select(orderTrace, null, null, null, null);
-		GroupBar groub = groupBarMapper.selectOne(null, groubTrace);
-		log.info("#异步消费成功通知开始，#通知用户数:[{}]", groubOrders.size());
-		for (int i = 0; i < groubOrders.size(); i++) {
-			GroubaOrder order = groubOrders.get(i);
-			log.debug("#通知用户:[{}]", order.getRefUserWxOpenid());
-			JSONObject data = new JSONObject();
-			JSONObject value = new JSONObject();
-			value.put("value", goodsName + "-拼团");
-			data.put("keyword1", value.clone());
-			value.put("value", groub.getGroubAddress());
-			data.put("keyword2", value.clone());
-			value.put("value", DateUtil.dfyyyy_MM_ddhhmmss.format(new Date()));
-			data.put("keyword3", value);
-			String openid = StringUtils.isEmpty(order.getRefUserWxOpenid()) ? order.getRefUserWxUnionid()
-					: order.getRefUserWxOpenid();
-			WxApiService.templateSend(templateId, openid, formId, order.getRefGroubTrace(), data);
-		}
+		log.info("#异步消费成功通知开始，#通知用户:[{}]", refUserWxUnionid);
+		JSONObject data = new JSONObject();
+		JSONObject value = new JSONObject();
+		value.put("value", goodsName + "-拼团");
+		data.put("keyword1", value.clone());
+		value.put("value", DateUtil.dfyyyy_MM_ddhhmmss.format(new Date()));
+		data.put("keyword2", value.clone());
+		WxApiService.templateSend(templateId, refUserWxOpenid, formId, refGroubTrace, data);
 	}
 
 	/**

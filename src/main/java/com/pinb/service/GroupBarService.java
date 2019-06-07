@@ -104,6 +104,12 @@ public class GroupBarService {
 		if (StringUtils.isEmpty(groupBar.getGroubAddress())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubAddress");
 		}
+		if (StringUtils.isEmpty(groupBar.getProvince())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Province");
+		}
+		if (StringUtils.isEmpty(groupBar.getCity())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "City");
+		}
 		logParams(groupBar);
 
 		log.info("#保存店铺信息start,#GroubTrace:[{}]", groupBar.getGroubTrace());
@@ -145,10 +151,19 @@ public class GroupBarService {
 			if (StringUtils.isEmpty(groubActivity.getGoodsImg())) {
 				continue;
 			}
+			if (StringUtils.isEmpty(groubActivity.getGoodsName())) {
+				throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GoodsName");
+			}
+			if (StringUtils.isEmpty(groubActivity.getGoodsPrice())) {
+				throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GoodsPrice");
+			}
+			if (StringUtils.isEmpty(groubActivity.getGroubaDiscountAmount())) {
+				throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaDiscountAmount");
+			}
 			groubActivityResult = groubActivityService.add(groubActivity);
 			log.info("#保存商品信息end,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		}
-		if (groubResult && groubActivityResult){
+		if (groubResult && groubActivityResult) {
 			log.info("#店铺入驻成功,#GroubTrace:[{}]", groupBar.getGroubTrace());
 		}
 		return groupBar.getGroubTrace();

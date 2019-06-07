@@ -243,8 +243,47 @@ public class GroubaOrderService {
 
 		int count = groubaOrderMapper.update(groubaOrderParams);
 		// 异步发送消费通知，for当前消费成员
-		msgSendService.wxMsgSend4Consumed(oldOrder.getGoodsName(), oldOrder.getRefGroubTrace(),
-				oldOrder.getOrderTrace(), groubaOrderVo.getFormId());
+		msgSendService.wxMsgSend4Consumed(oldOrder.getGoodsName(), oldOrder.getRefUserWxOpenid(),
+				oldOrder.getRefUserWxUnionid(), oldOrder.getRefGroubTrace(), oldOrder.getFormId());
+		// 如果全团成员消费完成，则通知商家 TODO
+
+		return count > 0;
+	}
+
+	/**
+	 * 拼团准备消费
+	 * 
+	 * @author ack @date Jun 7, 2019
+	 * @param groubaOrderVo
+	 * @return
+	 */
+	public boolean orderConsumePrepare(GroubaOrder groubaOrderVo) {
+		// #入参校验
+		if (StringUtils.isEmpty(groubaOrderVo.getOrderTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderTrace");
+		}
+		if (StringUtils.isEmpty(groubaOrderVo.getRefUserWxUnionid())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refUserWxUnionid");
+		}
+		logParams(groubaOrderVo);
+		// #根据消费二维码信息，查询消费订单
+		GroubaOrder oldOrder = groubaOrderMapper.selectOne(groubaOrderVo.getOrderTrace(),
+				groubaOrderVo.getRefUserWxUnionid());
+		if (oldOrder == null || Integer.parseInt(oldOrder.getOrderStatus()) < OrderStatus.join_success.getCode()) {
+			throw new ServiceException(RespCode.order_unJoinSuccess);
+		}
+		if (Integer.parseInt(oldOrder.getOrderStatus()) == OrderStatus.consume_success.getCode()) {
+			throw new ServiceException(RespCode.order_unRepeatConsume);
+		}
+
+		GroubaOrder groubaOrderParams = new GroubaOrder();
+		groubaOrderParams.setOrderTrace(groubaOrderVo.getOrderTrace());
+		groubaOrderParams.setRefUserWxUnionid(groubaOrderVo.getRefUserWxUnionid());
+		groubaOrderParams.setConsumeTime("udpate");
+		groubaOrderParams.setOrderStatus(OrderStatus.consume.getCode() + "");
+		groubaOrderParams.setFormId(groubaOrderVo.getFormId());
+
+		int count = groubaOrderMapper.update(groubaOrderParams);
 		return count > 0;
 	}
 

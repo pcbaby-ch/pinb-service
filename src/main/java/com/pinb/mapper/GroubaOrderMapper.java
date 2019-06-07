@@ -124,11 +124,12 @@ public interface GroubaOrderMapper {
 			+ ",#{formId},#{refUserWxOpenid},#{groubaSize},#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew})</script>")
 	public int insert(GroubaOrder groubaOrder);
 
-	@Update(value = "<script>UPDATE grouba_order SET  uptime=NOW()"
+	@Update(value = "<script>UPDATE grouba_order SET  uptime=NOW(),upcount=upcount+1"
 			+ "<if test=\"orderStatus != null and orderStatus != '' \">" + ",order_status = #{orderStatus}" + "</if>"
 			+ "<if test=\"joinSucceedTime != null and joinSucceedTime != '' \">" + ",join_succeed_time = NOW()" + "</if>" 
 			+ "<if test=\"consumeTime != null and consumeTime != '' \">" + ",consume_time = NOW()" + "</if>"
-			+ "<if test=\"consumeSuccessTime != null and consumeSuccessTime != '' \">" + ",consume_success_time = NOW()" + "</if>"  
+			+ "<if test=\"consumeSuccessTime != null and consumeSuccessTime != '' \">" + ",consume_success_time = NOW()" + "</if>"
+			+ "<if test=\"formId != null and formId != '' \">" + ",form_id = #{formId}" + "</if>"
 			+ "<where>"
 			+ "<if test=\"orderTrace != null and orderTrace != '' \">" + " and order_trace = #{orderTrace}" + "</if>"
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>"

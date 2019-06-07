@@ -77,4 +77,10 @@ public class GroubaOrderControl {
 		return RespUtil.baseResp(groubaOrderService.orderConsume(groubaOrder));
 	}
 
+	@PostMapping("orderConsumePrepare")
+	public Object orderConsumePrepare(@RequestBody GroubaOrder groubaOrder) {
+
+		return RespUtil.baseResp(groubaOrderService.orderConsumePrepare(groubaOrder));
+	}
+
 }
