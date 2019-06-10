@@ -27,6 +27,7 @@ public class GroubaOrder extends BaseEntity {
 	private String goodsPrice;
 	private String groubaDiscountAmount;
 	private int groubaIsnew;
+	private String intime;
 	// #vo冗余字段
 	private String orderRefUsers;
 	private String userImgs;
@@ -205,6 +206,14 @@ public class GroubaOrder extends BaseEntity {
 
 	public void setGroubaIsnew(int groubaIsnew) {
 		this.groubaIsnew = groubaIsnew;
+	}
+
+	public String getIntime() {
+		return intime;
+	}
+
+	public void setIntime(String intime) {
+		this.intime = intime;
 	}
 
 	/**

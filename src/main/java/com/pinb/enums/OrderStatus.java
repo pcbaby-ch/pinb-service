@@ -19,13 +19,17 @@ public enum OrderStatus {
 	 */
 	join_success(3, "已成团"),
 	/**
-	 * "5", "消费中"
+	 * "6", "消费中"
 	 */
 	consume(6, "消费中"),
 	/**
-	 * "6", "已消费"
+	 * "8", "已消费"
 	 */
-	consume_success(8, "已消费");
+	consume_success(8, "已消费"),
+	/**
+	 * "11", "过期废弃"
+	 */
+	expired(11, "过期废弃");
 
 	private int code;
 	private String msg;
@@ -37,7 +41,7 @@ public enum OrderStatus {
 
 	public static OrderStatus getRespByCode(int code) {
 		for (OrderStatus resp : values()) {
-			if (resp.getCode()==code) {
+			if (resp.getCode() == code) {
 				return resp;
 			}
 		}

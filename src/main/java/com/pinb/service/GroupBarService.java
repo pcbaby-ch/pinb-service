@@ -327,7 +327,8 @@ public class GroupBarService {
 		List<GroubaOrder> orderList = groubaOrderMapper.selectMyOrder4Groub(groupBarVo.getGroubTrace(),
 				groupBarVo.getRefUserWxUnionid());
 		GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBarVo.getOrderTrace(), groupBarVo.getOrderLeader());
-		if (orderList == null && shareOrder == null) {
+		if ((orderList == null || orderList.isEmpty()) && shareOrder == null) {
+			log.debug("#无任何订单，需要组装头像、状态信息");
 			return null;
 		}
 		GroubActivity shareGoods = null;
@@ -338,8 +339,8 @@ public class GroupBarService {
 					: orderTraces + ",'" + groupBarVo.getOrderTrace() + "'";
 		}
 		List<GroubaOrder> orderUserImgs = groubaOrderMapper.selectMyOrder4userImgs(orderTraces, null);
-		log.info("#所有数据查询end-组装响应数据start,#groubTrace:[{}]，#相关订单:[{}]", groupBarVo.getGroubTrace(),
-				JSONObject.toJSON(orderList));
+		log.info("#所有数据查询end-组装响应数据start,#groubTrace:[{}]，#相关订单:[{}]，#分享订单:[{}]", groupBarVo.getGroubTrace(),
+				JSONObject.toJSON(orderList), JSONObject.toJSON(shareOrder));
 		Map<String, Object> groubaImgMap = MapBeanUtil.objListToMap(orderUserImgs, "refGroubaTrace");
 		int removeIndex = -1;
 		for (int i = 0; i < goodsList.size(); i++) {

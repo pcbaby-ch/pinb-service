@@ -78,7 +78,7 @@ public interface GroubaOrderMapper {
 			+ " GROUP BY ref_grouba_trace</script>")
 	public List<GroubaOrder> selectMyOrder4Groub(@Param(value = "refGroubTrace") String refGroubTrace,@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 	
-	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_openid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
+	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_openid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,intime"
 			+ " from grouba_order"
 			+ " where order_trace = #{orderTrace} and ref_user_wx_unionid=#{refUserWxUnionid}</script>")
 	public GroubaOrder selectOne(@Param(value = "orderTrace") String orderTrace,
@@ -91,7 +91,7 @@ public interface GroubaOrderMapper {
 			+ "</where></script>")
 	public int selectCount(@Param(value = "orderTrace") String orderTrace,@Param(value = "refGroubTrace") String refGroubTrace);
 	/**
-	 * 查询某商品，某用户参团次数
+	 * 查询某商品，某用户参团消费次数
 	 * @author chenzhao @date May 17, 2019
 	 * @param orderTrace
 	 * @param refGroubTrace
@@ -101,7 +101,7 @@ public interface GroubaOrderMapper {
 			+ " from grouba_order" + "<where>" 
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>"
 			+ "<if test=\"refGroubaTrace != null and refGroubaTrace != '' \">" + " and ref_grouba_trace = #{refGroubaTrace}" + "</if>"
-			+ "</where></script>")
+			+ "</where> and order_status==8</script>")
 	public int selectOrderCount4User(@Param(value = "refGroubaTrace") String refGroubaTrace,@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 	/**
 	 * 查询某商品已成团数

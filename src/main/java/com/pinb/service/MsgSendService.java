@@ -55,7 +55,7 @@ public class MsgSendService {
 	 */
 	@Async("getThreadPoolTaskExecutor")
 	public void wxMsgSend4Consumed(String goodsName, String refUserWxOpenid, String refUserWxUnionid,
-			String refGroubTrace, String formId) {
+			String refGroubTrace, String intime, String formId) {
 		String templateId = PropertiesUtils.getProperty("msgTemplate4Consumed",
 				"DmXkTUIeCZjkREgS1uvizW7TRjCWExd-5OC_pUALQgU");
 		// #团购名称 取货地址 参与时间
@@ -64,7 +64,7 @@ public class MsgSendService {
 		JSONObject value = new JSONObject();
 		value.put("value", goodsName + "-拼团");
 		data.put("keyword1", value.clone());
-		value.put("value", DateUtil.dfyyyy_MM_ddhhmmss.format(new Date()));
+		value.put("value", intime);
 		data.put("keyword2", value.clone());
 		WxApiService.templateSend(templateId, refUserWxOpenid, formId, refGroubTrace, data);
 	}
