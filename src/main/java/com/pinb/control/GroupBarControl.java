@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
+import com.pinb.config.annotation.DecodeReq;
 import com.pinb.entity.GroupBar;
 import com.pinb.service.GroupBarService;
 import com.pinb.util.RespUtil;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 
 /**
  * 
@@ -35,55 +34,35 @@ public class GroupBarControl {
 	@Autowired
 	private GroupBarService groupBarService;
 
-	@ApiOperation("暂，无需对接")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "refUserWxUnionid", value = "店铺所属用户（店长）", required = false, dataType = "string") })
 	@PostMapping("select")
-	public Object select(@RequestBody GroupBar groupBar) {
-		return RespUtil.listResp(groupBarService.select(groupBar));
+	public Object select(@RequestBody @DecodeReq String reqStr) {
+		return RespUtil.listResp(groupBarService.select(JSONObject.parseObject(reqStr, GroupBar.class)));
 	}
 
-	@ApiOperation("店铺信息-查询")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "店铺所属用户", required = false, dataType = "string"), })
 	@PostMapping("selectOne")
-	public Object selectOne(@RequestBody GroupBar groupBar) {
-		return RespUtil.dataResp(groupBarService.selectOne(groupBar));
+	public Object selectOne(@RequestBody @DecodeReq String reqStr) {
+		return RespUtil.dataResp(groupBarService.selectOne(JSONObject.parseObject(reqStr, GroupBar.class)));
 	}
 
 	@PostMapping("selectOneShare")
-	public Object selectOneShare(@RequestBody GroupBar groupBar) {
-		return RespUtil.dataResp(groupBarService.getOneShopShare(groupBar));
+	public Object selectOneShare(@RequestBody @DecodeReq String reqStr) {
+		return RespUtil.dataResp(groupBarService.getOneShopShare(JSONObject.parseObject(reqStr, GroupBar.class)));
 	}
 
-	@ApiOperation("店铺入驻-新增")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "店铺所属用户", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "YgroubName", value = "店铺名称，店铺图片(多张图片，逗号分隔)", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "YgroubImg", value = "店铺图片(多张图片，逗号分隔)", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "YgroubPhone", value = "店铺客服电话", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "YgroubAddress", value = "店铺地址", required = false, dataType = "string") })
 	@PostMapping("add")
-	public Object add(@RequestBody String reqStr, HttpServletRequest request) {
+	public Object add(@RequestBody @DecodeReq String reqStr, HttpServletRequest request) {
 
 		return RespUtil.dataResp(groupBarService.add(reqStr, request));
 	}
 
-	@ApiOperation("店铺信息-更新")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "YrefUserWxUnionid", value = "店铺所属用户", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "groubName", value = "以下参数中，用户没改的，不要传或者传null对象，EX:{'groubAddress':NULL}", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "groubImg", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "groubPhone", value = "", required = false, dataType = "string"),
-			@ApiImplicitParam(name = "groubAddress", value = "", required = false, dataType = "string") })
 	@PostMapping("update")
-	public Object update(@RequestBody GroupBar groupBar) {
-		return RespUtil.baseResp(groupBarService.update(groupBar));
+	public Object update(@RequestBody @DecodeReq String reqStr) {
+		return RespUtil.baseResp(groupBarService.update(JSONObject.parseObject(reqStr, GroupBar.class)));
 	}
 
 	@PostMapping("getShopQR")
-	public Object getShopQR(@RequestBody GroupBar groupBar) throws IOException {
-		return RespUtil.dataResp(groupBarService.getShopQR(groupBar));
+	public Object getShopQR(@RequestBody @DecodeReq String reqStr) throws IOException {
+		return RespUtil.dataResp(groupBarService.getShopQR(JSONObject.parseObject(reqStr, GroupBar.class)));
 	}
 
 }

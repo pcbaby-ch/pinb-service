@@ -3,6 +3,7 @@ package com.pinb.common;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Base64;
+import java.util.Date;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -18,6 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.alibaba.fastjson.JSONObject;
 import com.pinb.config.annotation.DecodeReq;
 import com.pinb.config.annotation.PutIp2Req;
+import com.pinb.util.DateUtil;
 import com.pinb.util.IpUtils;
 import com.pinb.util.RSAUtil;
 
@@ -26,8 +28,8 @@ import com.pinb.util.RSAUtil;
  * 
  * @author chenzhao @date Apr 29, 2019
  */
-//@Aspect
-//@Component
+@Aspect
+@Component
 public class AspectDecodeReq {
 
 	private Logger log = LoggerFactory.getLogger(AspectDecodeReq.class);
@@ -45,13 +47,17 @@ public class AspectDecodeReq {
 		Object[] args = pjp.getArgs();
 		Parameter[] params = method.getParameters();
 		for (int i = 0; i < args.length; i++) {
-
 			Parameter parameter = params[i];
 			if (parameter.isAnnotationPresent(DecodeReq.class)) {
-				log.debug("#注解参数-解密前,[{}]:[{}]", params[i], args[i]);
-				String oldReqStr = args[i] + "";
-				args[i] = RSAUtil.decrypt(oldReqStr);
-				log.debug("#注解参数-解密后,[{}]:[{}]", params[i], args[i]);
+				log.debug("#请求报文-解密前,#[{}]:[{}]", params[i], args[i]);
+				String oldReqStr = null;
+				if (args[i] instanceof String) {
+					oldReqStr = (String) args[i];
+				} else {
+					throw new ServiceException(String.format("#参数解密失败，参数%s非字符串类型", params[i]));
+				}
+				args[i] = new String(Base64.getDecoder().decode(decode(oldReqStr).getBytes()));
+				log.info("#请求报文-解密后,#[{}]:[{}]", params[i], args[i]);
 			} else {
 				log.debug("#未注解arg,[{}]:[{}]", params[i], args[i]);
 			}
@@ -82,11 +88,60 @@ public class AspectDecodeReq {
 		return str.substring(0, index) + str.substring(index + 1, str.length());
 	}
 
+	/**
+	 * 
+	 * @author chenzhao @date Jun 11, 2019
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		System.out.println( addIndexChar(1+1, addIndexChar(0, "123456789", 'a'), 'b'));//"1a2b3c45678d90"
-		System.out.println(addIndexChar(2 + 2, addIndexChar(1+1, addIndexChar(0, "123456789", 'a'), 'b'), 'c'));//"1a2b3c45678d90"
-		System.out.println(addIndexChar(9 + 3, addIndexChar(2 + 2, addIndexChar(1+1, addIndexChar(0, "1234567890", 'a'), 'b'), 'c'), 'd'));//"1a2b3c45678d90"
-		System.out.println(removeIndexChar(2 - 2+1, removeIndexChar(1 - 1+1, removeIndexChar(0+1, "1a2b3c4567890d"))));
+		String str = "5ZKMNA==";
+//			str=addIndexChar(0, str, 'A');
+//			str=addIndexChar(2, str, 'A');
+//			str=addIndexChar(4, str, 'A');
+//			str=addIndexChar(6, str, 'A');
+//			str=addIndexChar(8, str, 'A');
+//			str=addIndexChar(10, str, 'A');
+//			str=addIndexChar(12, str, 'A');
+//			str=addIndexChar(14, str, 'A');
+		str = encode(str);
+		System.out.println("#encode：" + str);
+//			str=removeIndexChar(1, str);
+//			str=removeIndexChar(2, str);
+//			str=removeIndexChar(3, str);
+//			str=removeIndexChar(4, str);
+//			str=removeIndexChar(5, str);
+//			str=removeIndexChar(6, str);
+//			str=removeIndexChar(7, str);
+//			str=removeIndexChar(8, str);
+		str = decode(
+				"e0y6J1w1c1m29129aW5jZSI6IuS4iua1t+W4giIsImNpdHkiOiLkuIrmtbfluIIiLCJsYXRpdHVkZSI6MzEuMzA0OTgsImxvbmdpdHVkZSI6MTIxLjUxMzI1LCJwYWdlIjoxLCJyb3dzIjo2fQ==");
+		System.out.println("#decode：" + str);
+	}
+
+	/**
+	 * @author chenzhao @date Jun 11, 2019
+	 * @param str
+	 * @return
+	 */
+	private static String decode(String str) {
+		for (int i = 0; i < 8; i++) {
+			str = removeIndexChar(i + 1, str);
+		}
+		return str;
+	}
+
+	/**
+	 * @author chenzhao @date Jun 11, 2019
+	 * @param str
+	 * @return
+	 */
+	private static String encode(String str) {
+		String saltCode = DateUtil.dfyyyyMMddhhmmss.format(new Date()).substring(4, 12);
+		System.out.println("#saltCode:" + saltCode);
+		for (int i = 0; i < 8; i++) {
+			str = addIndexChar(i * 2, str, saltCode.charAt(i));
+		}
+		return str;
 	}
 
 }

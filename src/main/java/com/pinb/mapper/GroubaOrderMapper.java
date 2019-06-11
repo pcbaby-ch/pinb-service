@@ -101,7 +101,7 @@ public interface GroubaOrderMapper {
 			+ " from grouba_order" + "<where>" 
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>"
 			+ "<if test=\"refGroubaTrace != null and refGroubaTrace != '' \">" + " and ref_grouba_trace = #{refGroubaTrace}" + "</if>"
-			+ "</where> and order_status==8</script>")
+			+ "</where> and order_status=8</script>")
 	public int selectOrderCount4User(@Param(value = "refGroubaTrace") String refGroubaTrace,@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 	/**
 	 * 查询某商品已成团数

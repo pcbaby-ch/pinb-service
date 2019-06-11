@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
+import com.pinb.config.annotation.DecodeReq;
 import com.pinb.entity.GroubActivity;
 import com.pinb.service.GroubActivityService;
 import com.pinb.util.RespUtil;
@@ -29,13 +31,14 @@ public class GroubActivityControl {
 	private GroubActivityService groubActivityService;
 
 	@PostMapping("selectNearGrouba")
-	public Object selectNearGrouba(@RequestBody GroubActivity groubActivity) {
-		return RespUtil.listResp(groubActivityService.selectNearGrouba(groubActivity));
+	public Object selectNearGrouba(@RequestBody @DecodeReq String reqStr) {
+		return RespUtil
+				.listResp(groubActivityService.selectNearGrouba(JSONObject.parseObject(reqStr, GroubActivity.class)));
 	}
 
 	@PostMapping("share")
-	public Object share(@RequestBody GroubActivity groubActivity) {
-		groubActivityService.share(groubActivity.getGroubaTrace());
+	public Object share(@RequestBody @DecodeReq String reqStr) {
+		groubActivityService.share(JSONObject.parseObject(reqStr, GroubActivity.class).getGroubaTrace());
 		return RespUtil.baseResp(true);
 	}
 
