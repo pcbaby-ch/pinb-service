@@ -50,7 +50,7 @@ public class GroubaOrderService {
 	@Autowired
 	MsgSendService msgSendService;
 
-	private int[] groubaSize = { 6, 8, 9 };
+	private int[] groubaSize = { 2,3,5,6, 8, 9 };
 
 	/**
 	 * 开团服务

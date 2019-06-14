@@ -60,7 +60,7 @@ public class GroupBarService {
 	@Autowired
 	UserService userService;
 
-	private int[] groubaSize = { 6, 8, 9 };
+	private int[] groubaSize = { 2, 3, 5, 6, 8, 9 };
 
 	/**
 	 * 店铺入驻 | 店铺信息+商品信息保存

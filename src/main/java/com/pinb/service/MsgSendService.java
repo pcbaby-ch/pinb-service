@@ -43,7 +43,7 @@ public class MsgSendService {
 	@Autowired
 	GroubActivityCache groubActivityCache;
 
-	private int[] groubaSize = { 6, 8, 9 };
+	private int[] groubaSize = { 2, 3, 5, 6, 8, 9 };
 
 	/**
 	 * 消费成功-消息通知
