@@ -42,4 +42,9 @@ public class GroubActivityControl {
 		return RespUtil.baseResp(true);
 	}
 
+	@PostMapping("selectOne")
+	public Object selectOne(@RequestBody @DecodeReq String reqStr) {
+		return RespUtil.dataResp(groubActivityService.selectOne(JSONObject.parseObject(reqStr, GroubActivity.class)));
+	}
+
 }

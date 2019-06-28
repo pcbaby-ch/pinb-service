@@ -144,4 +144,24 @@ public class GroubActivityService {
 		return page;
 	}
 
+	/**
+	 * 查询商品详情页
+	 * 
+	 * @author chenzhao @date Jun 28, 2019
+	 * @param groubActivity
+	 * @return
+	 */
+	public Object selectOne(GroubActivity groubActivity) {
+		// #入参校验
+		if (StringUtils.isEmpty(groubActivity.getGroubaTrace())) {
+			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "GroubaTrace");
+		}
+		logParams(groubActivity);
+		groubActivity = groubActivityCache.selectOne(groubActivity.getGroubaTrace());
+		if (groubActivity == null) {
+			throw new ServiceException(RespCode.grouba_unExist);
+		}
+		return groubActivity;
+	}
+
 }

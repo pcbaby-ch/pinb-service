@@ -28,6 +28,7 @@ public class GroubaOrder extends BaseEntity {
 	private String groubaDiscountAmount;
 	private int groubaIsnew;
 	private String intime;
+	private String dGoodsImgs;
 	// #vo冗余字段
 	private String orderRefUsers;
 	private String userImgs;
@@ -214,6 +215,14 @@ public class GroubaOrder extends BaseEntity {
 
 	public void setIntime(String intime) {
 		this.intime = intime;
+	}
+
+	public String getdGoodsImgs() {
+		return dGoodsImgs;
+	}
+
+	public void setdGoodsImgs(String dGoodsImgs) {
+		this.dGoodsImgs = dGoodsImgs;
 	}
 
 	/**

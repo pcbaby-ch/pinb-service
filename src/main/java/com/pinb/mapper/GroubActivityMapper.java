@@ -32,13 +32,13 @@ public interface GroubActivityMapper {
 	public List<GroubActivity> selectOneGroub(@Param(value = "refGroubTrace") String refGroubTrace,
 			@Param(value = "refUserWxUnionid") String refUserWxUnionid);
 
-	@Select(value = "select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude"
+	@Select(value = "select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude,d_goods_imgs"
 			+ " from groub_activity" + " where grouba_trace = #{groubaTrace}")
 	public GroubActivity selectOne(@Param(value = "groubaTrace") String groubaTrace);
 
 	@Insert(value = "INSERT INTO groub_activity"
-			+ " (grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_active_minute,province,city,latitude,longitude,address) "
-			+ " VALUES (#{groubaTrace},#{refGroubTrace},#{refUserWxUnionid},#{groubaSize},#{groubaMaxCount},#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew},#{groubaActiveMinute},#{province},#{city},#{latitude},#{longitude},#{address})")
+			+ " (grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_active_minute,province,city,latitude,longitude,address,d_goods_imgs) "
+			+ " VALUES (#{groubaTrace},#{refGroubTrace},#{refUserWxUnionid},#{groubaSize},#{groubaMaxCount},#{goodsName},#{goodsImg},#{goodsPrice},#{groubaDiscountAmount},#{groubaIsnew},#{groubaActiveMinute},#{province},#{city},#{latitude},#{longitude},#{address},#{dGoodsImgs})")
 	public int insert(GroubActivity groubActivity);
 
 	@Update(value = "<script>UPDATE groub_activity SET  uptime=NOW()"
@@ -51,7 +51,10 @@ public interface GroubActivityMapper {
 			+ "<if test=\"groubaExpiredTime != null and groubaExpiredTime != '' \">"
 			+ ",grouba_expired_time = #{groubaExpiredTime}" + "</if>"
 			+ "<if test=\"groubaActiveMinute != null and groubaActiveMinute != '' \">"
-			+ ",grouba_active_minute = #{groubaActiveMinute}" + "</if>" + " where grouba_trace=#{groubaTrace}</script>")
+			+ ",grouba_active_minute = #{groubaActiveMinute}" + "</if>" 
+			+ "<if test=\"dGoodsImgs != null and dGoodsImgs != '' \">"
+			+ ",d_goods_imgs = #{dGoodsImgs}" + "</if>"
+			+ " where grouba_trace=#{groubaTrace}</script>")
 	public int update(GroubActivity groubActivity);
 	
 	@Update(value = "<script>UPDATE groub_activity SET  uptime=NOW(),grouba_share_count=grouba_share_count+1" + " where grouba_trace=#{groubaTrace}</script>")

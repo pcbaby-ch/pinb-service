@@ -25,6 +25,7 @@ public class GroubActivity extends BaseEntity {
 	private String latitude;
 	private String longitude;
 	private String address;
+	private String dGoodsImgs;
 	// #vo冗余字段
 	private String orderRefUsers;
 	private String userImgs;
@@ -169,6 +170,14 @@ public class GroubActivity extends BaseEntity {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getdGoodsImgs() {
+		return dGoodsImgs;
+	}
+
+	public void setdGoodsImgs(String dGoodsImgs) {
+		this.dGoodsImgs = dGoodsImgs;
 	}
 
 	/**
