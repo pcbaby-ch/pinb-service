@@ -13,6 +13,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -56,7 +57,13 @@ public class AspectDecodeReq {
 				} else {
 					throw new ServiceException(String.format("#参数解密失败，参数%s非字符串类型", params[i]));
 				}
-				args[i] = new String(Base64.getDecoder().decode(decode(oldReqStr).getBytes()));
+				try {
+					args[i] = new String(Base64.getDecoder().decode(decode(oldReqStr).getBytes()));
+				} catch (Exception e) {
+					log.info("#服务繁忙：密文解密失败,尝试跳过解密");
+					args[i]=null;
+				}
+				args[i] = StringUtils.isEmpty(args[i]) ? oldReqStr : args[i];
 				log.info("#请求报文-解密后,#[{}]:[{}]", params[i], args[i]);
 			} else {
 				log.debug("#未注解arg,[{}]:[{}]", params[i], args[i]);
