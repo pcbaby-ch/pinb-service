@@ -73,7 +73,7 @@ public interface GroubaOrderMapper {
 	 * @param refUserWxUnionid
 	 * @return
 	 */
-	@Select(value = "<script>select ref_grouba_trace,order_trace from grouba_order"
+	@Select(value = "<script>select ref_grouba_trace,max(order_trace) order_trace from grouba_order"
 			+ " where ref_groub_trace=#{refGroubTrace} and ref_user_wx_unionid=#{refUserWxUnionid}"
 			+ " GROUP BY ref_grouba_trace</script>")
 	public List<GroubaOrder> selectMyOrder4Groub(@Param(value = "refGroubTrace") String refGroubTrace,@Param(value = "refUserWxUnionid") String refUserWxUnionid);

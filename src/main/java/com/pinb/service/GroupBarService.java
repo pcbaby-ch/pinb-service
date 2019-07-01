@@ -326,7 +326,10 @@ public class GroupBarService {
 	private GroubActivity getGoodsImgs(GroupBar groupBarVo, List<GroubActivity> goodsList) {
 		List<GroubaOrder> orderList = groubaOrderMapper.selectMyOrder4Groub(groupBarVo.getGroubTrace(),
 				groupBarVo.getRefUserWxUnionid());
-		GroubaOrder shareOrder = groubaOrderMapper.selectOne(groupBarVo.getOrderTrace(), groupBarVo.getOrderLeader());
+		GroubaOrder shareOrder = null;
+		if (!(StringUtils.isEmpty(groupBarVo.getOrderTrace()) || StringUtils.isEmpty(groupBarVo.getOrderLeader()))) {
+			shareOrder = groubaOrderMapper.selectOne(groupBarVo.getOrderTrace(), groupBarVo.getOrderLeader());
+		}
 		if ((orderList == null || orderList.isEmpty()) && shareOrder == null) {
 			log.debug("#无任何订单，需要组装头像、状态信息");
 			return null;
