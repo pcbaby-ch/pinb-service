@@ -120,7 +120,7 @@ public class GroubActivityService {
 		logParams(groubActivity);
 		Page<?> page = PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
 		// #用户未指定位置时，显示所在城市分享数最高的前100个商品
-		if (StringUtils.isEmpty(groubActivity.getLatitude())) {
+		if (1==1) {//前期合作商户少，统一显示热度top100
 			groubActivityCache.selectNearGroubaTop100(groubActivity.getPage());
 			return page;
 		}
