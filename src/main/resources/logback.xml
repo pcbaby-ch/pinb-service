@@ -9,7 +9,7 @@
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>../logs/${appName}/${appName}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/data/logs/${appName}/${appName}.log.%d{yyyyMMdd}</fileNamePattern>
+            <fileNamePattern>../logs/${appName}/${appName}.log.%d{yyyyMMdd}</fileNamePattern>
             <MaxHistory>999</MaxHistory>
         </rollingPolicy>
         <encoder>
