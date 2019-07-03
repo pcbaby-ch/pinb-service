@@ -45,7 +45,7 @@ public class GroubaOrderControl {
 	public Object orderOpen(@RequestBody @DecodeReq String reqStr, HttpServletRequest req) throws Exception {
 		GroubaOrder groubaOrder = JSONObject.parseObject(reqStr, GroubaOrder.class);
 		groubaOrder.setClientIp(IpUtils.getIpFromRequest(req));
-		return RespUtil.baseResp(groubaOrderService.orderOpen(groubaOrder));
+		return RespUtil.dataResp(groubaOrderService.orderOpen(groubaOrder));
 	}
 
 	@PostMapping("orderJoin")

@@ -59,7 +59,7 @@ public class GroubaOrderService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean orderOpen(GroubaOrder groubaOrderVo) throws Exception {
+	public Object orderOpen(GroubaOrder groubaOrderVo) throws Exception {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrderVo.getRefGroubaTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubaTrace");
@@ -109,7 +109,12 @@ public class GroubaOrderService {
 		groubaOrderVo.setOrderExpiredTime(DateUtil.dfyyyy_MM_ddhhmmss.format(
 				DateUtil.add(new Date(), Calendar.MINUTE, Integer.parseInt(groubaOrderVo.getOrderExpiredTime()))));
 		groubaOrderVo.setLeader(groubaOrderVo.getRefUserWxUnionid());
-		return groubaOrderMapper.insert(groubaOrderVo) > 0;
+		boolean result=groubaOrderMapper.insert(groubaOrderVo) > 0;
+		if(result) {
+			return groubaOrderVo.getOrderTrace();
+		}else {
+			throw new ServiceException(RespCode.FAILURE);
+		}
 	}
 
 	/**
