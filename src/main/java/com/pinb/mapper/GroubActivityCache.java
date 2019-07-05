@@ -5,10 +5,13 @@ package com.pinb.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -58,6 +61,7 @@ public class GroubActivityCache {
 		return groubActivityMapper.selectOne(groubaTrace);// 不缓存，直接取DB
 	}
 
+//	@Transactional(isolation=Isolation.SERIALIZABLE)
 	public int insert(GroubActivity groubActivity) {
 		if (!openCache) {
 			return groubActivityMapper.insert(groubActivity);

@@ -70,7 +70,7 @@ public class GroupBarService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@Transactional
+//	@Transactional
 	public Object add(String reqStr, HttpServletRequest request) {
 		JSONObject reqJson = JSONObject.parseObject(reqStr);
 		GroupBar groupBar = reqJson.getObject("groub", GroupBar.class);
