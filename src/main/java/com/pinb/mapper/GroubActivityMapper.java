@@ -24,7 +24,7 @@ import com.pinb.entity.GroubActivity;
 @Mapper
 public interface GroubActivityMapper {
 
-	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude"
+	@Select(value = "<script>select grouba_trace,ref_groub_trace,ref_user_wx_unionid,grouba_size,grouba_max_count,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew,grouba_expired_time,grouba_active_minute,latitude,longitude,d_goods_imgs"
 			+ " from groub_activity" + "<where>" + "<if test=\"refGroubTrace != null and refGroubTrace != '' \">"
 			+ " and ref_groub_trace = #{refGroubTrace}" + "</if>"
 			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">"
