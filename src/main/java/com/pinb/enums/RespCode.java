@@ -18,9 +18,9 @@ public enum RespCode {
 	 */
 	API_SUCCESS("10000", "操作成功"),
 	/**
-	 * "11111", "服务繁忙,%s"
+	 * "11111", "服务繁忙"
 	 */
-	FAILURE("11111", "服务繁忙,%s"),
+	FAILURE("11111", "服务繁忙"),
 	/**
 	 * "10001", "参数[%s]非法,%s"
 	 */
@@ -104,9 +104,9 @@ public enum RespCode {
 	file_fileMd5Error("80013", "%s文件md5值错误,正确md5:%s"),
 
 	/**
-	 * "66666", "服务繁忙"
+	 * "11111", "服务繁忙"
 	 */
-	END("66666", "服务繁忙");
+	END("11111", "服务繁忙");
 
 	private String code;
 	private String msg;
