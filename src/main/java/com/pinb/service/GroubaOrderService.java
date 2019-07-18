@@ -251,7 +251,7 @@ public class GroubaOrderService {
 		int count = groubaOrderMapper.update(groubaOrderParams);
 		// 异步发送消费通知，for当前消费成员
 		msgSendService.wxMsgSend4Consumed(oldOrder.getGoodsName(), oldOrder.getRefUserWxOpenid(),
-				oldOrder.getRefUserWxUnionid(), oldOrder.getRefGroubTrace(), oldOrder.getIntime(),
+				oldOrder.getGroubaSize(), oldOrder.getRefGroubTrace(), oldOrder.getIntime(),
 				oldOrder.getFormId());
 		// 如果全团成员消费完成，则通知商家 TODO
 		if (count > 0) {

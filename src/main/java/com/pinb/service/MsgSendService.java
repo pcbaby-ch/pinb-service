@@ -3,7 +3,6 @@
  */
 package com.pinb.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,12 +15,10 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.pinb.entity.GroubaOrder;
 import com.pinb.entity.GroupBar;
-import com.pinb.entity.User;
 import com.pinb.mapper.GroubActivityCache;
 import com.pinb.mapper.GroubaOrderMapper;
 import com.pinb.mapper.GroupBarMapper;
 import com.pinb.mapper.UserMapper;
-import com.pinb.util.DateUtil;
 import com.pinb.util.PropertiesUtils;
 
 /**
@@ -54,18 +51,20 @@ public class MsgSendService {
 	 * @param orderTrace
 	 */
 	@Async("getThreadPoolTaskExecutor")
-	public void wxMsgSend4Consumed(String goodsName, String refUserWxOpenid, String refUserWxUnionid,
-			String refGroubTrace, String intime, String formId) {
+	public void wxMsgSend4Consumed(String goodsName, String refUserWxOpenid, int groubSize, String refGroubTrace,
+			String intime, String formId) {
 		String templateId = PropertiesUtils.getProperty("msgTemplate4Consumed",
 				"DmXkTUIeCZjkREgS1uvizW7TRjCWExd-5OC_pUALQgU");
 		// #团购名称 取货地址 参与时间
-		log.info("#异步消费成功通知开始，#通知用户:[{}]", refUserWxUnionid);
+		log.info("#异步消费成功通知开始，#通知用户:[{}]", refUserWxOpenid);
 		JSONObject data = new JSONObject();
 		JSONObject value = new JSONObject();
 		value.put("value", goodsName + "-拼团");
 		data.put("keyword1", value.clone());
 		value.put("value", intime);
 		data.put("keyword2", value.clone());
+		value.put("value", groubaSize[groubSize]);
+		data.put("keyword3", value.clone());
 		WxApiService.templateSend(templateId, refUserWxOpenid, formId, refGroubTrace, data);
 	}
 
@@ -96,7 +95,7 @@ public class MsgSendService {
 			JSONObject value = new JSONObject();
 			value.put("value", goodsName + "-拼团");
 			data.put("keyword1", value.clone());
-			value.put("value", groubaDiscountAmount);
+			value.put("value", "立省" + groubaDiscountAmount + "元");
 			data.put("keyword2", value.clone());
 			value.put("value", groupBar.getGroubAddress());
 			data.put("keyword3", value);
