@@ -50,7 +50,7 @@ public class GroubaOrderService {
 	@Autowired
 	MsgSendService msgSendService;
 
-	private int[] groubaSize = { 2,3,5,6, 8, 9 };
+	private int[] groubaSize = { 2, 3, 5, 6, 8, 9 };
 
 	/**
 	 * 开团服务
@@ -109,10 +109,10 @@ public class GroubaOrderService {
 		groubaOrderVo.setOrderExpiredTime(DateUtil.dfyyyy_MM_ddhhmmss.format(
 				DateUtil.add(new Date(), Calendar.MINUTE, Integer.parseInt(groubaOrderVo.getOrderExpiredTime()))));
 		groubaOrderVo.setLeader(groubaOrderVo.getRefUserWxUnionid());
-		boolean result=groubaOrderMapper.insert(groubaOrderVo) > 0;
-		if(result) {
+		boolean result = groubaOrderMapper.insert(groubaOrderVo) > 0;
+		if (result) {
 			return groubaOrderVo.getOrderTrace();
-		}else {
+		} else {
 			throw new ServiceException(RespCode.FAILURE);
 		}
 	}
@@ -152,10 +152,12 @@ public class GroubaOrderService {
 		if (DateUtil.compareDate(orderLeader.getOrderExpiredTime(), new Date()) <= 0) {// 拼团有效时长已过
 			throw new ServiceException(RespCode.order_joinTimeExpired);
 		}
-		int orderCount4User = groubaOrderMapper.selectOrderCount4User(orderLeader.getRefGroubaTrace(),
-				groubaOrderVo.getRefUserWxUnionid());
-		if (orderLeader.getGroubaIsnew() == 1 && orderCount4User >= 1) {// 老用户不能进拉新团
-			throw new ServiceException(RespCode.order_joinedRepeat);
+		if (orderLeader.getGroubaIsnew() == 1) {// 老用户不能进拉新团
+			int orderCount4User = groubaOrderMapper.selectOrderCount4User(orderLeader.getRefGroubaTrace(),
+					groubaOrderVo.getRefUserWxUnionid());
+			if (orderCount4User >= 1) {
+				throw new ServiceException(RespCode.order_joinedRepeat);
+			}
 		}
 
 		log.info("#参团业务校验通过,#orderTrace:[{}]", groubaOrderVo.getOrderTrace());
@@ -194,8 +196,8 @@ public class GroubaOrderService {
 							OrderStatus.join_success.getCode() + ""));
 					log.info("#成团处理>>>>>>>>>>>>>> B3");
 					// 异步发送成团通知，for团所有成员
-					msgSendService.wxMsgSend4Joined(orderLeader.getGoodsName(), orderLeader.getLeader(),
-							orderLeader.getGroubaSize(), orderLeader.getOrderTrace());
+					msgSendService.wxMsgSend4Joined(orderLeader.getGoodsName(), orderLeader.getGroubaDiscountAmount(),
+							orderLeader.getRefGroubTrace(), orderLeader.getOrderTrace());
 				}
 			} else {
 				throw new ServiceException(RespCode.order_groubaFull);
@@ -215,7 +217,7 @@ public class GroubaOrderService {
 	 * @param groubaOrderVo
 	 * @return
 	 */
-	public boolean orderConsume(GroubaOrder groubaOrderVo) {
+	public GroubaOrder orderConsume(GroubaOrder groubaOrderVo) {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrderVo.getOrderTrace())) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "OrderTrace");
@@ -252,8 +254,11 @@ public class GroubaOrderService {
 				oldOrder.getRefUserWxUnionid(), oldOrder.getRefGroubTrace(), oldOrder.getIntime(),
 				oldOrder.getFormId());
 		// 如果全团成员消费完成，则通知商家 TODO
-
-		return count > 0;
+		if (count > 0) {
+			return oldOrder;
+		} else {
+			return null;
+		}
 	}
 
 	/**

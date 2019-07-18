@@ -80,14 +80,15 @@ public class MsgSendService {
 	 * @param formId
 	 */
 	@Async("getThreadPoolTaskExecutor")
-	public void wxMsgSend4Joined(String goodsName, String leaderUserTrace, int groubSize, String orderTrace) {
+	public void wxMsgSend4Joined(String goodsName, String groubaDiscountAmount, String refGroubTrace,
+			String orderTrace) {
 		String templateId = PropertiesUtils.getProperty("msgTemplate4Joined",
 				"8QB4bYZYGLqYlk5lia0DIG5PeomZUy9eVOQY8UWVF1Y");
 		// #活动名称 团长 成团人数
 		List<GroubaOrder> groubOrders = groubaOrderMapper.select(orderTrace, null, null, null, null);
 		log.info("#异步成团通知开始，#通知用户数:[{}]", groubOrders.size());
-		User learderUser = userMapper.selectOne(leaderUserTrace, null);
-		log.debug("#查询团长:[{}]", learderUser.getNickname());
+		GroupBar groupBar = groupBarMapper.selectOne(null, refGroubTrace);
+		log.debug("#查询关联店铺:[{}]", JSONObject.toJSON(groupBar));
 		for (int i = 0; i < groubOrders.size(); i++) {
 			GroubaOrder order = groubOrders.get(i);
 			log.debug("#通知用户:[{}]", order.getRefUserWxOpenid());
@@ -95,9 +96,9 @@ public class MsgSendService {
 			JSONObject value = new JSONObject();
 			value.put("value", goodsName + "-拼团");
 			data.put("keyword1", value.clone());
-			value.put("value", learderUser.getNickname());
+			value.put("value", groubaDiscountAmount);
 			data.put("keyword2", value.clone());
-			value.put("value", groubaSize[groubSize]);
+			value.put("value", groupBar.getGroubAddress());
 			data.put("keyword3", value);
 			String openid = StringUtils.isEmpty(order.getRefUserWxOpenid()) ? order.getRefUserWxUnionid()
 					: order.getRefUserWxOpenid();

@@ -58,7 +58,7 @@ public class GroubaOrderControl {
 	@PostMapping("orderConsume")
 	public Object orderConsume(@RequestBody @DecodeReq String reqStr) {
 
-		return RespUtil.baseResp(groubaOrderService.orderConsume(JSONObject.parseObject(reqStr, GroubaOrder.class)));
+		return RespUtil.dataResp(groubaOrderService.orderConsume(JSONObject.parseObject(reqStr, GroubaOrder.class)));
 	}
 
 	@PostMapping("orderConsumePrepare")
