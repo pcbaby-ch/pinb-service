@@ -290,7 +290,7 @@ public class GroubaOrderService {
 		groubaOrderParams.setOrderTrace(groubaOrderVo.getOrderTrace());
 		groubaOrderParams.setRefUserWxUnionid(groubaOrderVo.getRefUserWxUnionid());
 		groubaOrderParams.setConsumeTime("udpate");
-		groubaOrderParams.setOrderStatus(OrderStatus.consume.getCode() + "");
+//		groubaOrderParams.setOrderStatus(OrderStatus.consume.getCode() + "");
 		groubaOrderParams.setFormId(groubaOrderVo.getFormId());
 
 		int count = groubaOrderMapper.update(groubaOrderParams);
