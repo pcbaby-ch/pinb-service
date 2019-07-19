@@ -43,18 +43,21 @@ public interface GroubaOrderMapper {
 	 */
 	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_openid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
 			+ " from grouba_order" + "<where>" 
-			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" + "</where> order by id desc</script>")
-	public List<GroubaOrder> selectMyOrder4user(@Param(value = "refUserWxUnionid") String refUserWxUnionid);
+			+ "<if test=\"refUserWxUnionid != null and refUserWxUnionid != '' \">" + " and ref_user_wx_unionid = #{refUserWxUnionid}" + "</if>" 
+			+ "<if test=\"orderStatus != null and orderStatus != '' \">" + " and order_status = #{orderStatus}" + "</if>"
+			+ "</where> order by id desc</script>")
+	public List<GroubaOrder> selectMyOrder4user(@Param(value = "refUserWxUnionid") String refUserWxUnionid,@Param(value = "orderStatus") String orderStatus);
 	/**
 	 * 查询我的店铺相关的所有订单
 	 * @param refGroubTrace
 	 * @return
 	 */
 	@Select(value = "<script>select order_trace,ref_groub_trace,ref_grouba_trace,order_expired_time,order_status,ref_user_wx_unionid,leader,ref_user_img,form_id,join_succeed_time,ref_user_wx_openid,grouba_size,goods_name,goods_img,goods_price,grouba_discount_amount,grouba_isnew"
-			+ " from grouba_order where ref_user_wx_unionid=leader"
+			+ " from grouba_order <where>"
 			+ "<if test=\"refGroubTrace != null and refGroubTrace != '' \">" + " and ref_groub_trace = #{refGroubTrace}" + "</if>" 
-			+ " order by id desc</script>")
-	public List<GroubaOrder> selectMyOrder4Shop(@Param(value = "refGroubTrace") String refGroubTrace);
+			+ "<if test=\"orderStatus != null and orderStatus != '' \">" + " and order_status = #{orderStatus}" + "</if>"
+			+ "</where>  order by id desc</script>")
+	public List<GroubaOrder> selectMyOrder4Shop(@Param(value = "refGroubTrace") String refGroubTrace,@Param(value = "orderStatus") String orderStatus);
 	/**
 	 * 查询相关订单同团的用户、头像、状态{order_trace,ref_grouba_trace,userImgs,ordersStatus,orderRefUsers}
 	 * @param orderTraces

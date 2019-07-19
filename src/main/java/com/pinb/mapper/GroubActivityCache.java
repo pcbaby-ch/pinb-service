@@ -44,14 +44,15 @@ public class GroubActivityCache {
 		if (StringUtils.isEmpty(refGroubTrace)) {
 			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "refGroubTrace");
 		}
-		List<GroubActivity> result = groubActivityMapper.selectOneGroub(refGroubTrace, refUserWxUnionid);
+		List<GroubActivity> result = null;
 		String key = RedisConst.GroubActivityCache + refGroubTrace;
 		if (RedisPool.exists(key)) {
-			log.debug("#命中缓存,#refGroubTrace:[{}]", refGroubTrace);
+			log.debug("#命中缓存,#key:[{}]", key);
 			return JSONObject.parseArray(RedisPool.get(key), GroubActivity.class);
 		} else {
 			log.debug("#无缓存,#refGroubTrace:[{}]", refGroubTrace);
-			RedisPool.set(key, result);
+			result = groubActivityMapper.selectOneGroub(refGroubTrace, refUserWxUnionid);
+			RedisPool.set(key, JSONObject.toJSON(result));
 			return result;
 		}
 	}
@@ -100,16 +101,16 @@ public class GroubActivityCache {
 		}
 		province = province == null ? "" : province;
 		city = city == null ? "" : city;
-		List<GroubActivity> result = groubActivityMapper.selectNearGrouba(province, city, minLat, maxLat, minLng,
-				maxLng);
+		List<GroubActivity> result = null;
 		String key = RedisConst.GroubActivityCache + city;
 		String field = province + "_" + minLat + "_" + maxLat + "_" + minLng + "_" + maxLng + "_" + page;
 		if (RedisPool.exists(key) && RedisPool.exists(key, field)) {
-			log.debug("#命中缓存,#city:[{}],#[{}]", city, province);
+			log.debug("#命中缓存,#key:[{}],#key[{}]", key, field);
 			return JSONObject.parseArray(RedisPool.hget(key, field), GroubActivity.class);
 		} else {
-			log.debug("#无缓存,#city:[{}],#[{}]", city, province);
-			RedisPool.hset(key, field, result, 60000);
+			log.debug("#无缓存,#key:[{}],#key[{}]", key, field);
+			result = groubActivityMapper.selectNearGrouba(province, city, minLat, maxLat, minLng, maxLng);
+			RedisPool.hset(key, field, JSONObject.toJSON(result), 60 * 10);
 			return result;
 		}
 	};
@@ -118,14 +119,15 @@ public class GroubActivityCache {
 		if (!openCache) {
 			return groubActivityMapper.selectNearGroubaTop100(null, null);
 		}
-		List<GroubActivity> result = groubActivityMapper.selectNearGroubaTop100(null, null);
+		List<GroubActivity> result = null;
 		String key = RedisConst.GroubActivityCache + "selectNearGroubaTop100_" + page;
 		if (RedisPool.exists(key)) {
-			log.debug("#命中缓存");
+			log.debug("#命中缓存,#key:[{}]--[{}]", key);
 			return JSONObject.parseArray(RedisPool.get(key), GroubActivity.class);
 		} else {
 			log.debug("#无缓存");
-			RedisPool.set(key, 60, result);
+			result = groubActivityMapper.selectNearGroubaTop100(null, null);
+			RedisPool.set(key, 60 * 10, JSONObject.toJSON(result));
 			return result;
 		}
 	};

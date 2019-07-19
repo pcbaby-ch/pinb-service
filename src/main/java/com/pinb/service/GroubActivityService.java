@@ -4,6 +4,7 @@
 package com.pinb.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -103,7 +104,7 @@ public class GroubActivityService {
 	 * @param groubActivity
 	 * @return
 	 */
-	public Page<?> selectNearGrouba(GroubActivity groubActivity) {
+	public List selectNearGrouba(GroubActivity groubActivity) {
 		// #入参校验
 //		if (StringUtils.isEmpty(groubActivity.getProvince())) {
 //			throw new ServiceException(RespCode.PARAM_INCOMPLETE, "Province");
@@ -120,9 +121,8 @@ public class GroubActivityService {
 		logParams(groubActivity);
 		Page<?> page = PageHelper.startPage(groubActivity.getPage(), groubActivity.getRows());
 		// #用户未指定位置时，显示所在城市分享数最高的前100个商品
-		if (1==1) {//前期合作商户少，统一显示热度top100
-			groubActivityCache.selectNearGroubaTop100(groubActivity.getPage());
-			return page;
+		if (1 == 1) {// 前期合作商户少，统一显示热度top100
+			return groubActivityCache.selectNearGroubaTop100(groubActivity.getPage());
 		}
 
 		double myLat = Double.parseDouble(groubActivity.getLatitude());

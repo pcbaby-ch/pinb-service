@@ -112,6 +112,8 @@ public class RespUtil {
 
 	public static Map<String, Object> listResp(List<?> list) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("retCode", RespCode.SUCCESS.getCode());
+		map.put("retMsg", RespCode.SUCCESS.getMsg());
 		map.put("total", list.size());
 		map.put("rows", list);
 		return map;
