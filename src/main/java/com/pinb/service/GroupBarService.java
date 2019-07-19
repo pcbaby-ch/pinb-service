@@ -360,7 +360,7 @@ public class GroupBarService {
 				goods.setOrderRefUsers(orderImgs.getOrderRefUsers());
 				goods.setUserImgs(orderImgs.getUserImgs());
 				goods.setOrdersStatus(orderImgs.getOrdersStatus());
-				if (orderImgs.getOrderRefUsers().equals(groupBarVo.getRefUserWxUnionid())) {
+				if (orderImgs.getOrderRefUsers().contains(groupBarVo.getRefUserWxUnionid())) {
 					// #如果我已参团
 					goods.setIsJoined(true);
 				} else {
@@ -383,7 +383,7 @@ public class GroupBarService {
 			shareGoods.setOrdersStatus(orderImgs.getOrdersStatus());
 			log.debug("#getOrderRefUsers:[{}],#getRefUserWxUnionid:[{}]", orderImgs.getOrderRefUsers(),
 					groupBarVo.getRefUserWxUnionid());
-			if (orderImgs.getOrderRefUsers().equals(groupBarVo.getRefUserWxUnionid())) {
+			if (orderImgs.getOrderRefUsers().contains(groupBarVo.getRefUserWxUnionid())) {
 				// #如果我已参团
 				shareGoods.setIsJoined(true);
 			} else {
