@@ -3,7 +3,7 @@
     <property name="appName" value="pinb-service"/>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%date [${appName},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] %-5level %logger{36} [%thread] [%file:%line] -%msg%n</pattern>
+            <pattern>%date [${appName},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] %-5level <!-- %logger{36} -->[%thread] [%file:%line] -%msg%n</pattern>
         </encoder>
     </appender>
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -13,7 +13,7 @@
             <MaxHistory>999</MaxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%date [${appName},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] %-5level  %logger{36} [%thread] [%file:%line] -%msg%n
+            <pattern>%date [${appName},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] %-5level  <!-- %logger{36}  -->[%thread] [%file:%line] -%msg%n
             </pattern>
         </encoder>
     </appender>

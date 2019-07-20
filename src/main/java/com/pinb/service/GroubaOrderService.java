@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -129,7 +129,7 @@ public class GroubaOrderService {
 	 * @return
 	 * @throws Exception
 	 */
-	@Transactional
+	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
 	public boolean orderJoin(GroubaOrder groubaOrderVo) throws Exception {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrderVo.getOrderTrace())) {
@@ -184,25 +184,25 @@ public class GroubaOrderService {
 		groubaOrderParams.setGroubaIsnew(orderLeader.getGroubaIsnew());
 		groubaOrderParams.setClientIp(groubaOrderVo.getClientIp());
 		groubaOrderParams.setFormId(groubaOrderVo.getFormId());
-		log.info("#成团处理>>>>>>>>>>>>>> A");
 		try {
 			lock.lock();
+			log.info("#成团处理>>>>>>>>>>>>>> A,#user:[{}]", groubaOrderVo.getRefUserWxUnionid());
 			GroubActivity groubActivity = groubActivityCache.selectOne(orderLeader.getRefGroubaTrace());
-			log.info("#成团处理>>>>>>>>>>>>>> B1");
+			log.info("#成团处理>>>>>>>>>>>>>> B1,#user:[{}]", groubaOrderVo.getRefUserWxUnionid());
 			int orderCount = groubaOrderMapper.selectCount(groubaOrderVo.getOrderTrace(),
 					orderLeader.getRefGroubTrace());
 			if (orderCount <= groubaSize[groubActivity.getGroubaSize()] - 1) {
 				try {
 					groubaOrderMapper.insert(groubaOrderParams);
-					log.info("#成团处理>>>>>>>>>>>>>> B2");
+					log.info("#成团处理>>>>>>>>>>>>>> B2,#user:[{}]", groubaOrderVo.getRefUserWxUnionid());
 				} catch (DuplicateKeyException e) {
 					throw new ServiceException(RespCode.order_joinedGrouba);
 				}
 				if (orderCount == groubaSize[groubActivity.getGroubaSize()] - 1) {
 					groubaOrderMapper.update(new GroubaOrder(orderLeader.getOrderTrace(), null,
 							OrderStatus.join_success.getCode() + ""));
-					log.info("#成团处理>>>>>>>>>>>>>> B3");
-					// 异步发送成团通知，for团所有成员
+					log.info("#成团处理>>>>>>>>>>>>>> B3,#user:[{}]", groubaOrderVo.getRefUserWxUnionid());
+					// 发送成团通知，for团所有成员
 					msgSendService.wxMsgSend4Joined(orderLeader.getGoodsName(), orderLeader.getGroubaDiscountAmount(),
 							orderLeader.getRefGroubTrace(), orderLeader.getOrderTrace());
 				}

@@ -78,13 +78,13 @@ public class MsgSendService {
 	 * @param orderTrace
 	 * @param formId
 	 */
-	@Async("getThreadPoolTaskExecutor")
 	public void wxMsgSend4Joined(String goodsName, String groubaDiscountAmount, String refGroubTrace,
 			String orderTrace) {
 		String templateId = PropertiesUtils.getProperty("msgTemplate4Joined",
 				"8QB4bYZYGLqYlk5lia0DIG5PeomZUy9eVOQY8UWVF1Y");
 		// #活动名称 团长 成团人数
 		List<GroubaOrder> groubOrders = groubaOrderMapper.select(orderTrace, null, null, null, null);
+		log.info("#成团处理>>>>>>>>>>>>>> B4");
 		log.info("#异步成团通知开始，#通知用户数:[{}]", groubOrders.size());
 		GroupBar groupBar = groupBarMapper.selectOne(null, refGroubTrace);
 		log.debug("#查询关联店铺:[{}]", JSONObject.toJSON(groupBar));
