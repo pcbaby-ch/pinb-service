@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +43,8 @@ import com.pinb.util.MapBeanUtil;
 public class GroubaOrderService {
 
 	private static final Logger log = LoggerFactory.getLogger(GroubaOrderService.class);
+
+	static ReentrantLock lock = new ReentrantLock();
 
 	@Autowired
 	GroubActivityCache groubActivityCache;
@@ -124,6 +129,7 @@ public class GroubaOrderService {
 	 * @return
 	 * @throws Exception
 	 */
+	@Transactional
 	public boolean orderJoin(GroubaOrder groubaOrderVo) throws Exception {
 		// #入参校验
 		if (StringUtils.isEmpty(groubaOrderVo.getOrderTrace())) {
@@ -179,8 +185,9 @@ public class GroubaOrderService {
 		groubaOrderParams.setClientIp(groubaOrderVo.getClientIp());
 		groubaOrderParams.setFormId(groubaOrderVo.getFormId());
 		log.info("#成团处理>>>>>>>>>>>>>> A");
-		GroubActivity groubActivity = groubActivityCache.selectOne(orderLeader.getRefGroubaTrace());
-		synchronized (groubActivity) {
+		try {
+			lock.lock();
+			GroubActivity groubActivity = groubActivityCache.selectOne(orderLeader.getRefGroubaTrace());
 			log.info("#成团处理>>>>>>>>>>>>>> B1");
 			int orderCount = groubaOrderMapper.selectCount(groubaOrderVo.getOrderTrace(),
 					orderLeader.getRefGroubTrace());
@@ -202,6 +209,11 @@ public class GroubaOrderService {
 			} else {
 				throw new ServiceException(RespCode.order_groubaFull);
 			}
+		} catch (Exception e) {
+			log.error("#并发参团，成团状态更新失败");
+			throw new ServiceException(RespCode.FAILURE);
+		} finally {
+			lock.unlock();
 		}
 		return true;
 	}
